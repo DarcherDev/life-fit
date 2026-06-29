@@ -2,7 +2,7 @@
 
 App personal para gestionar rutinas de gimnasio: mantén bibliotecas reutilizables de ejercicios, estiramientos y calentamientos; compón rutinas por referencia; asígnalas en un calendario y marca tu progreso día a día.
 
-**Versión actual:** `1.3.0+4`  
+**Versión actual:** `1.3.0+5`  
 **Repositorio:** [github.com/DarcherDev/life-fit](https://github.com/DarcherDev/life-fit)
 
 ## Para qué sirve
@@ -111,7 +111,7 @@ lib/
 El número de versión vive en `pubspec.yaml`:
 
 ```yaml
-version: 1.3.0+4
+version: 1.3.0+5
 #        │     └── build number (versionCode Android, debe subir en cada APK)
 #        └── versión visible (versionName)
 ```
@@ -123,6 +123,13 @@ Convención:
 - **+N** — número de build; siempre incrementar al generar un APK instalable.
 
 Historial detallado en [CHANGELOG.md](CHANGELOG.md).
+
+## Novedades de la release 1.3.0
+
+Respecto a la `1.2.0+3`:
+
+- **Flujos de agente Cursor** documentados: `/commit` (commits locales con versión), `/pull` (sincronizar y fusionar `develop`) y `/push` (publicar en GitHub con CHANGELOG y release).
+- **Estándar de commits** unificado: una línea, español, imperativo, tipos y scopes por módulo.
 
 ## Novedades de la release 1.2.0
 
