@@ -34,7 +34,8 @@ void main() {
     expect(decoded.title, card.title);
     expect(decoded.description, card.description);
     expect(decoded.items.length, 1);
-    expect(decoded.items.first.formattedSubtitle, '4 series x 10 repeticiones');
+    expect(decoded.items.first.series, 4);
+    expect(decoded.items.first.repetitions, 10);
   });
 
   test('LocalStorageService guarda rutinas y asignaciones', () async {

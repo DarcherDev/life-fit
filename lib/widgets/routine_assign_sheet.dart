@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
+import '../l10n/app_localizations.dart';
 import '../models/routine_card.dart';
 import '../services/local_storage_service.dart';
+import '../utils/locale_format.dart';
 import '../utils/routine_search.dart';
 
 class RoutineAssignSheet {
@@ -17,11 +18,13 @@ class RoutineAssignSheet {
     bool allowRemove = false,
     String? title,
   }) {
+    final l10n = AppLocalizations.of(context);
     final routines = LocalStorageService.instance.getRoutineCards();
+    final formattedDate = formatShortDate(context, date);
     final sheetTitle = title ??
         (currentRoutineId == null
-            ? 'Asignar rutina para ${DateFormat('d MMM yyyy', 'es').format(date)}'
-            : 'Cambiar rutina del ${DateFormat('d MMM yyyy', 'es').format(date)}');
+            ? l10n.assignRoutineForDate(formattedDate)
+            : l10n.changeRoutineForDate(formattedDate));
 
     return showModalBottomSheet<String?>(
       context: context,
@@ -93,6 +96,8 @@ class _RoutineAssignSheetBodyState extends State<_RoutineAssignSheetBody> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -112,7 +117,7 @@ class _RoutineAssignSheetBodyState extends State<_RoutineAssignSheetBody> {
               controller: _searchController,
               textInputAction: TextInputAction.search,
               decoration: InputDecoration(
-                hintText: 'Buscar rutina...',
+                hintText: l10n.searchRoutineHint,
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon: _query.isNotEmpty
                     ? IconButton(
@@ -135,7 +140,7 @@ class _RoutineAssignSheetBodyState extends State<_RoutineAssignSheetBody> {
           if (widget.allowRemove && widget.currentRoutineId != null)
             ListTile(
               leading: const Icon(Icons.event_busy),
-              title: const Text('Quitar rutina del día'),
+              title: Text(l10n.removeRoutineFromDay),
               onTap: () => Navigator.of(context).pop(''),
             ),
         ],
@@ -144,11 +149,13 @@ class _RoutineAssignSheetBodyState extends State<_RoutineAssignSheetBody> {
   }
 
   Widget _buildRoutineList(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     if (_filteredRoutines.isEmpty) {
-      return const Center(
+      return Center(
         child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Text('No hay rutinas que coincidan'),
+          padding: const EdgeInsets.all(16),
+          child: Text(l10n.noMatchingRoutines),
         ),
       );
     }

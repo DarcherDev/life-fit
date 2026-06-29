@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/routine_card.dart';
 import '../../services/local_storage_service.dart';
 import '../../utils/date_utils.dart';
+import '../../utils/locale_format.dart';
 import '../../widgets/routine_assign_sheet.dart';
 
 class PlannerScreen extends StatefulWidget {
@@ -50,15 +51,14 @@ class _PlannerScreenState extends State<PlannerScreen> {
   }
 
   Future<void> _showAssignSheet(DateTime day) async {
+    final l10n = AppLocalizations.of(context);
     final routines = _storage.getRoutineCards();
     if (routines.isEmpty) {
       if (!mounted) {
         return;
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Primero crea rutinas en la sección Rutina.'),
-        ),
+        SnackBar(content: Text(l10n.createRoutinesFirst)),
       );
       return;
     }
@@ -86,8 +86,8 @@ class _PlannerScreenState extends State<PlannerScreen> {
     }
 
     final message = routineId == null
-        ? 'Rutina quitada del día'
-        : 'Rutina asignada correctamente';
+        ? l10n.routineRemovedFromDay
+        : l10n.routineAssignedSuccess;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
@@ -95,12 +95,14 @@ class _PlannerScreenState extends State<PlannerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final localeCode = Localizations.localeOf(context).languageCode;
     final selectedRoutine =
         _selectedDay == null ? null : _routineForDay(_selectedDay!);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Planificador'),
+        title: Text(l10n.plannerTitle),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -110,7 +112,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
             lastDay: DateTime.utc(2035, 12, 31),
             focusedDay: _focusedDay,
             selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            locale: 'es',
+            locale: localeCode,
             calendarFormat: CalendarFormat.month,
             startingDayOfWeek: StartingDayOfWeek.monday,
             eventLoader: (day) {
@@ -149,7 +151,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
           const SizedBox(height: 24),
           if (_selectedDay != null) ...[
             Text(
-              DateFormat('EEEE d MMMM yyyy', 'es').format(_selectedDay!),
+              formatFullDate(context, _selectedDay!),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -158,14 +160,18 @@ class _PlannerScreenState extends State<PlannerScreen> {
             Card(
               child: ListTile(
                 title: Text(
-                  selectedRoutine?.title ?? 'Sin rutina asignada',
+                  selectedRoutine?.title ?? l10n.noRoutineAssigned,
                 ),
                 subtitle: Text(
                   selectedRoutine == null
-                      ? 'Toca para asignar una rutina'
+                      ? l10n.tapToAssignRoutine
                       : selectedRoutine.description.isEmpty
-                          ? '${selectedRoutine.items.length} items · Toca para cambiar'
-                          : '${selectedRoutine.description} · Toca para cambiar',
+                          ? l10n.plannerItemsTapToChange(
+                              selectedRoutine.items.length,
+                            )
+                          : l10n.plannerDescriptionTapToChange(
+                              selectedRoutine.description,
+                            ),
                 ),
                 trailing: const Icon(Icons.edit_calendar),
                 onTap: () => _showAssignSheet(_selectedDay!),

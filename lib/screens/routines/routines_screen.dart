@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/routine_card.dart';
 import '../../services/local_storage_service.dart';
 import '../../widgets/routine_card_preview.dart';
@@ -41,22 +42,21 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
   }
 
   Future<void> _deleteRoutine(RoutineCard routine) async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Eliminar rutina'),
-          content: Text(
-            '¿Eliminar "${routine.title}"? También se quitará del planificador.',
-          ),
+          title: Text(l10n.deleteRoutineTitle),
+          content: Text(l10n.deleteRoutineMessage(routine.title)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancelar'),
+              child: Text(l10n.cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Eliminar'),
+              child: Text(l10n.delete),
             ),
           ],
         );
@@ -73,9 +73,11 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Rutina'),
+        title: Text(l10n.routinesTitle),
       ),
       body: _routines.isEmpty
           ? Center(
@@ -91,12 +93,12 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Aún no tienes rutinas',
+                      l10n.noRoutinesYet,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Crea tarjetas con ejercicios o tareas para usarlas en el planificador.',
+                      l10n.noRoutinesHint,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -146,7 +148,7 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openForm(),
         icon: const Icon(Icons.add),
-        label: const Text('Nueva rutina'),
+        label: Text(l10n.newRoutine),
       ),
     );
   }

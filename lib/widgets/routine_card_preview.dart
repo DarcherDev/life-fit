@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
 import '../models/checklist_item.dart';
 import '../models/routine_card.dart';
+import '../utils/checklist_l10n.dart';
 
 class RoutineCardPreview extends StatelessWidget {
   const RoutineCardPreview({
@@ -23,6 +25,8 @@ class RoutineCardPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -68,7 +72,7 @@ class RoutineCardPreview extends StatelessWidget {
                 ],
                 if (routine.items.isNotEmpty) ...[
                   SizedBox(height: compact ? 12 : 16),
-                  ...routine.items.map(_buildItem),
+                  ...routine.items.map((item) => _buildItem(context, item, l10n)),
                 ],
               ],
             ),
@@ -78,8 +82,13 @@ class RoutineCardPreview extends StatelessWidget {
     );
   }
 
-  Widget _buildItem(ChecklistItem item) {
+  Widget _buildItem(
+    BuildContext context,
+    ChecklistItem item,
+    AppLocalizations l10n,
+  ) {
     final isCompleted = completedItemIds.contains(item.id);
+    final subtitle = item.localizedSubtitle(l10n);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -125,10 +134,10 @@ class RoutineCardPreview extends StatelessWidget {
                     color: isCompleted ? Colors.grey : Colors.black87,
                   ),
                 ),
-                if (item.formattedSubtitle.isNotEmpty) ...[
+                if (subtitle.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(
-                    item.formattedSubtitle,
+                    subtitle,
                     style: TextStyle(
                       color: Colors.grey.shade600,
                       decoration:

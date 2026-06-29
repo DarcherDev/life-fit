@@ -1,0 +1,106 @@
+{
+  "@@locale": "es",
+  "appTitle": "Life Fit",
+  "homeTagline": "gestiona tu vida",
+  "homeGymDayTitle": "Dia de gym",
+  "homeGymDaySubtitle": "Rutina asignada para hoy",
+  "homeRoutinesTitle": "Rutina",
+  "homeRoutinesSubtitle": "Crea y personaliza tus tarjetas",
+  "homePlannerTitle": "Planificador",
+  "homePlannerSubtitle": "Asigna rutinas a tu calendario",
+  "languageMenu": "Idioma",
+  "languageSpanish": "Español",
+  "languageEnglish": "English",
+  "cancel": "Cancelar",
+  "remove": "Quitar",
+  "delete": "Eliminar",
+  "save": "Guardar",
+  "back": "Volver",
+  "required": "Obligatorio",
+  "validNumber": "Número válido",
+  "noTitle": "Sin título",
+  "plannerTitle": "Planificador",
+  "createRoutinesFirst": "Primero crea rutinas en la sección Rutina.",
+  "routineRemovedFromDay": "Rutina quitada del día",
+  "routineAssignedSuccess": "Rutina asignada correctamente",
+  "noRoutineAssigned": "Sin rutina asignada",
+  "tapToAssignRoutine": "Toca para asignar una rutina",
+  "plannerItemsTapToChange": "{count} items · Toca para cambiar",
+  "@plannerItemsTapToChange": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "plannerDescriptionTapToChange": "{description} · Toca para cambiar",
+  "@plannerDescriptionTapToChange": {
+    "placeholders": {
+      "description": { "type": "String" }
+    }
+  },
+  "assignRoutineForDate": "Asignar rutina para {date}",
+  "@assignRoutineForDate": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "changeRoutineForDate": "Cambiar rutina del {date}",
+  "@changeRoutineForDate": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "changeRoutine": "Cambiar rutina",
+  "searchRoutineHint": "Buscar rutina...",
+  "removeRoutineFromDay": "Quitar rutina del día",
+  "noMatchingRoutines": "No hay rutinas que coincidan",
+  "routinesTitle": "Rutina",
+  "deleteRoutineTitle": "Eliminar rutina",
+  "deleteRoutineMessage": "¿Eliminar {title}? También se quitará del planificador.",
+  "@deleteRoutineMessage": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "noRoutinesYet": "Aún no tienes rutinas",
+  "noRoutinesHint": "Crea tarjetas con ejercicios o tareas para usarlas en el planificador.",
+  "newRoutine": "Nueva rutina",
+  "editRoutine": "Editar rutina",
+  "addExercise": "Agregar ejercicio",
+  "fieldTitle": "Título",
+  "fieldTitleHint": "Ej. MIÉRCOLES",
+  "titleRequired": "El título es obligatorio",
+  "fieldDescription": "Descripción",
+  "fieldDescriptionHint": "Ej. TREN SUPERIOR 1",
+  "previewTitle": "Vista previa",
+  "previewEmptyHint": "Aquí verás tu rutina cuando escribas el título o completes ejercicios.",
+  "exercisesTitle": "Ejercicios",
+  "addFirstExerciseHint": "Pulsa el botón + para agregar tu primer ejercicio.",
+  "exerciseLabel": "Ejercicio {number}",
+  "@exerciseLabel": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "exerciseHint": "Ej. Press de Banca Plana",
+  "fieldSeries": "Series",
+  "fieldSeriesHint": "4",
+  "fieldRepetitions": "Repeticiones",
+  "fieldRepetitionsHint": "10",
+  "saveRoutine": "Guardar rutina",
+  "completeBeforeAddAnother": "Completa nombre, series y repeticiones antes de agregar otro.",
+  "addAtLeastOneExercise": "Agrega al menos un ejercicio completo.",
+  "completeAllBeforeSave": "Completa todos los ejercicios antes de guardar.",
+  "seriesRepsFormat": "{series} series x {repetitions} repeticiones",
+  "@seriesRepsFormat": {
+    "placeholders": {
+      "series": { "type": "int" },
+      "repetitions": { "type": "int" }
+    }
+  },
+  "removeRoutineTitle": "Quitar rutina",
+  "removeRoutineMessage": "¿Quitar la rutina de este día? El progreso del día se conservará.",
+  "noRoutineForDay": "No hay rutina asignada para este día",
+  "todayRoutine": "Rutina de hoy",
+  "finishRoutine": "Terminar rutina",
+  "routineCompleted": "¡Rutina completada! 🎉"
+}

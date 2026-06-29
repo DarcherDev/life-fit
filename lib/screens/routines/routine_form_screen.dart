@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/checklist_item.dart';
 import '../../models/routine_card.dart';
 import '../../screens/planner/day_routine_screen.dart';
 import '../../services/local_storage_service.dart';
+import '../../utils/checklist_l10n.dart';
 import '../../widgets/routine_card_preview.dart';
 
 class RoutineFormScreen extends StatefulWidget {
@@ -154,14 +156,11 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
   }
 
   void _addItem() {
+    final l10n = AppLocalizations.of(context);
     final incompleteIndex = _firstIncompleteItemIndex();
     if (incompleteIndex != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Completa nombre, series y repeticiones antes de agregar otro.',
-          ),
-        ),
+        SnackBar(content: Text(l10n.completeBeforeAddAnother)),
       );
       _scrollToItem(incompleteIndex);
       _items[incompleteIndex].titleFocusNode.requestFocus();
@@ -194,7 +193,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
         .toList();
   }
 
-  RoutineCard? _buildPreviewCard() {
+  RoutineCard? _buildPreviewCard(AppLocalizations l10n) {
     final title = _titleController.text.trim();
     final description = _descriptionController.text.trim();
     final items = _validPreviewItems();
@@ -205,23 +204,25 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
 
     return RoutineCard(
       id: widget.routine?.id ?? 'preview',
-      title: title.isEmpty ? 'Sin título' : title,
+      title: title.isEmpty ? l10n.noTitle : title,
       description: description,
       items: items,
     );
   }
 
-  String? _validateSeries(String? value) {
+  String? _validateSeries(String? value, AppLocalizations l10n) {
     if (value == null || value.trim().isEmpty) {
-      return 'Obligatorio';
+      return l10n.required;
     }
     if (_parsePositiveInt(value) == null) {
-      return 'Número válido';
+      return l10n.validNumber;
     }
     return null;
   }
 
   Future<void> _save() async {
+    final l10n = AppLocalizations.of(context);
+
     if (!_formKey.currentState!.validate()) {
       final incompleteIndex = _firstIncompleteItemIndex();
       if (incompleteIndex != null) {
@@ -234,18 +235,14 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
 
     if (validItems.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Agrega al menos un ejercicio completo.'),
-        ),
+        SnackBar(content: Text(l10n.addAtLeastOneExercise)),
       );
       return;
     }
 
     if (validItems.length != _items.length) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Completa todos los ejercicios antes de guardar.'),
-        ),
+        SnackBar(content: Text(l10n.completeAllBeforeSave)),
       );
       final incompleteIndex = _firstIncompleteItemIndex();
       if (incompleteIndex != null) {
@@ -286,22 +283,23 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final previewCard = _buildPreviewCard();
+    final l10n = AppLocalizations.of(context);
+    final previewCard = _buildPreviewCard(l10n);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEditing ? 'Editar rutina' : 'Nueva rutina'),
+        title: Text(_isEditing ? l10n.editRoutine : l10n.newRoutine),
         actions: [
           IconButton(
             onPressed: _save,
             icon: const Icon(Icons.check),
-            tooltip: 'Guardar',
+            tooltip: l10n.save,
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addItem,
-        tooltip: 'Agregar ejercicio',
+        tooltip: l10n.addExercise,
         child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -313,15 +311,15 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
           children: [
             TextFormField(
               controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Título',
-                hintText: 'Ej. MIÉRCOLES',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.fieldTitle,
+                hintText: l10n.fieldTitleHint,
+                border: const OutlineInputBorder(),
               ),
               textCapitalization: TextCapitalization.characters,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'El título es obligatorio';
+                  return l10n.titleRequired;
                 }
                 return null;
               },
@@ -330,16 +328,16 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Descripción',
-                hintText: 'Ej. TREN SUPERIOR 1',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.fieldDescription,
+                hintText: l10n.fieldDescriptionHint,
+                border: const OutlineInputBorder(),
               ),
               onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 24),
             Text(
-              'Vista previa',
+              l10n.previewTitle,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -361,7 +359,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
                   ),
                 ),
                 child: Text(
-                  'Aquí verás tu rutina cuando escribas el título o completes ejercicios.',
+                  l10n.previewEmptyHint,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -372,7 +370,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
               RoutineCardPreview(routine: previewCard),
             const SizedBox(height: 24),
             Text(
-              'Ejercicios',
+              l10n.exercisesTitle,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -382,7 +380,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
-                  'Pulsa el botón + para agregar tu primer ejercicio.',
+                  l10n.addFirstExerciseHint,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
@@ -390,6 +388,8 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
               ),
             ...List.generate(_items.length, (index) {
               final item = _items[index];
+              final formItem = _itemFromForm(item);
+
               return Card(
                 key: item.itemKey,
                 margin: const EdgeInsets.only(bottom: 12),
@@ -402,14 +402,14 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
                         controller: item.titleController,
                         focusNode: item.titleFocusNode,
                         decoration: InputDecoration(
-                          labelText: 'Ejercicio ${index + 1}',
-                          hintText: 'Ej. Press de Banca Plana',
+                          labelText: l10n.exerciseLabel(index + 1),
+                          hintText: l10n.exerciseHint,
                           border: const OutlineInputBorder(),
                         ),
                         textInputAction: TextInputAction.next,
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Obligatorio';
+                            return l10n.required;
                           }
                           return null;
                         },
@@ -421,16 +421,16 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
                           Expanded(
                             child: TextFormField(
                               controller: item.seriesController,
-                              decoration: const InputDecoration(
-                                labelText: 'Series',
-                                hintText: '4',
-                                border: OutlineInputBorder(),
+                              decoration: InputDecoration(
+                                labelText: l10n.fieldSeries,
+                                hintText: l10n.fieldSeriesHint,
+                                border: const OutlineInputBorder(),
                               ),
                               keyboardType: TextInputType.number,
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly,
                               ],
-                              validator: _validateSeries,
+                              validator: (value) => _validateSeries(value, l10n),
                               onChanged: (_) => setState(() {}),
                             ),
                           ),
@@ -438,25 +438,25 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
                           Expanded(
                             child: TextFormField(
                               controller: item.repetitionsController,
-                              decoration: const InputDecoration(
-                                labelText: 'Repeticiones',
-                                hintText: '10',
-                                border: OutlineInputBorder(),
+                              decoration: InputDecoration(
+                                labelText: l10n.fieldRepetitions,
+                                hintText: l10n.fieldRepetitionsHint,
+                                border: const OutlineInputBorder(),
                               ),
                               keyboardType: TextInputType.number,
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly,
                               ],
-                              validator: _validateSeries,
+                              validator: (value) => _validateSeries(value, l10n),
                               onChanged: (_) => setState(() {}),
                             ),
                           ),
                         ],
                       ),
-                      if (_isItemComplete(item)) ...[
+                      if (formItem != null) ...[
                         const SizedBox(height: 8),
                         Text(
-                          _itemFromForm(item)!.formattedSubtitle,
+                          formItem.localizedSubtitle(l10n),
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 color: Theme.of(context)
                                     .colorScheme
@@ -470,7 +470,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
                         child: TextButton.icon(
                           onPressed: () => _removeItem(index),
                           icon: const Icon(Icons.delete_outline),
-                          label: const Text('Eliminar'),
+                          label: Text(l10n.delete),
                         ),
                       ),
                     ],
@@ -482,7 +482,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
             FilledButton.icon(
               onPressed: _save,
               icon: const Icon(Icons.save),
-              label: const Text('Guardar rutina'),
+              label: Text(l10n.saveRoutine),
             ),
           ],
         ),

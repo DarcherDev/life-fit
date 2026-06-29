@@ -13,13 +13,6 @@ class ChecklistItem {
   final int? repetitions;
   final String description;
 
-  String get formattedSubtitle {
-    if (series != null && repetitions != null) {
-      return '$series series x $repetitions repeticiones';
-    }
-    return description;
-  }
-
   bool get hasSeriesAndReps => series != null && repetitions != null;
 
   ChecklistItem copyWith({

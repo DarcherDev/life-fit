@@ -1,11 +1,12 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/routine_card.dart';
 import '../../navigation/app_navigation.dart';
 import '../../services/local_storage_service.dart';
 import '../../utils/date_utils.dart';
+import '../../utils/locale_format.dart';
 import '../../widgets/routine_assign_sheet.dart';
 import '../../widgets/routine_card_preview.dart';
 
@@ -102,12 +103,13 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
   }
 
   Future<void> _changeRoutine() async {
+    final l10n = AppLocalizations.of(context);
     final assignment = _storage.getAssignmentForDate(widget.dateKey);
     final selectedId = await RoutineAssignSheet.show(
       context,
       date: _date,
       currentRoutineId: assignment?.routineId,
-      title: 'Cambiar rutina',
+      title: l10n.changeRoutine,
     );
 
     if (selectedId == null || selectedId.isEmpty) {
@@ -119,22 +121,21 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
   }
 
   Future<void> _removeRoutine() async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Quitar rutina'),
-          content: const Text(
-            '¿Quitar la rutina de este día? El progreso del día se conservará.',
-          ),
+          title: Text(l10n.removeRoutineTitle),
+          content: Text(l10n.removeRoutineMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancelar'),
+              child: Text(l10n.cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Quitar'),
+              child: Text(l10n.remove),
             ),
           ],
         );
@@ -152,6 +153,8 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
   }
 
   Widget _buildMissingRoutineState() {
+    final l10n = AppLocalizations.of(context);
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -165,14 +168,14 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'No hay rutina asignada para este día',
+              l10n.noRoutineForDay,
               style: Theme.of(context).textTheme.titleMedium,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Volver'),
+              child: Text(l10n.back),
             ),
           ],
         ),
@@ -205,6 +208,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final routine = _routine;
 
     return Stack(
@@ -213,20 +217,20 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
           appBar: AppBar(
             title: Text(
               _isToday
-                  ? 'Rutina de hoy'
-                  : DateFormat('d MMM yyyy', 'es').format(_date),
+                  ? l10n.todayRoutine
+                  : formatShortDate(context, _date),
             ),
             actions: [
               if (routine != null && !_isCelebrating) ...[
                 IconButton(
                   onPressed: _changeRoutine,
                   icon: const Icon(Icons.swap_horiz),
-                  tooltip: 'Cambiar rutina',
+                  tooltip: l10n.changeRoutine,
                 ),
                 IconButton(
                   onPressed: _removeRoutine,
                   icon: const Icon(Icons.event_busy),
-                  tooltip: 'Quitar rutina',
+                  tooltip: l10n.removeRoutineTitle,
                 ),
               ],
             ],
@@ -237,7 +241,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
                   padding: const EdgeInsets.all(16),
                   children: [
                     Text(
-                      DateFormat('EEEE', 'es').format(_date).toUpperCase(),
+                      formatWeekday(context, _date),
                       style: Theme.of(context).textTheme.labelLarge?.copyWith(
                             color:
                                 Theme.of(context).colorScheme.onSurfaceVariant,
@@ -254,7 +258,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
                     FilledButton.icon(
                       onPressed: _isCelebrating ? null : _finishRoutine,
                       icon: const Icon(Icons.check_circle_outline),
-                      label: const Text('Terminar rutina'),
+                      label: Text(l10n.finishRoutine),
                       style: FilledButton.styleFrom(
                         minimumSize: const Size.fromHeight(52),
                       ),
@@ -262,7 +266,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
                     if (_isCelebrating) ...[
                       const SizedBox(height: 24),
                       Text(
-                        '¡Rutina completada! 🎉',
+                        l10n.routineCompleted,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,

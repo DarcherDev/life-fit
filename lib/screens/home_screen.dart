@@ -1,48 +1,73 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
 import '../navigation/app_navigation.dart';
+import '../services/locale_service.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final currentLocale = Localizations.localeOf(context).languageCode;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Life Fit'),
+        title: Text(l10n.appTitle),
         centerTitle: true,
+        actions: [
+          PopupMenuButton<String>(
+            tooltip: l10n.languageMenu,
+            icon: const Icon(Icons.language),
+            onSelected: (code) {
+              LocaleService.instance.setLocale(Locale(code));
+            },
+            itemBuilder: (context) => [
+              CheckedPopupMenuItem(
+                value: 'es',
+                checked: currentLocale == 'es',
+                child: Text(l10n.languageSpanish),
+              ),
+              CheckedPopupMenuItem(
+                value: 'en',
+                checked: currentLocale == 'en',
+                child: Text(l10n.languageEnglish),
+              ),
+            ],
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
           Text(
-            'gestiona tu vida',
+            l10n.homeTagline,
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 32),
           _RoutineOptionCard(
-            title: 'Dia de gym',
-            subtitle: 'Rutina asignada para hoy',
+            title: l10n.homeGymDayTitle,
+            subtitle: l10n.homeGymDaySubtitle,
             icon: Icons.fitness_center,
             color: Colors.deepOrange,
             onTap: () => AppNavigation.openTodayGym(context),
           ),
           const SizedBox(height: 16),
           _RoutineOptionCard(
-            title: 'Rutina',
-            subtitle: 'Crea y personaliza tus tarjetas',
+            title: l10n.homeRoutinesTitle,
+            subtitle: l10n.homeRoutinesSubtitle,
             icon: Icons.dashboard_customize,
             color: Colors.teal,
             onTap: () => AppNavigation.openRoutines(context),
           ),
           const SizedBox(height: 16),
           _RoutineOptionCard(
-            title: 'Planificador',
-            subtitle: 'Asigna rutinas a tu calendario',
+            title: l10n.homePlannerTitle,
+            subtitle: l10n.homePlannerSubtitle,
             icon: Icons.calendar_month,
             color: Colors.indigo,
             onTap: () => AppNavigation.openPlanner(context),
