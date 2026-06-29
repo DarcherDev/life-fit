@@ -1,0 +1,60 @@
+---
+description: Commit descriptivo local (sin push). Invocar con /commit
+alwaysApply: false
+---
+
+# Commit local descriptivo (sin push)
+
+## Cómo invocarla en el chat
+
+Escribe cualquiera de estas frases:
+
+- `/commit`
+- `@commit-local`
+- "haz commit" / "commitea los cambios"
+
+El agente debe aplicar **esta regla** y seguir el flujo de abajo.
+
+## Reglas obligatorias
+
+1. **Solo commit, nunca push** — no ejecutar `git push` salvo que el usuario lo pida explícitamente en otro mensaje.
+2. **No commitear sin pedido** — solo cuando el usuario invoque esta regla o pida commit.
+3. **Mensaje descriptivo en español** — explicar el *por qué* y el impacto para quien lea el historial.
+
+## Formato del mensaje de commit
+
+Usa Conventional Commits en español con cuerpo explicativo:
+
+```
+tipo(ámbito): resumen breve en imperativo
+
+- Nuevo: qué función o pantalla se añadió y para qué sirve.
+- Corregido: qué fallaba y cómo quedó resuelto.
+- Eliminado: qué se quitó y por qué (si aplica).
+```
+
+**Tipos:** `feat`, `fix`, `refactor`, `style`, `test`, `chore`, `docs`
+
+### Ejemplos
+
+```
+feat(tema): añadir modo oscuro persistente
+
+- Nuevo: selector de tema en ajustes; se guarda con SharedPreferences.
+- Corregido: contraste de tarjetas en modo oscuro.
+```
+
+```
+fix(home): evitar crash al abrir sin rutina activa
+
+- Corregido: validación de rutina nula antes de navegar al detalle.
+```
+
+## Flujo del agente
+
+1. `git status` y `git diff` (staged + unstaged) en paralelo.
+2. Revisar cambios y redactar el mensaje según el formato anterior.
+3. Añadir solo archivos relevantes (nunca `.env`, credenciales, etc.).
+4. Commit con HEREDOC (mensaje multilínea).
+5. `git status` para confirmar éxito.
+6. Informar al usuario: hash corto, resumen y recordar que **no se hizo push**.

@@ -30,6 +30,8 @@ class ExerciseCardPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final warmUp = routine.warmUp;
     final showWarmUpAtStart =
         warmUp != null && routine.warmUpPlacement == WarmUpPlacement.start;
@@ -38,11 +40,11 @@ class ExerciseCardPreview extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: theme.shadowColor.withOpacity(0.12),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -117,12 +119,13 @@ class ExerciseCardPreview extends StatelessWidget {
   ) {
     final isCompleted = completedItemIds.contains(item.id);
     final subtitle = item.localizedSubtitle(l10n);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
+        color: colorScheme.surfaceVariant,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -145,7 +148,7 @@ class ExerciseCardPreview extends StatelessWidget {
               height: 18,
               margin: const EdgeInsets.only(top: 3, right: 12),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade400, width: 2),
+                border: Border.all(color: colorScheme.outline, width: 2),
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
@@ -159,7 +162,9 @@ class ExerciseCardPreview extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                     decoration:
                         isCompleted ? TextDecoration.lineThrough : null,
-                    color: isCompleted ? Colors.grey : Colors.black87,
+                    color: isCompleted
+                        ? colorScheme.outline
+                        : colorScheme.onSurface,
                   ),
                 ),
                 if (subtitle.isNotEmpty) ...[
@@ -167,7 +172,7 @@ class ExerciseCardPreview extends StatelessWidget {
                   Text(
                     subtitle,
                     style: TextStyle(
-                      color: Colors.grey.shade600,
+                      color: colorScheme.onSurfaceVariant,
                       decoration:
                           isCompleted ? TextDecoration.lineThrough : null,
                     ),

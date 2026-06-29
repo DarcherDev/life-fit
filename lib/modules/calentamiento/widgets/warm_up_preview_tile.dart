@@ -22,12 +22,19 @@ class WarmUpPreviewTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
+    final background = Color.alphaBlend(
+      _accentColor.withOpacity(
+        colorScheme.brightness == Brightness.dark ? 0.22 : 0.1,
+      ),
+      colorScheme.surfaceVariant,
+    );
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF7ED),
+        color: background,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: _accentColor.withOpacity(0.25)),
       ),
@@ -72,7 +79,7 @@ class WarmUpPreviewTile extends StatelessWidget {
                 Text(
                   l10n.warmUpMinutesFormat(warmUp.minutes),
                   style: TextStyle(
-                    color: Colors.grey.shade700,
+                    color: colorScheme.onSurfaceVariant,
                     decoration: isCompleted ? TextDecoration.lineThrough : null,
                   ),
                 ),

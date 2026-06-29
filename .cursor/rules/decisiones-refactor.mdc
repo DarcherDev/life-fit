@@ -1,0 +1,39 @@
+---
+description: Presentar opciones antes de modificar firmas o parámetros
+alwaysApply: true
+---
+
+# Cambios por parámetros incompatibles
+
+Cuando haya que **modificar código** porque los parámetros son incompatibles, o hay que **agregar o quitar** parámetros, **no cambies directamente**. Primero analiza y presenta **dos opciones con su impacto**:
+
+## Opción A — Crear otro artefacto
+
+Crear un método, componente, clase o variante nueva que cubra el caso sin romper el existente.
+
+- **Impacto**: más archivos o exports; el código actual sigue estable; posible duplicación parcial si no se extrae lo común.
+
+## Opción B — Refactorizar el principal
+
+Modificar el artefacto existente subdividiendo y extrayendo funciones o subcomponentes compartidos.
+
+- **Impacto**: menos duplicación a largo plazo; requiere actualizar todos los puntos de llamada; mayor riesgo de regresión.
+
+**Formato obligatorio antes de implementar:**
+
+```
+## Opción A: [nombre breve]
+- Qué implica
+- Archivos afectados
+- Pros / contras
+
+## Opción B: [nombre breve]
+- Qué implica
+- Archivos afectados
+- Pros / contras
+
+## Recomendación
+[Cuál elegir y por qué]
+```
+
+Espera confirmación del usuario antes de aplicar la opción elegida.

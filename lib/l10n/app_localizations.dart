@@ -159,6 +159,42 @@ abstract class AppLocalizations {
   /// **'English'**
   String get languageEnglish;
 
+  /// No description provided for @themeMenu.
+  ///
+  /// In es, this message translates to:
+  /// **'Tema'**
+  String get themeMenu;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In es, this message translates to:
+  /// **'Claro'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In es, this message translates to:
+  /// **'Oscuro'**
+  String get themeDark;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In es, this message translates to:
+  /// **'Sistema'**
+  String get themeSystem;
+
+  /// No description provided for @localePromptTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige tu idioma'**
+  String get localePromptTitle;
+
+  /// No description provided for @localePromptMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'El idioma de tu dispositivo no está disponible en la app. ¿En qué idioma quieres usar Life Fit?'**
+  String get localePromptMessage;
+
   /// No description provided for @cancel.
   ///
   /// In es, this message translates to:

@@ -38,6 +38,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageEnglish => 'English';
 
   @override
+  String get themeMenu => 'Theme';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
+  String get localePromptTitle => 'Choose your language';
+
+  @override
+  String get localePromptMessage => 'Your device language is not available in the app. Which language do you want to use for Life Fit?';
+
+  @override
   String get cancel => 'Cancel';
 
   @override

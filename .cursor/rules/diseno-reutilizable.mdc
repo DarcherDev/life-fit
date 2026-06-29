@@ -1,0 +1,26 @@
+---
+description: Diseño reutilizable con alta cohesión y bajo acoplamiento
+alwaysApply: true
+---
+
+# Diseño reutilizable (alta cohesión, bajo acoplamiento)
+
+Al diseñar un **nuevo componente, método, clase, pantalla u otro artefacto**, prioriza que pueda invocarse desde varios puntos sin duplicar código:
+
+- **Alta cohesión**: cada unidad hace una sola cosa bien definida.
+- **Bajo acoplamiento**: depende lo mínimo posible del contexto que lo llama.
+- Expón una interfaz clara (parámetros, tipos, contrato) y evita acoplar lógica de negocio a un solo flujo o pantalla.
+- Extrae lógica compartida en lugar de copiarla.
+
+```typescript
+// ❌ MAL — lógica acoplada a una pantalla, difícil de reutilizar
+function ProfileScreen() {
+  const total = items.reduce((s, i) => s + i.price, 0);
+  // ...
+}
+
+// ✅ BIEN — función cohesiva, reutilizable desde cualquier punto
+function calculateTotal(items: Item[]): number {
+  return items.reduce((sum, item) => sum + item.price, 0);
+}
+```
