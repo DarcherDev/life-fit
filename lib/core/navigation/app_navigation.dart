@@ -78,6 +78,30 @@ class AppNavigation {
     );
   }
 
+  static Future<String?> openExerciseLibraryToCreate(BuildContext context) {
+    return Navigator.of(context).push<String>(
+      MaterialPageRoute<String>(
+        builder: (_) => const ExerciseLibraryScreen(returnCreatedId: true),
+      ),
+    );
+  }
+
+  static Future<String?> openStretchingLibraryToCreate(BuildContext context) {
+    return Navigator.of(context).push<String>(
+      MaterialPageRoute<String>(
+        builder: (_) => const StretchingLibraryScreen(returnCreatedId: true),
+      ),
+    );
+  }
+
+  static Future<String?> openWarmUpLibraryToCreate(BuildContext context) {
+    return Navigator.of(context).push<String>(
+      MaterialPageRoute<String>(
+        builder: (_) => const WarmUpLibraryScreen(returnCreatedId: true),
+      ),
+    );
+  }
+
   static void openPlanner(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute<void>(builder: (_) => const PlannerScreen()),

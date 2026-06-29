@@ -76,15 +76,42 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     );
   }
 
+  Future<void> _assignWarmUpFromCreatedId(String? createdId) async {
+    if (!mounted || createdId == null) {
+      return;
+    }
+    setState(() => _warmUpId = createdId);
+  }
+
+  Future<void> _assignExerciseFromCreatedId(String? createdId) async {
+    if (!mounted || createdId == null) {
+      return;
+    }
+    setState(() {
+      _exerciseSlots.add(
+        RoutineExerciseSlot(slotId: _uuid.v4(), exerciseId: createdId),
+      );
+    });
+  }
+
+  Future<void> _assignStretchingFromCreatedId(String? createdId) async {
+    if (!mounted || createdId == null) {
+      return;
+    }
+    setState(() {
+      _stretchingSlots.add(
+        RoutineStretchingSlot(slotId: _uuid.v4(), stretchingId: createdId),
+      );
+    });
+  }
+
   Future<void> _pickWarmUp() async {
     final l10n = AppLocalizations.of(context);
     final templates = _storage.getWarmUpTemplates();
     if (templates.isEmpty) {
-      final createdId = await AppNavigation.openWarmUpLibraryForCreation(context);
-      if (!mounted || createdId == null) {
-        return;
-      }
-      setState(() => _warmUpId = createdId);
+      await _assignWarmUpFromCreatedId(
+        await AppNavigation.openWarmUpLibraryForCreation(context),
+      );
       return;
     }
 
@@ -92,6 +119,12 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
       context,
       title: l10n.pickWarmUpTitle,
       multiSelect: false,
+      createButtonLabel: l10n.newWarmUpTemplate,
+      onCreateItem: () async {
+        await _assignWarmUpFromCreatedId(
+          await AppNavigation.openWarmUpLibraryToCreate(context),
+        );
+      },
       items: templates
           .map(
             (item) => LibraryPickerItem(
@@ -112,22 +145,21 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     final l10n = AppLocalizations.of(context);
     final templates = _storage.getExerciseTemplates();
     if (templates.isEmpty) {
-      final createdId =
-          await AppNavigation.openExerciseLibraryForCreation(context);
-      if (!mounted || createdId == null) {
-        return;
-      }
-      setState(() {
-        _exerciseSlots.add(
-          RoutineExerciseSlot(slotId: _uuid.v4(), exerciseId: createdId),
-        );
-      });
+      await _assignExerciseFromCreatedId(
+        await AppNavigation.openExerciseLibraryForCreation(context),
+      );
       return;
     }
 
     final selected = await LibraryPickerSheet.show(
       context,
       title: l10n.pickExercisesTitle,
+      createButtonLabel: l10n.newExerciseTemplate,
+      onCreateItem: () async {
+        await _assignExerciseFromCreatedId(
+          await AppNavigation.openExerciseLibraryToCreate(context),
+        );
+      },
       items: templates
           .map(
             (item) => LibraryPickerItem(
@@ -156,22 +188,21 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     final l10n = AppLocalizations.of(context);
     final templates = _storage.getStretchingTemplates();
     if (templates.isEmpty) {
-      final createdId =
-          await AppNavigation.openStretchingLibraryForCreation(context);
-      if (!mounted || createdId == null) {
-        return;
-      }
-      setState(() {
-        _stretchingSlots.add(
-          RoutineStretchingSlot(slotId: _uuid.v4(), stretchingId: createdId),
-        );
-      });
+      await _assignStretchingFromCreatedId(
+        await AppNavigation.openStretchingLibraryForCreation(context),
+      );
       return;
     }
 
     final selected = await LibraryPickerSheet.show(
       context,
       title: l10n.pickStretchingsTitle,
+      createButtonLabel: l10n.newStretchingTemplate,
+      onCreateItem: () async {
+        await _assignStretchingFromCreatedId(
+          await AppNavigation.openStretchingLibraryToCreate(context),
+        );
+      },
       items: templates
           .map(
             (item) => LibraryPickerItem(

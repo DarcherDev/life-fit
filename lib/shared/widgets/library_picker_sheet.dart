@@ -12,6 +12,8 @@ class LibraryPickerSheet {
     List<String> selectedIds = const [],
     bool multiSelect = true,
     String? emptyMessage,
+    String? createButtonLabel,
+    Future<void> Function()? onCreateItem,
   }) {
     return showModalBottomSheet<List<String>?>(
       context: context,
@@ -30,6 +32,8 @@ class LibraryPickerSheet {
               initialSelectedIds: selectedIds,
               multiSelect: multiSelect,
               emptyMessage: emptyMessage,
+              createButtonLabel: createButtonLabel,
+              onCreateItem: onCreateItem,
             ),
           ),
         );
@@ -57,6 +61,8 @@ class _LibraryPickerBody extends StatefulWidget {
     required this.initialSelectedIds,
     required this.multiSelect,
     this.emptyMessage,
+    this.createButtonLabel,
+    this.onCreateItem,
   });
 
   final String title;
@@ -64,6 +70,8 @@ class _LibraryPickerBody extends StatefulWidget {
   final List<String> initialSelectedIds;
   final bool multiSelect;
   final String? emptyMessage;
+  final String? createButtonLabel;
+  final Future<void> Function()? onCreateItem;
 
   @override
   State<_LibraryPickerBody> createState() => _LibraryPickerBodyState();
@@ -98,6 +106,22 @@ class _LibraryPickerBodyState extends State<_LibraryPickerBody> {
       return item.title.toLowerCase().contains(normalized) ||
           (item.subtitle?.toLowerCase().contains(normalized) ?? false);
     }).toList();
+  }
+
+  bool get _showCreateButton {
+    return _query.trim().isNotEmpty &&
+        _filteredItems.isEmpty &&
+        widget.onCreateItem != null &&
+        widget.createButtonLabel != null;
+  }
+
+  Future<void> _handleCreate() async {
+    final callback = widget.onCreateItem;
+    if (callback == null) {
+      return;
+    }
+    Navigator.of(context).pop();
+    await callback();
   }
 
   void _toggleItem(String id) {
@@ -153,8 +177,25 @@ class _LibraryPickerBodyState extends State<_LibraryPickerBody> {
           Expanded(
             child: filtered.isEmpty
                 ? Center(
-                    child: Text(
-                      widget.emptyMessage ?? l10n.noMatchingLibraryItems,
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            widget.emptyMessage ?? l10n.noMatchingLibraryItems,
+                            textAlign: TextAlign.center,
+                          ),
+                          if (_showCreateButton) ...[
+                            const SizedBox(height: 16),
+                            FilledButton.icon(
+                              onPressed: _handleCreate,
+                              icon: const Icon(Icons.add),
+                              label: Text(widget.createButtonLabel!),
+                            ),
+                          ],
+                        ],
+                      ),
                     ),
                   )
                 : ListView.builder(

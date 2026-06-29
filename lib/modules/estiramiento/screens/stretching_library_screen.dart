@@ -8,9 +8,14 @@ import 'package:life_fit/modules/estiramiento/screens/stretching_template_form_s
 import 'package:life_fit/shared/widgets/confirm_dialog.dart';
 
 class StretchingLibraryScreen extends StatefulWidget {
-  const StretchingLibraryScreen({super.key, this.creationMode = false});
+  const StretchingLibraryScreen({
+    super.key,
+    this.creationMode = false,
+    this.returnCreatedId = false,
+  });
 
   final bool creationMode;
+  final bool returnCreatedId;
 
   @override
   State<StretchingLibraryScreen> createState() =>
@@ -48,7 +53,7 @@ class _StretchingLibraryScreenState extends State<StretchingLibraryScreen> {
       return;
     }
 
-    if (widget.creationMode) {
+    if (widget.creationMode || widget.returnCreatedId) {
       Navigator.of(context).pop(createdId);
       return;
     }
@@ -87,9 +92,11 @@ class _StretchingLibraryScreenState extends State<StretchingLibraryScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
+    final hideFab = widget.creationMode && _templates.isEmpty;
+
     return AppScaffold(
       title: l10n.stretchingLibraryTitle,
-      floatingActionButton: widget.creationMode
+      floatingActionButton: hideFab
           ? null
           : FloatingActionButton.extended(
               onPressed: () => _openForm(),

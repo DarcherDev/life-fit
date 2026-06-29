@@ -9,9 +9,14 @@ import 'package:life_fit/shared/utils/template_l10n.dart';
 import 'package:life_fit/shared/widgets/confirm_dialog.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
-  const ExerciseLibraryScreen({super.key, this.creationMode = false});
+  const ExerciseLibraryScreen({
+    super.key,
+    this.creationMode = false,
+    this.returnCreatedId = false,
+  });
 
   final bool creationMode;
+  final bool returnCreatedId;
 
   @override
   State<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
@@ -48,7 +53,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       return;
     }
 
-    if (widget.creationMode) {
+    if (widget.creationMode || widget.returnCreatedId) {
       Navigator.of(context).pop(createdId);
       return;
     }
@@ -87,9 +92,11 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
+    final hideFab = widget.creationMode && _templates.isEmpty;
+
     return AppScaffold(
       title: l10n.exerciseLibraryTitle,
-      floatingActionButton: widget.creationMode
+      floatingActionButton: hideFab
           ? null
           : FloatingActionButton.extended(
               onPressed: () => _openForm(),

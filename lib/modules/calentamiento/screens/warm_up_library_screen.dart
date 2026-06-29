@@ -8,9 +8,14 @@ import 'package:life_fit/modules/calentamiento/screens/warm_up_template_form_scr
 import 'package:life_fit/shared/widgets/confirm_dialog.dart';
 
 class WarmUpLibraryScreen extends StatefulWidget {
-  const WarmUpLibraryScreen({super.key, this.creationMode = false});
+  const WarmUpLibraryScreen({
+    super.key,
+    this.creationMode = false,
+    this.returnCreatedId = false,
+  });
 
   final bool creationMode;
+  final bool returnCreatedId;
 
   @override
   State<WarmUpLibraryScreen> createState() => _WarmUpLibraryScreenState();
@@ -47,7 +52,7 @@ class _WarmUpLibraryScreenState extends State<WarmUpLibraryScreen> {
       return;
     }
 
-    if (widget.creationMode) {
+    if (widget.creationMode || widget.returnCreatedId) {
       Navigator.of(context).pop(createdId);
       return;
     }
@@ -86,9 +91,11 @@ class _WarmUpLibraryScreenState extends State<WarmUpLibraryScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
+    final hideFab = widget.creationMode && _templates.isEmpty;
+
     return AppScaffold(
       title: l10n.warmUpLibraryTitle,
-      floatingActionButton: widget.creationMode
+      floatingActionButton: hideFab
           ? null
           : FloatingActionButton.extended(
               onPressed: () => _openForm(),
