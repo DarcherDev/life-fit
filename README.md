@@ -2,7 +2,7 @@
 
 App personal para gestionar rutinas de gimnasio: mantén bibliotecas reutilizables de ejercicios, estiramientos y calentamientos; compón rutinas por referencia; asígnalas en un calendario y marca tu progreso día a día.
 
-**Versión actual:** `1.1.0+2`  
+**Versión actual:** `1.2.0+3`  
 **Repositorio:** [github.com/DarcherDev/life-fit](https://github.com/DarcherDev/life-fit)
 
 ## Para qué sirve
@@ -21,11 +21,12 @@ Life Fit te ayuda a organizar tus entrenamientos sin depender de hojas de cálcu
 
 ### Bibliotecas (Ejercicios, Estiramientos, Calentamiento)
 - CRUD independiente para cada tipo de ítem reutilizable.
-- **Ejercicio:** título, series, repeticiones, descripción opcional.
+- **Ejercicio:** título, series, repeticiones, descripción opcional, **peso opcional** (kg/lb según ajustes).
 - **Estiramiento:** descripción y repeticiones.
 - **Calentamiento:** descripción y minutos.
 - Editar un ítem en biblioteca actualiza todas las rutinas que lo referencian.
 - No se puede borrar un ítem si alguna rutina lo usa.
+- Desde el compositor: si la biblioteca está vacía o la búsqueda no tiene resultados, abre creación y asigna el ítem nuevo al volver.
 
 ### Rutina (compositor)
 - Crear, editar y eliminar rutinas armadas desde las bibliotecas.
@@ -37,6 +38,11 @@ Life Fit te ayuda a organizar tus entrenamientos sin depender de hojas de cálcu
 - Calendario mensual para asignar una rutina por día.
 - Bottom sheet compartido con búsqueda y scroll para elegir rutina.
 - Opción de quitar la asignación de un día.
+
+### Ajustes (drawer)
+- Tema claro, oscuro o seguir el sistema.
+- Idioma español / inglés.
+- Unidad de peso: kilogramos o libras (los datos se guardan siempre en kg).
 
 ### Almacenamiento
 - Datos guardados localmente en el dispositivo (`shared_preferences`).
@@ -85,7 +91,8 @@ lib/
 ├── core/
 │   ├── home/              # Home con 6 opciones
 │   ├── navigation/        # Navegación centralizada
-│   └── services/          # LocalStorage, migración, tema, locale
+│   ├── services/          # LocalStorage, migración, tema, locale, peso
+│   └── widgets/           # AppDrawer, AppScaffold
 ├── modules/
 │   ├── calentamiento/     # Biblioteca de calentamientos
 │   ├── dia_gym/           # Día de gym y coordinadores
@@ -104,7 +111,7 @@ lib/
 El número de versión vive en `pubspec.yaml`:
 
 ```yaml
-version: 1.1.0+2
+version: 1.2.0+3
 #        │     └── build number (versionCode Android, debe subir en cada APK)
 #        └── versión visible (versionName)
 ```
@@ -116,6 +123,18 @@ Convención:
 - **+N** — número de build; siempre incrementar al generar un APK instalable.
 
 Historial detallado en [CHANGELOG.md](CHANGELOG.md).
+
+## Novedades de la release 1.2.0
+
+Respecto a la `1.1.0+2`:
+
+- **Localización** español e inglés con selector en el drawer.
+- **Modo oscuro** y tema persistente (claro / oscuro / sistema).
+- **Bibliotecas reutilizables** y compositor de rutina por referencias, con migración automática.
+- **Drawer de ajustes:** tema, idioma y unidad de peso (kg/lb).
+- **Peso opcional** por ejercicio, editable en biblioteca, compositor y día de gym.
+- **Flujos sin datos:** crear desde biblioteca vacía o desde búsqueda sin coincidencias en el picker.
+- **Correcciones:** crash al editar peso; FAB y navegación en bibliotecas vacías.
 
 ## Novedades de la release 1.1.0
 

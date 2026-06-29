@@ -4,6 +4,37 @@ Todos los cambios notables de Life Fit se documentan en este archivo.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el proyecto usa [Semantic Versioning](https://semver.org/lang/es/).
 
+## [1.2.0] - 2026-06-27
+
+**Build:** `1.2.0+3`
+
+### Añadido
+- Localización **español / inglés** con `flutter gen-l10n` y selector persistente en el drawer.
+- Reorganización en **módulos** (`ejercicios`, `estiramientos`, `calentamiento`, `rutinas`, `planificador`, `dia_gym`).
+- **Modo oscuro** y selector de tema (claro / oscuro / sistema) persistente.
+- **Bibliotecas reutilizables** de ejercicios, estiramientos y calentamientos con CRUD independiente.
+- **Compositor de rutina** por referencias (`RoutineExerciseSlot`, `RoutineStretchingSlot`, `warmUpId`).
+- Helper `resolveRoutine` para unir rutina + bibliotecas en preview y día de gym.
+- **Migración automática** one-shot desde rutinas con ítems embebidos al modelo por referencias.
+- **Drawer de ajustes** centralizado (tema, idioma, unidad de peso kg/lb).
+- **Peso opcional** por ejercicio (`weightKg`), editable desde biblioteca, compositor y día de gym.
+- Flujo **crear desde biblioteca vacía** al asignar ítems en el compositor (`creationMode`).
+- Botón **crear ítem** en `LibraryPickerSheet` cuando la búsqueda no tiene coincidencias.
+- Tests: migración, resolver, peso, flujo de creación en biblioteca vacía, picker sin coincidencias.
+
+### Cambiado
+- **Home** ampliado a 6 opciones; Planificador como tercera opción (tras Rutina).
+- Las rutinas guardan referencias por ID; editar un ítem en biblioteca actualiza todas las rutinas que lo usan.
+- No se puede borrar un ítem de biblioteca si alguna rutina lo referencia.
+- Calentamiento opcional por rutina con ubicación inicio/final (no por plantilla).
+
+### Corregido
+- Crash al editar peso desde rutina o día de gym (`_dependents.isEmpty`); diálogo como `StatefulWidget`.
+- Flujo bloqueado al asignar desde biblioteca vacía (solo SnackBar → apertura automática del formulario).
+- Visibilidad del FAB en biblioteca vacía con `creationMode`.
+
+---
+
 ## [1.1.0] - 2026-06-27
 
 **Build:** `1.1.0+2`
@@ -46,4 +77,5 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y e
 - Localización en español para fechas (`intl`, `flutter_localizations`).
 - Tests iniciales de almacenamiento y widget de Home.
 
+[1.2.0]: https://github.com/DarcherDev/life-fit/releases/tag/v1.2.0
 [1.1.0]: https://github.com/DarcherDev/life-fit/releases/tag/v1.1.0
