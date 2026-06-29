@@ -7,8 +7,6 @@ alwaysApply: false
 
 ## Cómo invocarla en el chat
 
-Escribe cualquiera de estas frases:
-
 - `/commit`
 - `@commit-local`
 - "haz commit" / "commitea los cambios"
@@ -17,44 +15,126 @@ El agente debe aplicar **esta regla** y seguir el flujo de abajo.
 
 ## Reglas obligatorias
 
-1. **Solo commit, nunca push** — no ejecutar `git push` salvo que el usuario lo pida explícitamente en otro mensaje.
-2. **No commitear sin pedido** — solo cuando el usuario invoque esta regla o pida commit.
-3. **Mensaje descriptivo en español** — explicar el *por qué* y el impacto para quien lea el historial.
+1. **Solo commit, nunca push** — no ejecutar `git push`. El usuario hace varios commits al día como checkpoints.
+2. **No commitear sin pedido** — solo cuando invoque esta regla o pida commit explícitamente.
+3. **Analizar antes de commitear** — nunca hacer commit a ciegas; revisar status, diff y lógica nueva.
+4. **Preguntar el bump de versión** — antes de commitear, **siempre** preguntar al usuario si el cambio es **PATCH**, **MINOR** o **MAJOR** (salvo que ya lo haya indicado en el mismo mensaje).
+5. **Subir versión en cada commit** — actualizar `pubspec.yaml` en el mismo commit según la respuesta del usuario.
 
-## Formato del mensaje de commit
+---
 
-Usa Conventional Commits en español con cuerpo explicativo:
+## Formato del mensaje (obligatorio)
 
-```
-tipo(ámbito): resumen breve en imperativo
-
-- Nuevo: qué función o pantalla se añadió y para qué sirve.
-- Corregido: qué fallaba y cómo quedó resuelto.
-- Eliminado: qué se quitó y por qué (si aplica).
-```
-
-**Tipos:** `feat`, `fix`, `refactor`, `style`, `test`, `chore`, `docs`
-
-### Ejemplos
+Una sola línea, en español, imperativo:
 
 ```
-feat(tema): añadir modo oscuro persistente
-
-- Nuevo: selector de tema en ajustes; se guarda con SharedPreferences.
-- Corregido: contraste de tarjetas en modo oscuro.
+tipo(scope): descripción en imperativo
 ```
 
+| Regla | Detalle |
+|-------|---------|
+| **Longitud máxima** | 72 caracteres en toda la línea (incluye `tipo(scope): `) |
+| **Scope** | Pantalla, módulo o feature afectado (inferir del diff) |
+| **Descripción** | Qué hace el cambio, no cómo; verbo en imperativo |
+
+### Tipos permitidos
+
+| Tipo | Cuándo usarlo |
+|------|----------------|
+| `feat` | Nueva función o comportamiento visible |
+| `fix` | Corrección de bug |
+| `hotfix` | Corrección urgente en producción |
+| `merge` | Fusión de ramas |
+| `refactor` | Refactorización sin cambiar comportamiento |
+| `test` | Pruebas (añadir o modificar tests) |
+| `docs` | Documentación |
+| `chore` | Mantenimiento, CI, dependencias, tooling |
+| `style` | Formato, estilos, linter sin cambio lógico |
+
+### Scope (cómo elegirlo)
+
+Analizar rutas y contexto del diff. Ejemplos en este proyecto:
+
+| Archivos / área | Scope sugerido |
+|-----------------|----------------|
+| `lib/core/home/` | `home` |
+| `lib/modules/rutinas/` | `rutina` |
+| `lib/modules/planificador/` | `planificador` |
+| `lib/modules/dia_gym/` | `dia-gym` |
+| `lib/modules/ejercicios/` | `ejercicios` |
+| `lib/modules/estiramiento/` | `estiramientos` |
+| `lib/modules/calentamiento/` | `calentamiento` |
+| `lib/core/widgets/app_drawer.dart`, tema, locale, peso | `ajustes` |
+| `lib/core/services/`, migración, storage | `storage` |
+| `lib/shared/models/` | `modelos` |
+| `test/` | mismo scope que el código bajo prueba |
+| `README`, `CHANGELOG`, `.cursor/rules` | `docs` |
+
+Si el cambio cruza varios módulos, usar el **más representativo** o el que el usuario haya estado trabajando.
+
+### Ejemplos válidos (≤ 72 caracteres)
+
 ```
-fix(home): evitar crash al abrir sin rutina activa
-
-- Corregido: validación de rutina nula antes de navegar al detalle.
+feat(rutina): abrir creación al buscar sin coincidencias en picker
+fix(dia-gym): evitar crash al editar peso en diálogo
+refactor(storage): extraer migración a servicio dedicado
+test(ejercicios): cubrir flujo de biblioteca vacía en creationMode
+chore(docs): actualizar regla de commits locales
 ```
 
-## Flujo del agente
+---
 
-1. `git status` y `git diff` (staged + unstaged) en paralelo.
-2. Revisar cambios y redactar el mensaje según el formato anterior.
-3. Añadir solo archivos relevantes (nunca `.env`, credenciales, etc.).
-4. Commit con HEREDOC (mensaje multilínea).
-5. `git status` para confirmar éxito.
-6. Informar al usuario: hash corto, resumen y recordar que **no se hizo push**.
+## Análisis previo (obligatorio)
+
+Antes de redactar el mensaje o tocar la versión:
+
+1. Ejecutar `git status` y `git diff` (staged + unstaged) en paralelo.
+2. Listar archivos **modificados**, **añadidos** y **eliminados**.
+3. Leer el diff y, si hace falta, abrir archivos clave para entender la **lógica nueva**.
+4. Redactar un breve informe para el usuario con:
+   - **Qué cambió** (funcionalidad, pantalla, modelo, test, etc.)
+   - **Por qué** (intención del cambio, bug corregido, feature nueva)
+   - **Tipo y scope propuestos** con el mensaje de commit sugerido
+5. **Preguntar bump de versión:** PATCH / MINOR / MAJOR (con la versión actual y la propuesta calculada).
+6. **Esperar confirmación** del usuario (mensaje, tipo o bump) antes de ejecutar el commit.
+
+No commitear hasta tener respuesta sobre PATCH, MINOR o MAJOR.
+
+---
+
+## Versión (`pubspec.yaml`)
+
+Leer versión actual: `version: X.Y.Z+N`
+
+Tras la respuesta del usuario, aplicar bump y **siempre** incrementar el build (`+N`):
+
+| Respuesta | Cálculo | Ejemplo |
+|-----------|---------|---------|
+| **PATCH** | `X.Y.(Z+1)` y `+(N+1)` | `1.2.0+3` → `1.2.1+4` |
+| **MINOR** | `X.(Y+1).0` y `+(N+1)` | `1.2.0+3` → `1.3.0+4` |
+| **MAJOR** | `(X+1).0.0` y `+(N+1)` | `1.2.0+3` → `2.0.0+4` |
+
+### Archivos de versión
+
+| Archivo | Cuándo |
+|---------|--------|
+| `pubspec.yaml` | **Siempre** en cada commit |
+| `README.md` (`Versión actual` y bloque `version:` de ejemplo) | Solo si cambió `X.Y.Z` |
+
+`CHANGELOG.md` y release en GitHub → flujo **`/push`**, no en commit local.
+
+El mensaje de commit es **solo la línea de asunto** (72 caracteres). La versión no va en el cuerpo del commit; informarla al usuario en la respuesta final.
+
+---
+
+## Flujo del agente (orden estricto)
+
+1. `git status` + `git diff` en paralelo.
+2. Analizar archivos, lógica, cambios e intención → **informe al usuario**.
+3. Proponer `tipo(scope): descripción` (≤ 72 caracteres).
+4. **Preguntar:** ¿PATCH, MINOR o MAJOR? Mostrar versión actual → propuesta.
+5. Tras confirmación: actualizar `pubspec.yaml` (y `README.md` si aplica).
+6. `git add` solo archivos relevantes (nunca `.env`, credenciales, etc.).
+7. Commit con la línea de asunto (PowerShell: `git commit -m "..."`; HEREDOC solo en bash).
+8. `git status` para confirmar éxito.
+9. Responder al usuario: hash corto, mensaje usado, versión nueva, recordar **que no se hizo push**.

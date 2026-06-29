@@ -1,0 +1,96 @@
+---
+description: Sincronizar con remoto y fusionar origin/develop (/pull). Sin push.
+alwaysApply: false
+---
+
+# /pull — Fetch, pull y merge de develop
+
+## Cómo invocarla
+
+- `/pull`
+- `@pull-merge`
+- "haz pull y merge develop"
+
+Para **continuar tras resolver conflictos**: el usuario escribe **`solucionado`** (o equivalente claro).
+
+## Reglas obligatorias
+
+1. **Nunca push** — ni en el merge limpio ni tras conflictos resueltos.
+2. **Solo ejecutar** cuando invoque `/pull` o pida este flujo explícitamente.
+3. **Mensaje de merge** — mismo estándar que `commit-local`: una línea, español, imperativo, ≤ 72 caracteres, tipo `merge`.
+4. **Versión** — preguntar PATCH / MINOR / MAJOR y actualizar `pubspec.yaml` antes del commit (igual que commit local).
+
+---
+
+## Flujo A — Sin conflictos
+
+Orden estricto:
+
+1. `git fetch && git pull`
+2. `git merge origin/develop --no-commit --no-ff`
+3. Si el merge **falla o hay conflictos** → ir a **Flujo B**.
+4. Si el merge **informa éxito** sin conflictos:
+   - `git status` + `git diff` (staged) en paralelo.
+   - Analizar cambios integrados → informe breve al usuario.
+   - Proponer mensaje: `merge(scope): descripción` (scope `develop` salvo que el diff indique otro más representativo).
+   - **Preguntar:** PATCH / MINOR / MAJOR (versión actual → propuesta).
+   - Tras confirmación: actualizar `pubspec.yaml` (y `README.md` si cambió `X.Y.Z`).
+   - `git add` archivos relevantes (incluye versión si aplica).
+   - `git commit -m "merge(develop): ..."` — completa el merge pendiente.
+   - `git status` para confirmar.
+   - Responder: hash, mensaje, versión nueva, **sin push**.
+
+### Ejemplos de mensaje merge (≤ 72 caracteres)
+
+```
+merge(develop): integrar planificador y ajustes de navegación
+merge(develop): sincronizar rama con últimos cambios de develop
+merge(rutina): fusionar refactor de picker desde develop
+```
+
+---
+
+## Flujo B — Con conflictos
+
+1. Tras el paso 2 del Flujo A, si hay conflictos o el merge no puede completarse:
+   - **No hacer commit.**
+   - Listar archivos en conflicto (`git status`, rutas con `both modified`, etc.).
+   - Informar al usuario: **debe revisar y corregir los conflictos manualmente**.
+   - Indicar que avise con **`solucionado`** cuando termine.
+
+2. Cuando el usuario diga **`solucionado`**:
+   - `git status` — verificar que **no queden conflictos** sin resolver.
+   - Si aún hay conflictos → avisar qué archivos faltan; no commitear.
+   - Si todo está resuelto:
+     - `git diff` (staged + unstaged) para entender el resultado del merge.
+     - Informe + mensaje `merge(...)` propuesto.
+     - Preguntar PATCH / MINOR / MAJOR.
+     - Tras confirmación: versión, `git add`, `git commit -m "..."`.
+     - `git status` y respuesta final **sin push**.
+
+---
+
+## Análisis previo al commit (ambos flujos)
+
+Antes de redactar el mensaje o tocar la versión:
+
+1. Listar archivos modificados, añadidos y eliminados por el merge.
+2. Resumir **qué se integra** y **por qué** (features, fixes, refactors traídos de develop).
+3. Proponer tipo `merge`, scope y descripción.
+4. **Esperar confirmación** del mensaje y del bump antes de commitear.
+
+No commitear hasta tener respuesta sobre PATCH, MINOR o MAJOR (salvo que el usuario ya la haya dado en el mismo mensaje).
+
+---
+
+## Versión (`pubspec.yaml`)
+
+Misma tabla que `commit-local`:
+
+| Respuesta | Cálculo | Ejemplo |
+|-----------|---------|---------|
+| **PATCH** | `X.Y.(Z+1)` y `+(N+1)` | `1.2.0+3` → `1.2.1+4` |
+| **MINOR** | `X.(Y+1).0` y `+(N+1)` | `1.2.0+3` → `1.3.0+4` |
+| **MAJOR** | `(X+1).0.0` y `+(N+1)` | `1.2.0+3` → `2.0.0+4` |
+
+`CHANGELOG.md` y release → flujo **`/push`**, no aquí.

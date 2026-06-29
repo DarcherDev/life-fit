@@ -1,0 +1,111 @@
+---
+description: Flujo de publicación a GitHub (/push). Revisar commits, README, CHANGELOG, versión y tag.
+alwaysApply: false
+---
+
+# /push — Publicar cambios en GitHub
+
+Invocar cuando el usuario diga **`/push`**, **"haz push"** o pida publicar en GitHub.
+
+## 1. Auditar cambios
+
+Ejecutar en paralelo:
+
+```bash
+git status
+git log origin/main..HEAD --oneline
+git diff origin/main...HEAD
+git tag --sort=-v:refname | head -5
+```
+
+Leer los commits y el diff. Resumir en lenguaje claro qué se hizo (features, refactors, fixes, i18n, estructura).
+
+## 2. Detectar cambios de datos
+
+Revisar si hubo cambios en modelos, JSON o claves de almacenamiento:
+
+- `lib/shared/models/`
+- `lib/modules/**/models/`
+- Claves en `LocalStorageService` (`routine_cards`, `day_assignments`, `day_progress`, etc.)
+- Nuevos campos en `RoutineCard`, `ChecklistItem`, `WarmUp`, etc.
+
+Si hay cambios de estructura o persistencia → **actualizar `README.md`** (sección funciones, modelos o estructura del proyecto). El README debe reflejar el estado real del código, no la estructura antigua.
+
+## 3. Versión
+
+Leer `pubspec.yaml` (`version: X.Y.Z+N`).
+
+Si el usuario **no indicó versión**, proponer una siguiendo SemVer del README:
+
+| Tipo de cambio | Bump | Ejemplo |
+|----------------|------|---------|
+| Bugfix | PATCH | `1.1.0` → `1.1.1` |
+| Nueva función | MINOR | `1.1.0` → `1.2.0` |
+| Cambio incompatible | MAJOR | `1.x` → `2.0.0` |
+
+Siempre incrementar el **build number** (`+N`) al publicar.
+
+**Preguntar al usuario** la versión propuesta antes de aplicarla, salvo que ya la haya dado explícitamente.
+
+## 4. Documentación obligatoria antes del push
+
+1. **`CHANGELOG.md`** — nueva sección `[X.Y.Z] - fecha` con Añadido / Cambiado / Corregido (Keep a Changelog).
+2. **`README.md`** — actualizar `Versión actual`, novedades o estructura si aplica.
+3. **`pubspec.yaml`** — alinear `version` con la release.
+
+Hacer commit de docs/versión solo si el usuario lo pidió o es parte del flujo `/push` acordado.
+
+## 5. Validar
+
+```bash
+flutter analyze
+flutter test
+```
+
+No hacer push si fallan tests o analyze, salvo que el usuario acepte explícitamente.
+
+## 6. Push y release
+
+```bash
+git push -u origin HEAD
+git push origin vX.Y.Z   # si se creó tag
+```
+
+### Tag y GitHub Release
+
+- **Si hay correcciones de bug** (sección *Corregido* en CHANGELOG): crear tag y release obligatoriamente.
+
+```bash
+git tag -a vX.Y.Z -m "vX.Y.Z"
+gh release create vX.Y.Z --title "vX.Y.Z" --notes "$(cat <<'EOF'
+## Resumen
+- ...
+
+## Test plan
+- [ ] ...
+EOF
+)"
+```
+
+- Si solo hay features (MINOR) sin bugs: sugerir tag + release; crear si el usuario confirma o pidió release completa.
+
+## 7. Respuesta al usuario
+
+Entregar:
+
+1. Resumen de commits incluidos en el push.
+2. Versión publicada y build number.
+3. Cambios hechos en README / CHANGELOG.
+4. URL del release (si se creó).
+5. Recordatorio de APK si hubo bump de versión visible.
+
+## Ejemplo — nuevo campo en modelo
+
+```dart
+// RoutineCard ahora incluye warmUp opcional
+final WarmUp? warmUp;
+```
+
+En README, documentar bajo funciones o modelos:
+
+> Cada tarjeta puede incluir **calentamiento** opcional (actividad, minutos, ubicación inicio/final).
