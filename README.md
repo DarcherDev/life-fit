@@ -123,7 +123,7 @@ Respecto a la `1.0.0+1`:
 
 - **Bibliotecas reutilizables:** ejercicios, estiramientos y calentamientos con CRUD independiente.
 - **Compositor de rutina:** arma rutinas por referencia (sin reescribir series/reps en cada rutina).
-- **Home ampliado:** Día de gym, Rutina, Ejercicios, Estiramientos, Calentamiento y Planificador.
+- **Home ampliado:** Día de gym, Rutina, Planificador, Ejercicios, Estiramientos y Calentamiento.
 - **Migración automática** desde rutinas con ítems embebidos al nuevo modelo por referencias.
 - **Flujo inteligente Día de gym:** el coordinador decide si abrir la sesión, mostrar el selector o crear una rutina nueva.
 - **Bottom sheet de asignación mejorado:** media pantalla, lista con scroll y buscador por título/descripción.

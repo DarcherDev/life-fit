@@ -15,18 +15,22 @@ class ResolvedWarmUp {
 class ResolvedExercise {
   const ResolvedExercise({
     required this.slotId,
+    required this.exerciseId,
     required this.title,
     required this.series,
     required this.repetitions,
     this.description = '',
+    this.weightKg,
     this.isMissing = false,
   });
 
   final String slotId;
+  final String exerciseId;
   final String title;
   final int series;
   final int repetitions;
   final String description;
+  final double? weightKg;
   final bool isMissing;
 }
 

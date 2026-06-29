@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up.dart';
+import 'package:life_fit/shared/utils/template_l10n.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up_placement.dart';
 import 'package:life_fit/modules/calentamiento/widgets/warm_up_preview_tile.dart';
 import 'package:life_fit/modules/estiramiento/models/stretching.dart';
@@ -15,6 +16,7 @@ class RoutineCardPreview extends StatelessWidget {
     this.completedItemIds = const {},
     this.interactive = false,
     this.onItemToggle,
+    this.onExerciseWeightEdit,
     this.compact = false,
   });
 
@@ -22,6 +24,7 @@ class RoutineCardPreview extends StatelessWidget {
   final Set<String> completedItemIds;
   final bool interactive;
   final void Function(String itemId, bool completed)? onItemToggle;
+  final void Function(ResolvedExercise exercise)? onExerciseWeightEdit;
   final bool compact;
 
   static const _accentColor = Color(0xFF16A34A);
@@ -144,8 +147,10 @@ class RoutineCardPreview extends StatelessWidget {
     AppLocalizations l10n,
   ) {
     final isCompleted = completedItemIds.contains(item.slotId);
-    final subtitle = l10n.seriesRepsFormat(item.series, item.repetitions);
+    final subtitle = item.localizedSubtitle(l10n);
     final colorScheme = Theme.of(context).colorScheme;
+    final canEditWeight =
+        interactive && !item.isMissing && onExerciseWeightEdit != null;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -209,6 +214,13 @@ class RoutineCardPreview extends StatelessWidget {
               ],
             ),
           ),
+          if (canEditWeight)
+            IconButton(
+              onPressed: () => onExerciseWeightEdit!(item),
+              icon: const Icon(Icons.edit_outlined, size: 20),
+              tooltip: l10n.editExerciseWeight,
+              visualDensity: VisualDensity.compact,
+            ),
         ],
       ),
     );

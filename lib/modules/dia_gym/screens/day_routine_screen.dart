@@ -2,6 +2,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 
 import 'package:life_fit/core/navigation/app_navigation.dart';
+import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/core/services/local_storage_service.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up.dart';
@@ -11,6 +12,8 @@ import 'package:life_fit/shared/models/routine_card.dart';
 import 'package:life_fit/shared/utils/date_utils.dart';
 import 'package:life_fit/shared/utils/locale_format.dart';
 import 'package:life_fit/shared/widgets/confirm_dialog.dart';
+import 'package:life_fit/shared/models/resolved_routine.dart';
+import 'package:life_fit/shared/widgets/exercise_weight_dialog.dart';
 import 'package:life_fit/shared/widgets/routine_assign_sheet.dart';
 
 /// Pantalla del módulo **Día de gym**.
@@ -102,6 +105,33 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
 
     if (completed && _allItemsCompleted) {
       await _finishRoutine();
+    }
+  }
+
+  Future<void> _editExerciseWeight(ResolvedExercise exercise) async {
+    final template =
+        _storage.getLibraries().exercises[exercise.exerciseId];
+    if (template == null) {
+      return;
+    }
+
+    final result = await ExerciseWeightDialog.show(
+      context,
+      exerciseTitle: exercise.title,
+      currentWeightKg: exercise.weightKg,
+    );
+    if (result.cancelled || !mounted) {
+      return;
+    }
+
+    await _storage.upsertExerciseTemplate(
+      template.copyWith(
+        weightKg: result.weightKg,
+        clearWeightKg: result.weightKg == null,
+      ),
+    );
+    if (mounted) {
+      _loadData();
     }
   }
 
@@ -224,28 +254,24 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
 
     return Stack(
       children: [
-        Scaffold(
-          appBar: AppBar(
-            title: Text(
-              _isToday
-                  ? l10n.todayRoutine
-                  : formatShortDate(context, _date),
-            ),
-            actions: [
-              if (routine != null && !_isCelebrating) ...[
-                IconButton(
-                  onPressed: _changeRoutine,
-                  icon: const Icon(Icons.swap_horiz),
-                  tooltip: l10n.changeRoutine,
-                ),
-                IconButton(
-                  onPressed: _removeRoutine,
-                  icon: const Icon(Icons.event_busy),
-                  tooltip: l10n.removeRoutineTitle,
-                ),
-              ],
+        AppScaffold(
+          title: _isToday
+              ? l10n.todayRoutine
+              : formatShortDate(context, _date),
+          actions: [
+            if (routine != null && !_isCelebrating) ...[
+              IconButton(
+                onPressed: _changeRoutine,
+                icon: const Icon(Icons.swap_horiz),
+                tooltip: l10n.changeRoutine,
+              ),
+              IconButton(
+                onPressed: _removeRoutine,
+                icon: const Icon(Icons.event_busy),
+                tooltip: l10n.removeRoutineTitle,
+              ),
             ],
-          ),
+          ],
           body: resolved == null
               ? _buildMissingRoutineState()
               : ListView(
@@ -264,6 +290,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
                       interactive: !_isCelebrating,
                       completedItemIds: _completedItemIds,
                       onItemToggle: _toggleItem,
+                      onExerciseWeightEdit: _editExerciseWeight,
                     ),
                     const SizedBox(height: 24),
                     FilledButton.icon(

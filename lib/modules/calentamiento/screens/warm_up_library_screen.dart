@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/core/services/local_storage_service.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up_template.dart';
@@ -67,8 +68,13 @@ class _WarmUpLibraryScreenState extends State<WarmUpLibraryScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.warmUpLibraryTitle)),
+    return AppScaffold(
+      title: l10n.warmUpLibraryTitle,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _openForm(),
+        icon: const Icon(Icons.add),
+        label: Text(l10n.newWarmUpTemplate),
+      ),
       body: _templates.isEmpty
           ? Center(
               child: Padding(
@@ -99,11 +105,6 @@ class _WarmUpLibraryScreenState extends State<WarmUpLibraryScreen> {
                 );
               },
             ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openForm(),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.newWarmUpTemplate),
-      ),
     );
   }
 }

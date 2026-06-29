@@ -75,6 +75,7 @@ ResolvedRoutine resolveRoutine(
     if (template == null) {
       return ResolvedExercise(
         slotId: slot.slotId,
+        exerciseId: slot.exerciseId,
         title: missingLabel,
         series: 0,
         repetitions: 0,
@@ -83,10 +84,12 @@ ResolvedRoutine resolveRoutine(
     }
     return ResolvedExercise(
       slotId: slot.slotId,
+      exerciseId: slot.exerciseId,
       title: template.title,
       series: template.series,
       repetitions: template.repetitions,
       description: template.description,
+      weightKg: template.weightKg,
     );
   }).toList();
 

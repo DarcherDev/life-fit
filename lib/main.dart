@@ -6,6 +6,7 @@ import 'package:life_fit/core/home/locale_prompt_host.dart';
 import 'package:life_fit/core/services/locale_service.dart';
 import 'package:life_fit/core/services/local_storage_service.dart';
 import 'package:life_fit/core/services/theme_service.dart';
+import 'package:life_fit/core/services/weight_unit_service.dart';
 import 'package:life_fit/core/theme/app_theme.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 
@@ -14,6 +15,7 @@ Future<void> main() async {
   await LocalStorageService.init();
   await LocaleService.instance.init();
   await ThemeService.instance.init();
+  await WeightUnitService.instance.init();
   runApp(const LifeFitApp());
 }
 
@@ -27,26 +29,25 @@ class LifeFitApp extends StatefulWidget {
 class _LifeFitAppState extends State<LifeFitApp> {
   final _localeService = LocaleService.instance;
   final _themeService = ThemeService.instance;
+  final _weightUnitService = WeightUnitService.instance;
 
   @override
   void initState() {
     super.initState();
-    _localeService.addListener(_onLocaleChanged);
-    _themeService.addListener(_onThemeChanged);
+    _localeService.addListener(_onChanged);
+    _themeService.addListener(_onChanged);
+    _weightUnitService.addListener(_onChanged);
   }
 
   @override
   void dispose() {
-    _localeService.removeListener(_onLocaleChanged);
-    _themeService.removeListener(_onThemeChanged);
+    _localeService.removeListener(_onChanged);
+    _themeService.removeListener(_onChanged);
+    _weightUnitService.removeListener(_onChanged);
     super.dispose();
   }
 
-  void _onLocaleChanged() {
-    setState(() {});
-  }
-
-  void _onThemeChanged() {
+  void _onChanged() {
     setState(() {});
   }
 

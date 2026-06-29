@@ -21,6 +21,23 @@
   "themeLight": "Claro",
   "themeDark": "Oscuro",
   "themeSystem": "Sistema",
+  "settingsTitle": "Ajustes",
+  "weightUnitTitle": "Sistema de peso",
+  "weightUnitKg": "Kilogramos",
+  "weightUnitLb": "Libras",
+  "weightUnitKgShort": "kg",
+  "weightUnitLbShort": "lb",
+  "exerciseWeightLabel": "Peso",
+  "exerciseWeightHint": "Opcional",
+  "editExerciseWeight": "Editar peso",
+  "weightFormat": "{weight} {unit}",
+  "@weightFormat": {
+    "placeholders": {
+      "weight": { "type": "String" },
+      "unit": { "type": "String" }
+    }
+  },
+  "invalidWeight": "Peso válido mayor que cero",
   "localePromptTitle": "Elige tu idioma",
   "localePromptMessage": "El idioma de tu dispositivo no está disponible en la app. ¿En qué idioma quieres usar Life Fit?",
   "cancel": "Cancelar",

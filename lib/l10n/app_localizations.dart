@@ -219,6 +219,72 @@ abstract class AppLocalizations {
   /// **'Sistema'**
   String get themeSystem;
 
+  /// No description provided for @settingsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes'**
+  String get settingsTitle;
+
+  /// No description provided for @weightUnitTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sistema de peso'**
+  String get weightUnitTitle;
+
+  /// No description provided for @weightUnitKg.
+  ///
+  /// In es, this message translates to:
+  /// **'Kilogramos'**
+  String get weightUnitKg;
+
+  /// No description provided for @weightUnitLb.
+  ///
+  /// In es, this message translates to:
+  /// **'Libras'**
+  String get weightUnitLb;
+
+  /// No description provided for @weightUnitKgShort.
+  ///
+  /// In es, this message translates to:
+  /// **'kg'**
+  String get weightUnitKgShort;
+
+  /// No description provided for @weightUnitLbShort.
+  ///
+  /// In es, this message translates to:
+  /// **'lb'**
+  String get weightUnitLbShort;
+
+  /// No description provided for @exerciseWeightLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Peso'**
+  String get exerciseWeightLabel;
+
+  /// No description provided for @exerciseWeightHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Opcional'**
+  String get exerciseWeightHint;
+
+  /// No description provided for @editExerciseWeight.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar peso'**
+  String get editExerciseWeight;
+
+  /// No description provided for @weightFormat.
+  ///
+  /// In es, this message translates to:
+  /// **'{weight} {unit}'**
+  String weightFormat(String weight, String unit);
+
+  /// No description provided for @invalidWeight.
+  ///
+  /// In es, this message translates to:
+  /// **'Peso válido mayor que cero'**
+  String get invalidWeight;
+
   /// No description provided for @localePromptTitle.
   ///
   /// In es, this message translates to:

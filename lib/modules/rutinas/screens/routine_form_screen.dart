@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:life_fit/l10n/app_localizations.dart';
+import 'package:life_fit/core/widgets/app_scaffold.dart';
+import 'package:life_fit/shared/widgets/exercise_weight_dialog.dart';
 import 'package:life_fit/core/navigation/app_navigation.dart';
 import 'package:life_fit/core/services/local_storage_service.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up_placement.dart';
@@ -186,6 +188,93 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     setState(() => _stretchingSlots.removeAt(index));
   }
 
+  Future<void> _editExerciseWeight(RoutineExerciseSlot slot) async {
+    final template = _storage.getLibraries().exercises[slot.exerciseId];
+    if (template == null) {
+      return;
+    }
+
+    final result = await ExerciseWeightDialog.show(
+      context,
+      exerciseTitle: template.title,
+      currentWeightKg: template.weightKg,
+    );
+    if (result.cancelled || !mounted) {
+      return;
+    }
+
+    await _storage.upsertExerciseTemplate(
+      template.copyWith(
+        weightKg: result.weightKg,
+        clearWeightKg: result.weightKg == null,
+      ),
+    );
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Widget _buildExerciseSlotList(RoutineLibraries libraries) {
+    final l10n = AppLocalizations.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.exercisesTitle,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        const SizedBox(height: 8),
+        if (_exerciseSlots.isEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              l10n.routineSlotsEmpty,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+        ...List.generate(_exerciseSlots.length, (index) {
+          final slot = _exerciseSlots[index];
+          final template = libraries.exercises[slot.exerciseId];
+          return Card(
+            margin: const EdgeInsets.only(bottom: 8),
+            child: ListTile(
+              title: Text(template?.title ?? l10n.missingTemplateLabel),
+              subtitle: template == null
+                  ? null
+                  : Text(template.localizedSubtitle(l10n)),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (template != null)
+                    IconButton(
+                      icon: const Icon(Icons.scale_outlined),
+                      tooltip: l10n.editExerciseWeight,
+                      onPressed: () => _editExerciseWeight(slot),
+                    ),
+                  IconButton(
+                    icon: const Icon(Icons.remove_circle_outline),
+                    onPressed: () => _removeExerciseSlot(index),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }),
+        OutlinedButton.icon(
+          onPressed: _pickExercises,
+          icon: const Icon(Icons.add),
+          label: Text(l10n.addFromLibrary),
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
   Future<void> _save() async {
     final l10n = AppLocalizations.of(context);
     if (!_formKey.currentState!.validate()) {
@@ -288,17 +377,15 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
         ? null
         : libraries.warmUps[_warmUpId];
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_isEditing ? l10n.editRoutine : l10n.newRoutine),
-        actions: [
-          IconButton(
-            onPressed: _save,
-            icon: const Icon(Icons.check),
-            tooltip: l10n.save,
-          ),
-        ],
-      ),
+    return AppScaffold(
+      title: _isEditing ? l10n.editRoutine : l10n.newRoutine,
+      actions: [
+        IconButton(
+          onPressed: _save,
+          icon: const Icon(Icons.check),
+          tooltip: l10n.save,
+        ),
+      ],
       body: Form(
         key: _formKey,
         child: ListView(
@@ -392,19 +479,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
               onAdd: _pickStretchings,
               onRemove: _removeStretchingSlot,
             ),
-            _buildSlotList<RoutineExerciseSlot>(
-              title: l10n.exercisesTitle,
-              slots: _exerciseSlots,
-              label: (slot) =>
-                  libraries.exercises[slot.exerciseId]?.title ??
-                  l10n.missingTemplateLabel,
-              subtitle: (slot) {
-                final template = libraries.exercises[slot.exerciseId];
-                return template?.localizedSubtitle(l10n);
-              },
-              onAdd: _pickExercises,
-              onRemove: _removeExerciseSlot,
-            ),
+            _buildExerciseSlotList(libraries),
             Text(
               l10n.previewTitle,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(

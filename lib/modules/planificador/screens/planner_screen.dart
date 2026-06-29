@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/core/services/local_storage_service.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
@@ -100,10 +101,8 @@ class _PlannerScreenState extends State<PlannerScreen> {
     final selectedRoutine =
         _selectedDay == null ? null : _routineForDay(_selectedDay!);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.plannerTitle),
-      ),
+    return AppScaffold(
+      title: l10n.plannerTitle,
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

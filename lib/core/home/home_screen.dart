@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:life_fit/core/navigation/app_navigation.dart';
-import 'package:life_fit/core/services/locale_service.dart';
-import 'package:life_fit/core/services/theme_service.dart';
+import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -12,63 +11,10 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final currentLocale = Localizations.localeOf(context).languageCode;
-    final currentTheme = ThemeService.instance.preference;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.appTitle),
-        centerTitle: true,
-        actions: [
-          PopupMenuButton<AppThemePreference>(
-            tooltip: l10n.themeMenu,
-            icon: Icon(
-              currentTheme == AppThemePreference.dark
-                  ? Icons.dark_mode
-                  : currentTheme == AppThemePreference.light
-                      ? Icons.light_mode
-                      : Icons.brightness_auto,
-            ),
-            onSelected: ThemeService.instance.setPreference,
-            itemBuilder: (context) => [
-              CheckedPopupMenuItem(
-                value: AppThemePreference.light,
-                checked: currentTheme == AppThemePreference.light,
-                child: Text(l10n.themeLight),
-              ),
-              CheckedPopupMenuItem(
-                value: AppThemePreference.dark,
-                checked: currentTheme == AppThemePreference.dark,
-                child: Text(l10n.themeDark),
-              ),
-              CheckedPopupMenuItem(
-                value: AppThemePreference.system,
-                checked: currentTheme == AppThemePreference.system,
-                child: Text(l10n.themeSystem),
-              ),
-            ],
-          ),
-          PopupMenuButton<String>(
-            tooltip: l10n.languageMenu,
-            icon: const Icon(Icons.language),
-            onSelected: (code) {
-              LocaleService.instance.setLocale(Locale(code));
-            },
-            itemBuilder: (context) => [
-              CheckedPopupMenuItem(
-                value: 'es',
-                checked: currentLocale == 'es',
-                child: Text(l10n.languageSpanish),
-              ),
-              CheckedPopupMenuItem(
-                value: 'en',
-                checked: currentLocale == 'en',
-                child: Text(l10n.languageEnglish),
-              ),
-            ],
-          ),
-        ],
-      ),
+    return AppScaffold(
+      title: l10n.appTitle,
+      centerTitle: true,
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
@@ -96,6 +42,14 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           _HomeOptionCard(
+            title: l10n.homePlannerTitle,
+            subtitle: l10n.homePlannerSubtitle,
+            icon: Icons.calendar_month,
+            color: Colors.indigo,
+            onTap: () => AppNavigation.openPlanner(context),
+          ),
+          const SizedBox(height: 16),
+          _HomeOptionCard(
             title: l10n.homeExercisesTitle,
             subtitle: l10n.homeExercisesSubtitle,
             icon: Icons.fitness_center_outlined,
@@ -117,14 +71,6 @@ class HomeScreen extends StatelessWidget {
             icon: Icons.local_fire_department,
             color: Colors.orange,
             onTap: () => AppNavigation.openWarmUpLibrary(context),
-          ),
-          const SizedBox(height: 16),
-          _HomeOptionCard(
-            title: l10n.homePlannerTitle,
-            subtitle: l10n.homePlannerSubtitle,
-            icon: Icons.calendar_month,
-            color: Colors.indigo,
-            onTap: () => AppNavigation.openPlanner(context),
           ),
         ],
       ),

@@ -68,6 +68,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeSystem => 'System';
 
   @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get weightUnitTitle => 'Weight system';
+
+  @override
+  String get weightUnitKg => 'Kilograms';
+
+  @override
+  String get weightUnitLb => 'Pounds';
+
+  @override
+  String get weightUnitKgShort => 'kg';
+
+  @override
+  String get weightUnitLbShort => 'lb';
+
+  @override
+  String get exerciseWeightLabel => 'Weight';
+
+  @override
+  String get exerciseWeightHint => 'Optional';
+
+  @override
+  String get editExerciseWeight => 'Edit weight';
+
+  @override
+  String weightFormat(String weight, String unit) {
+    return '$weight $unit';
+  }
+
+  @override
+  String get invalidWeight => 'Enter a valid weight greater than zero';
+
+  @override
   String get localePromptTitle => 'Choose your language';
 
   @override

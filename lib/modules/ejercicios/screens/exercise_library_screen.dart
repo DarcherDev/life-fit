@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/core/services/local_storage_service.dart';
 import 'package:life_fit/modules/ejercicios/models/exercise_template.dart';
@@ -68,8 +69,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.exerciseLibraryTitle)),
+    return AppScaffold(
+      title: l10n.exerciseLibraryTitle,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _openForm(),
+        icon: const Icon(Icons.add),
+        label: Text(l10n.newExerciseTemplate),
+      ),
       body: _templates.isEmpty
           ? Center(
               child: Padding(
@@ -100,11 +106,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                 );
               },
             ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openForm(),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.newExerciseTemplate),
-      ),
     );
   }
 }

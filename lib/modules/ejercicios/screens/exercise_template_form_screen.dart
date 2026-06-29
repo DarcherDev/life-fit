@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:uuid/uuid.dart';
 
+import 'package:life_fit/core/services/weight_unit_service.dart';
+import 'package:life_fit/core/utils/weight_format.dart';
+import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/core/services/local_storage_service.dart';
 import 'package:life_fit/modules/ejercicios/models/exercise_template.dart';
@@ -24,6 +28,7 @@ class _ExerciseTemplateFormScreenState
   final _descriptionController = TextEditingController();
   final _seriesController = TextEditingController();
   final _repetitionsController = TextEditingController();
+  final _weightController = TextEditingController();
   final _uuid = const Uuid();
 
   @override
@@ -35,6 +40,13 @@ class _ExerciseTemplateFormScreenState
       _descriptionController.text = template.description;
       _seriesController.text = template.series.toString();
       _repetitionsController.text = template.repetitions.toString();
+      final weightText = weightInputFromKg(
+        template.weightKg,
+        WeightUnitService.instance.unit,
+      );
+      if (weightText != null) {
+        _weightController.text = weightText;
+      }
     }
   }
 
@@ -44,6 +56,7 @@ class _ExerciseTemplateFormScreenState
     _descriptionController.dispose();
     _seriesController.dispose();
     _repetitionsController.dispose();
+    _weightController.dispose();
     super.dispose();
   }
 
@@ -65,10 +78,25 @@ class _ExerciseTemplateFormScreenState
     return null;
   }
 
+  String? _validateOptionalWeight(String? value, AppLocalizations l10n) {
+    if (value == null || value.trim().isEmpty) {
+      return null;
+    }
+    if (parseWeightInput(value, WeightUnitService.instance.unit) == null) {
+      return l10n.invalidWeight;
+    }
+    return null;
+  }
+
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
+
+    final weightKg = parseWeightInput(
+      _weightController.text,
+      WeightUnitService.instance.unit,
+    );
 
     final template = ExerciseTemplate(
       id: widget.template?.id ?? _uuid.v4(),
@@ -76,6 +104,7 @@ class _ExerciseTemplateFormScreenState
       description: _descriptionController.text.trim(),
       series: _parsePositiveInt(_seriesController.text)!,
       repetitions: _parsePositiveInt(_repetitionsController.text)!,
+      weightKg: weightKg,
     );
 
     await _storage.upsertExerciseTemplate(template);
@@ -88,20 +117,17 @@ class _ExerciseTemplateFormScreenState
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final isEditing = widget.template != null;
+    final unit = WeightUnitService.instance.unit;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          isEditing ? l10n.editExerciseTemplate : l10n.newExerciseTemplate,
+    return AppScaffold(
+      title: isEditing ? l10n.editExerciseTemplate : l10n.newExerciseTemplate,
+      actions: [
+        IconButton(
+          onPressed: _save,
+          icon: const Icon(Icons.check),
+          tooltip: l10n.save,
         ),
-        actions: [
-          IconButton(
-            onPressed: _save,
-            icon: const Icon(Icons.check),
-            tooltip: l10n.save,
-          ),
-        ],
-      ),
+      ],
       body: Form(
         key: _formKey,
         child: ListView(
@@ -158,6 +184,23 @@ class _ExerciseTemplateFormScreenState
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _weightController,
+              decoration: InputDecoration(
+                labelText: l10n.exerciseWeightLabel,
+                hintText: l10n.exerciseWeightHint,
+                suffixText: weightUnitLabel(unit, l10n),
+                border: const OutlineInputBorder(),
+              ),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
+              ],
+              validator: (value) => _validateOptionalWeight(value, l10n),
             ),
             const SizedBox(height: 24),
             FilledButton.icon(

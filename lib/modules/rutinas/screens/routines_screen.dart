@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/core/services/local_storage_service.dart';
 import 'package:life_fit/modules/rutinas/screens/routine_form_screen.dart';
@@ -60,8 +61,13 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
     final l10n = AppLocalizations.of(context);
     final libraries = _storage.getLibraries();
 
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.routinesModuleTitle)),
+    return AppScaffold(
+      title: l10n.routinesModuleTitle,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _openForm(),
+        icon: const Icon(Icons.add),
+        label: Text(l10n.newRoutine),
+      ),
       body: _routines.isEmpty
           ? Center(
               child: Padding(
@@ -110,11 +116,6 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
                 );
               },
             ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openForm(),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.newRoutine),
-      ),
     );
   }
 }

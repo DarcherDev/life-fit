@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/core/services/local_storage_service.dart';
 import 'package:life_fit/modules/estiramiento/models/stretching_template.dart';
@@ -68,8 +69,13 @@ class _StretchingLibraryScreenState extends State<StretchingLibraryScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.stretchingLibraryTitle)),
+    return AppScaffold(
+      title: l10n.stretchingLibraryTitle,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _openForm(),
+        icon: const Icon(Icons.add),
+        label: Text(l10n.newStretchingTemplate),
+      ),
       body: _templates.isEmpty
           ? Center(
               child: Padding(
@@ -102,11 +108,6 @@ class _StretchingLibraryScreenState extends State<StretchingLibraryScreen> {
                 );
               },
             ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openForm(),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.newStretchingTemplate),
-      ),
     );
   }
 }

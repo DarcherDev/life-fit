@@ -57,6 +57,48 @@ void main() {
     final resolved = resolveRoutine(card, libraries);
     expect(resolved.exercises.first.title, 'Press');
     expect(resolved.exercises.first.series, 4);
+    expect(resolved.exercises.first.exerciseId, 'ex-1');
+  });
+
+  test('ExerciseTemplate serializa peso opcional', () {
+    const template = ExerciseTemplate(
+      id: 'ex-1',
+      title: 'Press',
+      series: 4,
+      repetitions: 10,
+      weightKg: 60,
+    );
+
+    final decoded = ExerciseTemplate.fromJson(template.toJson());
+    expect(decoded.weightKg, 60);
+  });
+
+  test('resolveRoutine propaga peso desde biblioteca', () {
+    const card = RoutineCard(
+      id: 'routine-1',
+      title: 'MIÉRCOLES',
+      description: '',
+      exerciseSlots: [
+        RoutineExerciseSlot(slotId: 'slot-1', exerciseId: 'ex-1'),
+      ],
+    );
+
+    final libraries = RoutineLibraries.fromLists(
+      exercises: const [
+        ExerciseTemplate(
+          id: 'ex-1',
+          title: 'Press',
+          series: 4,
+          repetitions: 10,
+          weightKg: 60,
+        ),
+      ],
+      stretchings: const [],
+      warmUps: const [],
+    );
+
+    final resolved = resolveRoutine(card, libraries);
+    expect(resolved.exercises.first.weightKg, 60);
   });
 
   test('migración convierte rutina embebida a referencias', () async {
