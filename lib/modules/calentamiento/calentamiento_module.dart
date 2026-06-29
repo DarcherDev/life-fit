@@ -2,6 +2,9 @@ import 'package:life_fit/modules/rutina/routine_day_module.dart';
 
 export 'models/warm_up.dart';
 export 'models/warm_up_placement.dart';
+export 'models/warm_up_template.dart';
+export 'screens/warm_up_library_screen.dart';
+export 'screens/warm_up_template_form_screen.dart';
 export 'widgets/warm_up_form_section.dart';
 export 'widgets/warm_up_preview_tile.dart';
 

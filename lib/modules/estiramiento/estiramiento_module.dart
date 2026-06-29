@@ -1,9 +1,12 @@
-import '../rutina/routine_day_module.dart';
+import 'package:life_fit/modules/rutina/routine_day_module.dart';
 
-/// Módulo de estiramiento — parte de la rutina del día.
-///
-/// Pendiente de diseño e implementación. La UI y persistencia
-/// vivirán en esta carpeta cuando se defina el flujo.
+export 'models/stretching.dart';
+export 'models/stretching_template.dart';
+export 'screens/stretching_library_screen.dart';
+export 'screens/stretching_template_form_screen.dart';
+export 'widgets/stretching_preview_tile.dart';
+
+/// Módulo de estiramiento — biblioteca reutilizable.
 abstract class EstiramientoModule {
   EstiramientoModule._();
 

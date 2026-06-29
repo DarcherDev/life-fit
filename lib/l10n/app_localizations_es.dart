@@ -20,7 +20,25 @@ class AppLocalizationsEs extends AppLocalizations {
   String get homeExercisesTitle => 'Ejercicios';
 
   @override
-  String get homeExercisesSubtitle => 'Crea y personaliza tus tarjetas de ejercicios';
+  String get homeExercisesSubtitle => 'Biblioteca de ejercicios reutilizables';
+
+  @override
+  String get homeRoutineTitle => 'Rutina';
+
+  @override
+  String get homeRoutineSubtitle => 'Arma rutinas con ejercicios, estiramientos y calentamiento';
+
+  @override
+  String get homeStretchingTitle => 'Estiramientos';
+
+  @override
+  String get homeStretchingSubtitle => 'Biblioteca de estiramientos reutilizables';
+
+  @override
+  String get homeWarmUpTitle => 'Calentamiento';
+
+  @override
+  String get homeWarmUpSubtitle => 'Biblioteca de calentamientos reutilizables';
 
   @override
   String get homePlannerTitle => 'Planificador';
@@ -83,7 +101,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get plannerTitle => 'Planificador';
 
   @override
-  String get createExercisesFirst => 'Primero crea ejercicios en la sección Ejercicios.';
+  String get createRoutinesFirst => 'Primero crea rutinas en la sección Rutina.';
 
   @override
   String get routineRemovedFromDay => 'Rutina quitada del día';
@@ -271,4 +289,166 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get completeWarmUpFields => 'Completa la actividad y los minutos del calentamiento.';
+
+  @override
+  String get stretchingsTitle => 'Estiramientos';
+
+  @override
+  String get stretchingsSubtitle => 'Al inicio de la rutina, después del calentamiento si lo hay.';
+
+  @override
+  String stretchingLabel(int index) {
+    return 'Estiramiento $index';
+  }
+
+  @override
+  String get stretchingDescriptionHint => 'Ej. Rotación de hombros';
+
+  @override
+  String get stretchingRepetitionsLabel => 'Repeticiones';
+
+  @override
+  String get stretchingRepetitionsHint => '10';
+
+  @override
+  String stretchingRepetitionsFormat(int repetitions) {
+    return '$repetitions repeticiones';
+  }
+
+  @override
+  String get addStretching => 'Agregar estiramiento';
+
+  @override
+  String get addFirstStretchingHint => 'Agrega uno o más estiramientos para esta rutina.';
+
+  @override
+  String get completeBeforeAddAnotherStretching => 'Completa descripción y repeticiones antes de agregar otro estiramiento.';
+
+  @override
+  String get completeAllStretchingsBeforeSave => 'Completa todos los estiramientos antes de guardar.';
+
+  @override
+  String get routinesModuleTitle => 'Rutinas';
+
+  @override
+  String get noRoutinesYet => 'Aún no tienes rutinas. Arma una desde las bibliotecas.';
+
+  @override
+  String get newRoutine => 'Nueva rutina';
+
+  @override
+  String get editRoutine => 'Editar rutina';
+
+  @override
+  String get saveRoutine => 'Guardar rutina';
+
+  @override
+  String get deleteRoutineTitle => 'Eliminar rutina';
+
+  @override
+  String deleteRoutineMessage(String title) {
+    return '¿Eliminar $title? También se quitará del planificador.';
+  }
+
+  @override
+  String get exerciseLibraryTitle => 'Biblioteca de ejercicios';
+
+  @override
+  String get exerciseLibraryEmpty => 'Crea ejercicios reutilizables para armar rutinas.';
+
+  @override
+  String get newExerciseTemplate => 'Nuevo ejercicio';
+
+  @override
+  String get editExerciseTemplate => 'Editar ejercicio';
+
+  @override
+  String get exerciseTemplateNameLabel => 'Nombre del ejercicio';
+
+  @override
+  String get deleteExerciseTemplateTitle => 'Eliminar ejercicio';
+
+  @override
+  String deleteExerciseTemplateMessage(String title) {
+    return '¿Eliminar $title?';
+  }
+
+  @override
+  String get stretchingLibraryTitle => 'Biblioteca de estiramientos';
+
+  @override
+  String get stretchingLibraryEmpty => 'Crea estiramientos reutilizables para armar rutinas.';
+
+  @override
+  String get newStretchingTemplate => 'Nuevo estiramiento';
+
+  @override
+  String get editStretchingTemplate => 'Editar estiramiento';
+
+  @override
+  String get deleteStretchingTemplateTitle => 'Eliminar estiramiento';
+
+  @override
+  String deleteStretchingTemplateMessage(String description) {
+    return '¿Eliminar $description?';
+  }
+
+  @override
+  String get warmUpLibraryTitle => 'Biblioteca de calentamiento';
+
+  @override
+  String get warmUpLibraryEmpty => 'Crea calentamientos reutilizables para armar rutinas.';
+
+  @override
+  String get newWarmUpTemplate => 'Nuevo calentamiento';
+
+  @override
+  String get editWarmUpTemplate => 'Editar calentamiento';
+
+  @override
+  String get deleteWarmUpTemplateTitle => 'Eliminar calentamiento';
+
+  @override
+  String deleteWarmUpTemplateMessage(String description) {
+    return '¿Eliminar $description?';
+  }
+
+  @override
+  String get templateInUseMessage => 'No se puede eliminar porque está en uso en una rutina.';
+
+  @override
+  String get pickWarmUpTitle => 'Elegir calentamiento';
+
+  @override
+  String get pickExercisesTitle => 'Elegir ejercicios';
+
+  @override
+  String get pickStretchingsTitle => 'Elegir estiramientos';
+
+  @override
+  String get noWarmUpSelected => 'Sin calentamiento asignado';
+
+  @override
+  String get addFromLibrary => 'Agregar desde biblioteca';
+
+  @override
+  String get routineSlotsEmpty => 'Ninguno asignado aún';
+
+  @override
+  String get addAtLeastOneExerciseToRoutine => 'Agrega al menos un ejercicio a la rutina.';
+
+  @override
+  String get searchLibraryHint => 'Buscar...';
+
+  @override
+  String get noMatchingLibraryItems => 'No hay coincidencias';
+
+  @override
+  String get addSelected => 'Agregar seleccionados';
+
+  @override
+  String get missingTemplateLabel => 'No disponible';
+
+  @override
+  String get missingTemplateWarning => 'Algunos ítems de la biblioteca ya no existen.';
 }

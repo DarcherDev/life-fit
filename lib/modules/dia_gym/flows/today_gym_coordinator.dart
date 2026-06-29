@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:life_fit/core/navigation/app_navigation.dart';
 import 'package:life_fit/core/services/local_storage_service.dart';
-import 'package:life_fit/modules/ejercicios/screens/exercise_form_screen.dart';
+import 'package:life_fit/modules/rutinas/screens/routine_form_screen.dart';
 import 'package:life_fit/shared/widgets/routine_assign_sheet.dart';
 
 import 'today_gym_entry.dart';
@@ -54,7 +54,7 @@ class TodayGymCoordinator {
   ) async {
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => ExerciseFormScreen(autoAssignDateKey: dateKey),
+        builder: (_) => RoutineFormScreen(autoAssignDateKey: dateKey),
       ),
     );
   }

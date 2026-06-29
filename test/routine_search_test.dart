@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:life_fit/shared/models/checklist_item.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
+import 'package:life_fit/shared/models/routine_exercise_slot.dart';
 import 'package:life_fit/shared/utils/routine_search.dart';
 
 void main() {
@@ -10,12 +10,10 @@ void main() {
       id: 'routine-1',
       title: 'MIÉRCOLES',
       description: 'TREN SUPERIOR',
-      items: [
-        ChecklistItem(
-          id: 'item-1',
-          title: 'Press',
-          series: 4,
-          repetitions: 10,
+      exerciseSlots: [
+        RoutineExerciseSlot(
+          slotId: 'item-1',
+          exerciseId: 'exercise-1',
         ),
       ],
     ),
@@ -23,12 +21,10 @@ void main() {
       id: 'routine-2',
       title: 'VIERNES',
       description: 'TREN INFERIOR',
-      items: [
-        ChecklistItem(
-          id: 'item-2',
-          title: 'Sentadilla',
-          series: 4,
-          repetitions: 8,
+      exerciseSlots: [
+        RoutineExerciseSlot(
+          slotId: 'item-2',
+          exerciseId: 'exercise-2',
         ),
       ],
     ),

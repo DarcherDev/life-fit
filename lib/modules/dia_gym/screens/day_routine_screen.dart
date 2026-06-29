@@ -5,8 +5,8 @@ import 'package:life_fit/core/navigation/app_navigation.dart';
 import 'package:life_fit/core/services/local_storage_service.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up.dart';
-import 'package:life_fit/modules/ejercicios/widgets/exercise_card_preview.dart';
-import 'package:life_fit/modules/rutina/routine_day_module.dart';
+import 'package:life_fit/modules/rutinas/widgets/routine_card_preview.dart';
+import 'package:life_fit/shared/utils/routine_resolver.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
 import 'package:life_fit/shared/utils/date_utils.dart';
 import 'package:life_fit/shared/utils/locale_format.dart';
@@ -15,8 +15,7 @@ import 'package:life_fit/shared/widgets/routine_assign_sheet.dart';
 
 /// Pantalla del módulo **Día de gym**.
 ///
-/// Hoy ejecuta ejercicios y calentamiento opcional.
-/// [RoutineDayModule.estiramiento] se integrará cuando esté implementado.
+/// Hoy ejecuta ejercicios, calentamiento y estiramiento opcionales.
 
 class DayRoutineScreen extends StatefulWidget {
   const DayRoutineScreen({
@@ -41,20 +40,26 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
 
   bool get _allItemsCompleted {
     final routine = _routine;
-    if (routine == null || routine.items.isEmpty) {
+    if (routine == null || !routine.hasExercises) {
       return false;
     }
 
-    final exercisesDone = routine.items.every(
-      (item) => _completedItemIds.contains(item.id),
+    final exercisesDone = routine.exerciseSlots.every(
+      (slot) => _completedItemIds.contains(slot.slotId),
     );
 
-    if (!routine.hasWarmUp) {
+    if (!routine.hasWarmUp && !routine.hasStretching) {
       return exercisesDone;
     }
 
-    return exercisesDone &&
-        _completedItemIds.contains(warmUpProgressItemId);
+    final warmUpDone =
+        !routine.hasWarmUp || _completedItemIds.contains(warmUpProgressItemId);
+    final stretchingDone = !routine.hasStretching ||
+        routine.stretchingSlots.every(
+          (slot) => _completedItemIds.contains(slot.slotId),
+        );
+
+    return exercisesDone && warmUpDone && stretchingDone;
   }
 
   @override
@@ -213,6 +218,9 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final routine = _routine;
+    final resolved = routine == null
+        ? null
+        : resolveRoutine(routine, _storage.getLibraries(), l10n: l10n);
 
     return Stack(
       children: [
@@ -238,7 +246,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
               ],
             ],
           ),
-          body: routine == null
+          body: resolved == null
               ? _buildMissingRoutineState()
               : ListView(
                   padding: const EdgeInsets.all(16),
@@ -251,8 +259,8 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
                           ),
                     ),
                     const SizedBox(height: 12),
-                    ExerciseCardPreview(
-                      routine: routine,
+                    RoutineCardPreview(
+                      routine: resolved,
                       interactive: !_isCelebrating,
                       completedItemIds: _completedItemIds,
                       onItemToggle: _toggleItem,

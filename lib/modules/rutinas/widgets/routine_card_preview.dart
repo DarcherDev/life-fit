@@ -4,13 +4,12 @@ import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up_placement.dart';
 import 'package:life_fit/modules/calentamiento/widgets/warm_up_preview_tile.dart';
-import 'package:life_fit/shared/models/checklist_item.dart';
-import 'package:life_fit/shared/models/routine_card.dart';
-import 'package:life_fit/shared/utils/checklist_l10n.dart';
+import 'package:life_fit/modules/estiramiento/models/stretching.dart';
+import 'package:life_fit/modules/estiramiento/widgets/stretching_preview_tile.dart';
+import 'package:life_fit/shared/models/resolved_routine.dart';
 
-/// Vista previa de una tarjeta del módulo **Ejercicios** (con calentamiento opcional).
-class ExerciseCardPreview extends StatelessWidget {
-  const ExerciseCardPreview({
+class RoutineCardPreview extends StatelessWidget {
+  const RoutineCardPreview({
     super.key,
     required this.routine,
     this.completedItemIds = const {},
@@ -19,7 +18,7 @@ class ExerciseCardPreview extends StatelessWidget {
     this.compact = false,
   });
 
-  final RoutineCard routine;
+  final ResolvedRoutine routine;
   final Set<String> completedItemIds;
   final bool interactive;
   final void Function(String itemId, bool completed)? onItemToggle;
@@ -54,10 +53,7 @@ class ExerciseCardPreview extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            height: 4,
-            color: _accentColor,
-          ),
+          Container(height: 4, color: _accentColor),
           Padding(
             padding: EdgeInsets.all(compact ? 16 : 20),
             child: Column(
@@ -81,13 +77,28 @@ class ExerciseCardPreview extends StatelessWidget {
                         ),
                   ),
                 ],
+                if (routine.hasMissingItems) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.missingTemplateWarning,
+                    style: TextStyle(
+                      color: colorScheme.error,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
                 if (showWarmUpAtStart) ...[
                   SizedBox(height: compact ? 12 : 16),
                   _buildWarmUpTile(warmUp),
                 ],
-                if (routine.items.isNotEmpty) ...[
+                if (routine.stretchingItems.isNotEmpty) ...[
                   SizedBox(height: compact ? 12 : 16),
-                  ...routine.items.map((item) => _buildItem(context, item, l10n)),
+                  ...routine.stretchingItems.map(_buildStretchingTile),
+                ],
+                if (routine.exercises.isNotEmpty) ...[
+                  SizedBox(height: compact ? 12 : 16),
+                  ...routine.exercises
+                      .map((item) => _buildExercise(context, item, l10n)),
                 ],
                 if (showWarmUpAtEnd) ...[
                   SizedBox(height: compact ? 12 : 16),
@@ -101,9 +112,9 @@ class ExerciseCardPreview extends StatelessWidget {
     );
   }
 
-  Widget _buildWarmUpTile(WarmUp warmUp) {
+  Widget _buildWarmUpTile(ResolvedWarmUp warmUp) {
     return WarmUpPreviewTile(
-      warmUp: warmUp,
+      warmUp: WarmUp(description: warmUp.description, minutes: warmUp.minutes),
       interactive: interactive,
       isCompleted: completedItemIds.contains(warmUpProgressItemId),
       onToggle: onItemToggle == null
@@ -112,13 +123,28 @@ class ExerciseCardPreview extends StatelessWidget {
     );
   }
 
-  Widget _buildItem(
+  Widget _buildStretchingTile(ResolvedStretching item) {
+    return StretchingPreviewTile(
+      item: StretchingItem(
+        id: item.slotId,
+        description: item.description,
+        repetitions: item.repetitions,
+      ),
+      interactive: interactive,
+      isCompleted: completedItemIds.contains(item.slotId),
+      onToggle: onItemToggle == null
+          ? null
+          : (completed) => onItemToggle!(item.slotId, completed),
+    );
+  }
+
+  Widget _buildExercise(
     BuildContext context,
-    ChecklistItem item,
+    ResolvedExercise item,
     AppLocalizations l10n,
   ) {
-    final isCompleted = completedItemIds.contains(item.id);
-    final subtitle = item.localizedSubtitle(l10n);
+    final isCompleted = completedItemIds.contains(item.slotId);
+    final subtitle = l10n.seriesRepsFormat(item.series, item.repetitions);
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
@@ -138,7 +164,7 @@ class ExerciseCardPreview extends StatelessWidget {
                 value: isCompleted,
                 activeColor: _accentColor,
                 onChanged: (value) {
-                  onItemToggle?.call(item.id, value ?? false);
+                  onItemToggle?.call(item.slotId, value ?? false);
                 },
               ),
             )
@@ -162,9 +188,11 @@ class ExerciseCardPreview extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                     decoration:
                         isCompleted ? TextDecoration.lineThrough : null,
-                    color: isCompleted
-                        ? colorScheme.outline
-                        : colorScheme.onSurface,
+                    color: item.isMissing
+                        ? colorScheme.error
+                        : (isCompleted
+                            ? colorScheme.outline
+                            : colorScheme.onSurface),
                   ),
                 ),
                 if (subtitle.isNotEmpty) ...[

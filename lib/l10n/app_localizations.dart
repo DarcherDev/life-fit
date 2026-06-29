@@ -126,8 +126,44 @@ abstract class AppLocalizations {
   /// No description provided for @homeExercisesSubtitle.
   ///
   /// In es, this message translates to:
-  /// **'Crea y personaliza tus tarjetas de ejercicios'**
+  /// **'Biblioteca de ejercicios reutilizables'**
   String get homeExercisesSubtitle;
+
+  /// No description provided for @homeRoutineTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Rutina'**
+  String get homeRoutineTitle;
+
+  /// No description provided for @homeRoutineSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Arma rutinas con ejercicios, estiramientos y calentamiento'**
+  String get homeRoutineSubtitle;
+
+  /// No description provided for @homeStretchingTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Estiramientos'**
+  String get homeStretchingTitle;
+
+  /// No description provided for @homeStretchingSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Biblioteca de estiramientos reutilizables'**
+  String get homeStretchingSubtitle;
+
+  /// No description provided for @homeWarmUpTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Calentamiento'**
+  String get homeWarmUpTitle;
+
+  /// No description provided for @homeWarmUpSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Biblioteca de calentamientos reutilizables'**
+  String get homeWarmUpSubtitle;
 
   /// No description provided for @homePlannerTitle.
   ///
@@ -249,11 +285,11 @@ abstract class AppLocalizations {
   /// **'Planificador'**
   String get plannerTitle;
 
-  /// No description provided for @createExercisesFirst.
+  /// No description provided for @createRoutinesFirst.
   ///
   /// In es, this message translates to:
-  /// **'Primero crea ejercicios en la sección Ejercicios.'**
-  String get createExercisesFirst;
+  /// **'Primero crea rutinas en la sección Rutina.'**
+  String get createRoutinesFirst;
 
   /// No description provided for @routineRemovedFromDay.
   ///
@@ -596,6 +632,306 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Completa la actividad y los minutos del calentamiento.'**
   String get completeWarmUpFields;
+
+  /// No description provided for @stretchingsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Estiramientos'**
+  String get stretchingsTitle;
+
+  /// No description provided for @stretchingsSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Al inicio de la rutina, después del calentamiento si lo hay.'**
+  String get stretchingsSubtitle;
+
+  /// No description provided for @stretchingLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Estiramiento {index}'**
+  String stretchingLabel(int index);
+
+  /// No description provided for @stretchingDescriptionHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Rotación de hombros'**
+  String get stretchingDescriptionHint;
+
+  /// No description provided for @stretchingRepetitionsLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Repeticiones'**
+  String get stretchingRepetitionsLabel;
+
+  /// No description provided for @stretchingRepetitionsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'10'**
+  String get stretchingRepetitionsHint;
+
+  /// No description provided for @stretchingRepetitionsFormat.
+  ///
+  /// In es, this message translates to:
+  /// **'{repetitions} repeticiones'**
+  String stretchingRepetitionsFormat(int repetitions);
+
+  /// No description provided for @addStretching.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar estiramiento'**
+  String get addStretching;
+
+  /// No description provided for @addFirstStretchingHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Agrega uno o más estiramientos para esta rutina.'**
+  String get addFirstStretchingHint;
+
+  /// No description provided for @completeBeforeAddAnotherStretching.
+  ///
+  /// In es, this message translates to:
+  /// **'Completa descripción y repeticiones antes de agregar otro estiramiento.'**
+  String get completeBeforeAddAnotherStretching;
+
+  /// No description provided for @completeAllStretchingsBeforeSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Completa todos los estiramientos antes de guardar.'**
+  String get completeAllStretchingsBeforeSave;
+
+  /// No description provided for @routinesModuleTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Rutinas'**
+  String get routinesModuleTitle;
+
+  /// No description provided for @noRoutinesYet.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no tienes rutinas. Arma una desde las bibliotecas.'**
+  String get noRoutinesYet;
+
+  /// No description provided for @newRoutine.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva rutina'**
+  String get newRoutine;
+
+  /// No description provided for @editRoutine.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar rutina'**
+  String get editRoutine;
+
+  /// No description provided for @saveRoutine.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar rutina'**
+  String get saveRoutine;
+
+  /// No description provided for @deleteRoutineTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar rutina'**
+  String get deleteRoutineTitle;
+
+  /// No description provided for @deleteRoutineMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar {title}? También se quitará del planificador.'**
+  String deleteRoutineMessage(String title);
+
+  /// No description provided for @exerciseLibraryTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Biblioteca de ejercicios'**
+  String get exerciseLibraryTitle;
+
+  /// No description provided for @exerciseLibraryEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Crea ejercicios reutilizables para armar rutinas.'**
+  String get exerciseLibraryEmpty;
+
+  /// No description provided for @newExerciseTemplate.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo ejercicio'**
+  String get newExerciseTemplate;
+
+  /// No description provided for @editExerciseTemplate.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar ejercicio'**
+  String get editExerciseTemplate;
+
+  /// No description provided for @exerciseTemplateNameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre del ejercicio'**
+  String get exerciseTemplateNameLabel;
+
+  /// No description provided for @deleteExerciseTemplateTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar ejercicio'**
+  String get deleteExerciseTemplateTitle;
+
+  /// No description provided for @deleteExerciseTemplateMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar {title}?'**
+  String deleteExerciseTemplateMessage(String title);
+
+  /// No description provided for @stretchingLibraryTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Biblioteca de estiramientos'**
+  String get stretchingLibraryTitle;
+
+  /// No description provided for @stretchingLibraryEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Crea estiramientos reutilizables para armar rutinas.'**
+  String get stretchingLibraryEmpty;
+
+  /// No description provided for @newStretchingTemplate.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo estiramiento'**
+  String get newStretchingTemplate;
+
+  /// No description provided for @editStretchingTemplate.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar estiramiento'**
+  String get editStretchingTemplate;
+
+  /// No description provided for @deleteStretchingTemplateTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar estiramiento'**
+  String get deleteStretchingTemplateTitle;
+
+  /// No description provided for @deleteStretchingTemplateMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar {description}?'**
+  String deleteStretchingTemplateMessage(String description);
+
+  /// No description provided for @warmUpLibraryTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Biblioteca de calentamiento'**
+  String get warmUpLibraryTitle;
+
+  /// No description provided for @warmUpLibraryEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Crea calentamientos reutilizables para armar rutinas.'**
+  String get warmUpLibraryEmpty;
+
+  /// No description provided for @newWarmUpTemplate.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo calentamiento'**
+  String get newWarmUpTemplate;
+
+  /// No description provided for @editWarmUpTemplate.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar calentamiento'**
+  String get editWarmUpTemplate;
+
+  /// No description provided for @deleteWarmUpTemplateTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar calentamiento'**
+  String get deleteWarmUpTemplateTitle;
+
+  /// No description provided for @deleteWarmUpTemplateMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar {description}?'**
+  String deleteWarmUpTemplateMessage(String description);
+
+  /// No description provided for @templateInUseMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'No se puede eliminar porque está en uso en una rutina.'**
+  String get templateInUseMessage;
+
+  /// No description provided for @pickWarmUpTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir calentamiento'**
+  String get pickWarmUpTitle;
+
+  /// No description provided for @pickExercisesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir ejercicios'**
+  String get pickExercisesTitle;
+
+  /// No description provided for @pickStretchingsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir estiramientos'**
+  String get pickStretchingsTitle;
+
+  /// No description provided for @noWarmUpSelected.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin calentamiento asignado'**
+  String get noWarmUpSelected;
+
+  /// No description provided for @addFromLibrary.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar desde biblioteca'**
+  String get addFromLibrary;
+
+  /// No description provided for @routineSlotsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Ninguno asignado aún'**
+  String get routineSlotsEmpty;
+
+  /// No description provided for @addAtLeastOneExerciseToRoutine.
+  ///
+  /// In es, this message translates to:
+  /// **'Agrega al menos un ejercicio a la rutina.'**
+  String get addAtLeastOneExerciseToRoutine;
+
+  /// No description provided for @searchLibraryHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar...'**
+  String get searchLibraryHint;
+
+  /// No description provided for @noMatchingLibraryItems.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay coincidencias'**
+  String get noMatchingLibraryItems;
+
+  /// No description provided for @addSelected.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar seleccionados'**
+  String get addSelected;
+
+  /// No description provided for @missingTemplateLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'No disponible'**
+  String get missingTemplateLabel;
+
+  /// No description provided for @missingTemplateWarning.
+  ///
+  /// In es, this message translates to:
+  /// **'Algunos ítems de la biblioteca ya no existen.'**
+  String get missingTemplateWarning;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -58,7 +58,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
         return;
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.createExercisesFirst)),
+        SnackBar(content: Text(l10n.createRoutinesFirst)),
       );
       return;
     }
@@ -167,7 +167,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                       ? l10n.tapToAssignRoutine
                       : selectedRoutine.description.isEmpty
                           ? l10n.plannerItemsTapToChange(
-                              selectedRoutine.items.length,
+                              selectedRoutine.exerciseSlots.length,
                             )
                           : l10n.plannerDescriptionTapToChange(
                               selectedRoutine.description,

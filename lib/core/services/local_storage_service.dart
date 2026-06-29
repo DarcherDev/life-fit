@@ -2,9 +2,14 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:life_fit/core/services/storage_migration.dart';
+import 'package:life_fit/modules/calentamiento/models/warm_up_template.dart';
+import 'package:life_fit/modules/ejercicios/models/exercise_template.dart';
+import 'package:life_fit/modules/estiramiento/models/stretching_template.dart';
 import 'package:life_fit/shared/models/day_assignment.dart';
 import 'package:life_fit/shared/models/day_progress.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
+import 'package:life_fit/shared/utils/routine_resolver.dart';
 
 class LocalStorageService {
   LocalStorageService._(this._prefs);
@@ -12,12 +17,16 @@ class LocalStorageService {
   static const _routinesKey = 'routine_cards';
   static const _assignmentsKey = 'day_assignments';
   static const _progressKey = 'day_progress';
+  static const _exerciseTemplatesKey = 'exercise_templates';
+  static const _stretchingTemplatesKey = 'stretching_templates';
+  static const _warmUpTemplatesKey = 'warm_up_templates';
 
   final SharedPreferences _prefs;
   static LocalStorageService? _instance;
 
   static Future<LocalStorageService> init() async {
     final prefs = await SharedPreferences.getInstance();
+    await StorageMigration.runIfNeeded(prefs);
     _instance = LocalStorageService._(prefs);
     return _instance!;
   }
@@ -28,6 +37,129 @@ class LocalStorageService {
       throw StateError('LocalStorageService not initialized. Call init() first.');
     }
     return service;
+  }
+
+  RoutineLibraries getLibraries() {
+    return RoutineLibraries.fromLists(
+      exercises: getExerciseTemplates(),
+      stretchings: getStretchingTemplates(),
+      warmUps: getWarmUpTemplates(),
+    );
+  }
+
+  List<ExerciseTemplate> getExerciseTemplates() {
+    return _readList(_exerciseTemplatesKey, ExerciseTemplate.fromJson);
+  }
+
+  Future<void> upsertExerciseTemplate(ExerciseTemplate template) async {
+    final items = getExerciseTemplates();
+    final index = items.indexWhere((existing) => existing.id == template.id);
+    if (index >= 0) {
+      items[index] = template;
+    } else {
+      items.add(template);
+    }
+    await _saveExerciseTemplates(items);
+  }
+
+  Future<bool> deleteExerciseTemplate(String templateId) async {
+    if (_isExerciseTemplateInUse(templateId)) {
+      return false;
+    }
+    final items = getExerciseTemplates()
+      ..removeWhere((item) => item.id == templateId);
+    await _saveExerciseTemplates(items);
+    return true;
+  }
+
+  ExerciseTemplate? getExerciseTemplateById(String templateId) {
+    for (final item in getExerciseTemplates()) {
+      if (item.id == templateId) {
+        return item;
+      }
+    }
+    return null;
+  }
+
+  List<StretchingTemplate> getStretchingTemplates() {
+    return _readList(_stretchingTemplatesKey, StretchingTemplate.fromJson);
+  }
+
+  Future<void> upsertStretchingTemplate(StretchingTemplate template) async {
+    final items = getStretchingTemplates();
+    final index = items.indexWhere((existing) => existing.id == template.id);
+    if (index >= 0) {
+      items[index] = template;
+    } else {
+      items.add(template);
+    }
+    await _saveStretchingTemplates(items);
+  }
+
+  Future<bool> deleteStretchingTemplate(String templateId) async {
+    if (_isStretchingTemplateInUse(templateId)) {
+      return false;
+    }
+    final items = getStretchingTemplates()
+      ..removeWhere((item) => item.id == templateId);
+    await _saveStretchingTemplates(items);
+    return true;
+  }
+
+  StretchingTemplate? getStretchingTemplateById(String templateId) {
+    for (final item in getStretchingTemplates()) {
+      if (item.id == templateId) {
+        return item;
+      }
+    }
+    return null;
+  }
+
+  List<WarmUpTemplate> getWarmUpTemplates() {
+    return _readList(_warmUpTemplatesKey, WarmUpTemplate.fromJson);
+  }
+
+  Future<void> upsertWarmUpTemplate(WarmUpTemplate template) async {
+    final items = getWarmUpTemplates();
+    final index = items.indexWhere((existing) => existing.id == template.id);
+    if (index >= 0) {
+      items[index] = template;
+    } else {
+      items.add(template);
+    }
+    await _saveWarmUpTemplates(items);
+  }
+
+  Future<bool> deleteWarmUpTemplate(String templateId) async {
+    if (_isWarmUpTemplateInUse(templateId)) {
+      return false;
+    }
+    final items = getWarmUpTemplates()
+      ..removeWhere((item) => item.id == templateId);
+    await _saveWarmUpTemplates(items);
+    return true;
+  }
+
+  WarmUpTemplate? getWarmUpTemplateById(String templateId) {
+    for (final item in getWarmUpTemplates()) {
+      if (item.id == templateId) {
+        return item;
+      }
+    }
+    return null;
+  }
+
+  bool _isExerciseTemplateInUse(String templateId) {
+    return getRoutineCards().any((card) => card.referencesExercise(templateId));
+  }
+
+  bool _isStretchingTemplateInUse(String templateId) {
+    return getRoutineCards()
+        .any((card) => card.referencesStretching(templateId));
+  }
+
+  bool _isWarmUpTemplateInUse(String templateId) {
+    return getRoutineCards().any((card) => card.referencesWarmUp(templateId));
   }
 
   List<RoutineCard> getRoutineCards() {
@@ -154,6 +286,41 @@ class LocalStorageService {
     }
 
     await _saveAllProgress(allProgress);
+  }
+
+  List<T> _readList<T>(
+    String key,
+    T Function(Map<String, dynamic>) fromJson,
+  ) {
+    final raw = _prefs.getString(key);
+    if (raw == null || raw.isEmpty) {
+      return [];
+    }
+    final decoded = jsonDecode(raw) as List<dynamic>;
+    return decoded
+        .map((item) => fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<void> _saveExerciseTemplates(List<ExerciseTemplate> items) async {
+    await _prefs.setString(
+      _exerciseTemplatesKey,
+      jsonEncode(items.map((item) => item.toJson()).toList()),
+    );
+  }
+
+  Future<void> _saveStretchingTemplates(List<StretchingTemplate> items) async {
+    await _prefs.setString(
+      _stretchingTemplatesKey,
+      jsonEncode(items.map((item) => item.toJson()).toList()),
+    );
+  }
+
+  Future<void> _saveWarmUpTemplates(List<WarmUpTemplate> items) async {
+    await _prefs.setString(
+      _warmUpTemplatesKey,
+      jsonEncode(items.map((item) => item.toJson()).toList()),
+    );
   }
 
   List<DayProgress> _getAllProgress() {

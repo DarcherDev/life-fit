@@ -2,15 +2,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:life_fit/modules/dia_gym/flows/today_gym_entry.dart';
-import 'package:life_fit/shared/models/checklist_item.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
+import 'package:life_fit/shared/models/routine_exercise_slot.dart';
 import 'package:life_fit/core/services/local_storage_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() async {
-    SharedPreferences.setMockInitialValues({});
+    SharedPreferences.setMockInitialValues({'library_migration_v1_done': true});
     await LocalStorageService.init();
   });
 
@@ -31,12 +31,10 @@ void main() {
         id: 'routine-1',
         title: 'MIÉRCOLES',
         description: 'TREN SUPERIOR',
-        items: [
-          ChecklistItem(
-            id: 'item-1',
-            title: 'Press',
-            series: 4,
-            repetitions: 10,
+        exerciseSlots: [
+          RoutineExerciseSlot(
+            slotId: 'item-1',
+            exerciseId: 'exercise-1',
           ),
         ],
       ),
@@ -55,12 +53,10 @@ void main() {
       id: 'routine-1',
       title: 'MIÉRCOLES',
       description: 'TREN SUPERIOR',
-      items: [
-        ChecklistItem(
-          id: 'item-1',
-          title: 'Press',
-          series: 4,
-          repetitions: 10,
+      exerciseSlots: [
+        RoutineExerciseSlot(
+          slotId: 'item-1',
+          exerciseId: 'exercise-1',
         ),
       ],
     );

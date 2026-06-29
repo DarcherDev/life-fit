@@ -1,13 +1,13 @@
 # Life Fit
 
-App personal para gestionar rutinas de gimnasio: crea tarjetas de ejercicios reutilizables, asígnalas en un calendario y marca tu progreso día a día.
+App personal para gestionar rutinas de gimnasio: mantén bibliotecas reutilizables de ejercicios, estiramientos y calentamientos; compón rutinas por referencia; asígnalas en un calendario y marca tu progreso día a día.
 
 **Versión actual:** `1.1.0+2`  
 **Repositorio:** [github.com/DarcherDev/life-fit](https://github.com/DarcherDev/life-fit)
 
 ## Para qué sirve
 
-Life Fit te ayuda a organizar tus entrenamientos sin depender de hojas de cálculo ni notas sueltas. Defines rutinas una vez, las programas en el planificador y cada día entras a tu sesión con una checklist interactiva.
+Life Fit te ayuda a organizar tus entrenamientos sin depender de hojas de cálculo ni notas sueltas. Defines ítems una vez en bibliotecas, los combinas en rutinas, las programas en el planificador y cada día entras a tu sesión con una checklist interactiva.
 
 ## Funciones principales
 
@@ -16,13 +16,22 @@ Life Fit te ayuda a organizar tus entrenamientos sin depender de hojas de cálcu
   - Si ya hay rutina asignada → abre la sesión directamente.
   - Si hay rutinas pero hoy no está asignada → selector para elegir y asignar.
   - Si no hay rutinas creadas → formulario para crear una y asignarla al instante.
-- Checklist por ejercicio con series y repeticiones.
+- Checklist por ejercicio, estiramiento y calentamiento (datos resueltos desde bibliotecas).
 - Confetti al completar la rutina o pulsar **Terminar rutina**.
 
-### Rutina
-- Crear, editar y eliminar tarjetas de rutina.
-- Cada rutina incluye nombre, descripción opcional y lista de ejercicios.
-- Formato de ejercicios: `N series x M repeticiones`.
+### Bibliotecas (Ejercicios, Estiramientos, Calentamiento)
+- CRUD independiente para cada tipo de ítem reutilizable.
+- **Ejercicio:** título, series, repeticiones, descripción opcional.
+- **Estiramiento:** descripción y repeticiones.
+- **Calentamiento:** descripción y minutos.
+- Editar un ítem en biblioteca actualiza todas las rutinas que lo referencian.
+- No se puede borrar un ítem si alguna rutina lo usa.
+
+### Rutina (compositor)
+- Crear, editar y eliminar rutinas armadas desde las bibliotecas.
+- Cada rutina incluye nombre, descripción opcional, ejercicios asignados, estiramientos y calentamiento opcional.
+- La ubicación del calentamiento (inicio o final) es por rutina, no por plantilla.
+- Vista previa resuelta antes de guardar.
 
 ### Planificador
 - Calendario mensual para asignar una rutina por día.
@@ -31,7 +40,23 @@ Life Fit te ayuda a organizar tus entrenamientos sin depender de hojas de cálcu
 
 ### Almacenamiento
 - Datos guardados localmente en el dispositivo (`shared_preferences`).
+- Migración automática one-shot desde el formato antiguo (ítems embebidos en rutinas).
 - Sin cuenta ni conexión a internet requerida.
+
+## Modelo de datos
+
+Las rutinas guardan **referencias por ID**, no copias de los ítems.
+
+| Clave | Contenido |
+|-------|-----------|
+| `exercise_templates` | Biblioteca de ejercicios (`ExerciseTemplate`) |
+| `stretching_templates` | Biblioteca de estiramientos (`StretchingTemplate`) |
+| `warm_up_templates` | Biblioteca de calentamientos (`WarmUpTemplate`) |
+| `routine_cards` | Rutinas con slots (`RoutineExerciseSlot`, `RoutineStretchingSlot`, `warmUpId`) |
+| `day_assignments` | Rutina asignada por fecha |
+| `day_progress` | Ítems completados por `slotId` |
+
+El helper `resolveRoutine` une rutina + bibliotecas en runtime para preview y día de gym.
 
 ## Tecnologías
 
@@ -57,13 +82,21 @@ Life Fit te ayuda a organizar tus entrenamientos sin depender de hojas de cálcu
 
 ```
 lib/
-├── flows/           # Coordinadores de flujo (ej. Día de gym)
-├── models/          # RoutineCard, ChecklistItem, DayAssignment, DayProgress
-├── navigation/      # Navegación centralizada
-├── screens/         # Home, Rutinas, Planificador, Día de gym
-├── services/        # LocalStorageService
-├── utils/           # Fechas, búsqueda de rutinas
-└── widgets/         # Componentes reutilizables (sheet de asignación, preview)
+├── core/
+│   ├── home/              # Home con 6 opciones
+│   ├── navigation/        # Navegación centralizada
+│   └── services/          # LocalStorage, migración, tema, locale
+├── modules/
+│   ├── calentamiento/     # Biblioteca de calentamientos
+│   ├── dia_gym/           # Día de gym y coordinadores
+│   ├── ejercicios/        # Biblioteca de ejercicios
+│   ├── estiramiento/      # Biblioteca de estiramientos
+│   ├── planificador/      # Calendario de asignaciones
+│   └── rutinas/           # Compositor de rutinas + preview
+└── shared/
+    ├── models/            # RoutineCard, slots, ResolvedRoutine
+    ├── utils/             # routine_resolver, búsqueda
+    └── widgets/           # LibraryPickerSheet, RoutineAssignSheet
 ```
 
 ## Versionado
@@ -88,11 +121,13 @@ Historial detallado en [CHANGELOG.md](CHANGELOG.md).
 
 Respecto a la `1.0.0+1`:
 
+- **Bibliotecas reutilizables:** ejercicios, estiramientos y calentamientos con CRUD independiente.
+- **Compositor de rutina:** arma rutinas por referencia (sin reescribir series/reps en cada rutina).
+- **Home ampliado:** Día de gym, Rutina, Ejercicios, Estiramientos, Calentamiento y Planificador.
+- **Migración automática** desde rutinas con ítems embebidos al nuevo modelo por referencias.
 - **Flujo inteligente Día de gym:** el coordinador decide si abrir la sesión, mostrar el selector o crear una rutina nueva.
 - **Bottom sheet de asignación mejorado:** media pantalla, lista con scroll y buscador por título/descripción.
-- **Componente único compartido** entre Planificador, Día de gym y cambio de rutina en sesión.
-- **Formulario con auto-asignación** al crear rutina desde el flujo de Día de gym.
-- **Tests** para la lógica de entrada (`today_gym_entry`) y filtrado de búsqueda (`routine_search`).
+- **Tests** para migración, resolver, borrado en uso, entrada de día de gym y filtrado de búsqueda.
 
 ## Cómo compilar
 

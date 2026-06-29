@@ -5,7 +5,13 @@
   "homeGymDayTitle": "Dia de gym",
   "homeGymDaySubtitle": "Rutina asignada para hoy",
   "homeExercisesTitle": "Ejercicios",
-  "homeExercisesSubtitle": "Crea y personaliza tus tarjetas de ejercicios",
+  "homeExercisesSubtitle": "Biblioteca de ejercicios reutilizables",
+  "homeRoutineTitle": "Rutina",
+  "homeRoutineSubtitle": "Arma rutinas con ejercicios, estiramientos y calentamiento",
+  "homeStretchingTitle": "Estiramientos",
+  "homeStretchingSubtitle": "Biblioteca de estiramientos reutilizables",
+  "homeWarmUpTitle": "Calentamiento",
+  "homeWarmUpSubtitle": "Biblioteca de calentamientos reutilizables",
   "homePlannerTitle": "Planificador",
   "homePlannerSubtitle": "Asigna rutinas a tu calendario",
   "languageMenu": "Idioma",
@@ -26,7 +32,7 @@
   "validNumber": "Número válido",
   "noTitle": "Sin título",
   "plannerTitle": "Planificador",
-  "createExercisesFirst": "Primero crea ejercicios en la sección Ejercicios.",
+  "createRoutinesFirst": "Primero crea rutinas en la sección Rutina.",
   "routineRemovedFromDay": "Rutina quitada del día",
   "routineAssignedSuccess": "Rutina asignada correctamente",
   "noRoutineAssigned": "Sin rutina asignada",
@@ -124,5 +130,85 @@
       "minutes": { "type": "int" }
     }
   },
-  "completeWarmUpFields": "Completa la actividad y los minutos del calentamiento."
+  "completeWarmUpFields": "Completa la actividad y los minutos del calentamiento.",
+  "stretchingsTitle": "Estiramientos",
+  "stretchingsSubtitle": "Al inicio de la rutina, después del calentamiento si lo hay.",
+  "stretchingLabel": "Estiramiento {index}",
+  "@stretchingLabel": {
+    "placeholders": {
+      "index": { "type": "int" }
+    }
+  },
+  "stretchingDescriptionHint": "Ej. Rotación de hombros",
+  "stretchingRepetitionsLabel": "Repeticiones",
+  "stretchingRepetitionsHint": "10",
+  "stretchingRepetitionsFormat": "{repetitions} repeticiones",
+  "@stretchingRepetitionsFormat": {
+    "placeholders": {
+      "repetitions": { "type": "int" }
+    }
+  },
+  "addStretching": "Agregar estiramiento",
+  "addFirstStretchingHint": "Agrega uno o más estiramientos para esta rutina.",
+  "completeBeforeAddAnotherStretching": "Completa descripción y repeticiones antes de agregar otro estiramiento.",
+  "completeAllStretchingsBeforeSave": "Completa todos los estiramientos antes de guardar.",
+  "routinesModuleTitle": "Rutinas",
+  "noRoutinesYet": "Aún no tienes rutinas. Arma una desde las bibliotecas.",
+  "newRoutine": "Nueva rutina",
+  "editRoutine": "Editar rutina",
+  "saveRoutine": "Guardar rutina",
+  "deleteRoutineTitle": "Eliminar rutina",
+  "deleteRoutineMessage": "¿Eliminar {title}? También se quitará del planificador.",
+  "@deleteRoutineMessage": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "exerciseLibraryTitle": "Biblioteca de ejercicios",
+  "exerciseLibraryEmpty": "Crea ejercicios reutilizables para armar rutinas.",
+  "newExerciseTemplate": "Nuevo ejercicio",
+  "editExerciseTemplate": "Editar ejercicio",
+  "exerciseTemplateNameLabel": "Nombre del ejercicio",
+  "deleteExerciseTemplateTitle": "Eliminar ejercicio",
+  "deleteExerciseTemplateMessage": "¿Eliminar {title}?",
+  "@deleteExerciseTemplateMessage": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "stretchingLibraryTitle": "Biblioteca de estiramientos",
+  "stretchingLibraryEmpty": "Crea estiramientos reutilizables para armar rutinas.",
+  "newStretchingTemplate": "Nuevo estiramiento",
+  "editStretchingTemplate": "Editar estiramiento",
+  "deleteStretchingTemplateTitle": "Eliminar estiramiento",
+  "deleteStretchingTemplateMessage": "¿Eliminar {description}?",
+  "@deleteStretchingTemplateMessage": {
+    "placeholders": {
+      "description": { "type": "String" }
+    }
+  },
+  "warmUpLibraryTitle": "Biblioteca de calentamiento",
+  "warmUpLibraryEmpty": "Crea calentamientos reutilizables para armar rutinas.",
+  "newWarmUpTemplate": "Nuevo calentamiento",
+  "editWarmUpTemplate": "Editar calentamiento",
+  "deleteWarmUpTemplateTitle": "Eliminar calentamiento",
+  "deleteWarmUpTemplateMessage": "¿Eliminar {description}?",
+  "@deleteWarmUpTemplateMessage": {
+    "placeholders": {
+      "description": { "type": "String" }
+    }
+  },
+  "templateInUseMessage": "No se puede eliminar porque está en uso en una rutina.",
+  "pickWarmUpTitle": "Elegir calentamiento",
+  "pickExercisesTitle": "Elegir ejercicios",
+  "pickStretchingsTitle": "Elegir estiramientos",
+  "noWarmUpSelected": "Sin calentamiento asignado",
+  "addFromLibrary": "Agregar desde biblioteca",
+  "routineSlotsEmpty": "Ninguno asignado aún",
+  "addAtLeastOneExerciseToRoutine": "Agrega al menos un ejercicio a la rutina.",
+  "searchLibraryHint": "Buscar...",
+  "noMatchingLibraryItems": "No hay coincidencias",
+  "addSelected": "Agregar seleccionados",
+  "missingTemplateLabel": "No disponible",
+  "missingTemplateWarning": "Algunos ítems de la biblioteca ya no existen."
 }

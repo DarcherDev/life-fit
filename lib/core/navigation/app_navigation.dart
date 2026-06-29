@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:life_fit/modules/dia_gym/flows/today_gym_coordinator.dart';import 'package:life_fit/modules/dia_gym/screens/day_routine_screen.dart';
-import 'package:life_fit/modules/ejercicios/screens/exercises_screen.dart';
+import 'package:life_fit/modules/dia_gym/flows/today_gym_coordinator.dart';
+import 'package:life_fit/modules/dia_gym/screens/day_routine_screen.dart';
+import 'package:life_fit/modules/calentamiento/screens/warm_up_library_screen.dart';
+import 'package:life_fit/modules/ejercicios/screens/exercise_library_screen.dart';
+import 'package:life_fit/modules/estiramiento/screens/stretching_library_screen.dart';
 import 'package:life_fit/modules/planificador/screens/planner_screen.dart';
+import 'package:life_fit/modules/rutinas/screens/routines_screen.dart';
 import 'package:life_fit/shared/utils/date_utils.dart';
 
 class AppNavigation {
@@ -26,19 +30,33 @@ class AppNavigation {
     return TodayGymCoordinator.start(context);
   }
 
-  static void openExercises(BuildContext context) {
+  static void openRoutines(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => const ExercisesScreen(),
-      ),
+      MaterialPageRoute<void>(builder: (_) => const RoutinesScreen()),
+    );
+  }
+
+  static void openExerciseLibrary(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => const ExerciseLibraryScreen()),
+    );
+  }
+
+  static void openStretchingLibrary(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => const StretchingLibraryScreen()),
+    );
+  }
+
+  static void openWarmUpLibrary(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => const WarmUpLibraryScreen()),
     );
   }
 
   static void openPlanner(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => const PlannerScreen(),
-      ),
+      MaterialPageRoute<void>(builder: (_) => const PlannerScreen()),
     );
   }
 }
