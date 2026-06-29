@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../../l10n/app_localizations.dart';
-import '../../models/routine_card.dart';
-import '../../services/local_storage_service.dart';
-import '../../utils/date_utils.dart';
-import '../../utils/locale_format.dart';
-import '../../widgets/routine_assign_sheet.dart';
+import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/l10n/app_localizations.dart';
+import 'package:life_fit/shared/models/routine_card.dart';
+import 'package:life_fit/shared/utils/date_utils.dart';
+import 'package:life_fit/shared/utils/locale_format.dart';
+import 'package:life_fit/shared/widgets/routine_assign_sheet.dart';
 
 class PlannerScreen extends StatefulWidget {
   const PlannerScreen({super.key});
@@ -58,7 +58,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
         return;
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.createRoutinesFirst)),
+        SnackBar(content: Text(l10n.createExercisesFirst)),
       );
       return;
     }

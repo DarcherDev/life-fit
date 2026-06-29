@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../l10n/app_localizations.dart';
-import '../navigation/app_navigation.dart';
-import '../services/locale_service.dart';
+import 'package:life_fit/core/navigation/app_navigation.dart';
+import 'package:life_fit/core/services/locale_service.dart';
+import 'package:life_fit/l10n/app_localizations.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -49,7 +49,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 32),
-          _RoutineOptionCard(
+          _HomeOptionCard(
             title: l10n.homeGymDayTitle,
             subtitle: l10n.homeGymDaySubtitle,
             icon: Icons.fitness_center,
@@ -57,15 +57,15 @@ class HomeScreen extends StatelessWidget {
             onTap: () => AppNavigation.openTodayGym(context),
           ),
           const SizedBox(height: 16),
-          _RoutineOptionCard(
-            title: l10n.homeRoutinesTitle,
-            subtitle: l10n.homeRoutinesSubtitle,
+          _HomeOptionCard(
+            title: l10n.homeExercisesTitle,
+            subtitle: l10n.homeExercisesSubtitle,
             icon: Icons.dashboard_customize,
             color: Colors.teal,
-            onTap: () => AppNavigation.openRoutines(context),
+            onTap: () => AppNavigation.openExercises(context),
           ),
           const SizedBox(height: 16),
-          _RoutineOptionCard(
+          _HomeOptionCard(
             title: l10n.homePlannerTitle,
             subtitle: l10n.homePlannerSubtitle,
             icon: Icons.calendar_month,
@@ -78,8 +78,8 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _RoutineOptionCard extends StatelessWidget {
-  const _RoutineOptionCard({
+class _HomeOptionCard extends StatelessWidget {
+  const _HomeOptionCard({
     required this.title,
     required this.subtitle,
     required this.icon,

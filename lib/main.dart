@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'l10n/app_localizations.dart';
-import 'screens/home_screen.dart';
-import 'services/locale_service.dart';
-import 'services/local_storage_service.dart';
+import 'package:life_fit/core/home/home_screen.dart';
+import 'package:life_fit/core/services/locale_service.dart';
+import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -17,10 +17,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get homeGymDaySubtitle => 'Rutina asignada para hoy';
 
   @override
-  String get homeRoutinesTitle => 'Rutina';
+  String get homeExercisesTitle => 'Ejercicios';
 
   @override
-  String get homeRoutinesSubtitle => 'Crea y personaliza tus tarjetas';
+  String get homeExercisesSubtitle => 'Crea y personaliza tus tarjetas de ejercicios';
 
   @override
   String get homePlannerTitle => 'Planificador';
@@ -65,7 +65,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get plannerTitle => 'Planificador';
 
   @override
-  String get createRoutinesFirst => 'Primero crea rutinas en la sección Rutina.';
+  String get createExercisesFirst => 'Primero crea ejercicios en la sección Ejercicios.';
 
   @override
   String get routineRemovedFromDay => 'Rutina quitada del día';
@@ -112,27 +112,27 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noMatchingRoutines => 'No hay rutinas que coincidan';
 
   @override
-  String get routinesTitle => 'Rutina';
+  String get exercisesModuleTitle => 'Ejercicios';
 
   @override
-  String get deleteRoutineTitle => 'Eliminar rutina';
+  String get deleteExerciseCardTitle => 'Eliminar tarjeta';
 
   @override
-  String deleteRoutineMessage(String title) {
+  String deleteExerciseCardMessage(String title) {
     return '¿Eliminar $title? También se quitará del planificador.';
   }
 
   @override
-  String get noRoutinesYet => 'Aún no tienes rutinas';
+  String get noExerciseCardsYet => 'Aún no tienes tarjetas de ejercicios';
 
   @override
-  String get noRoutinesHint => 'Crea tarjetas con ejercicios o tareas para usarlas en el planificador.';
+  String get noExerciseCardsHint => 'Crea tarjetas con ejercicios para usarlas en el planificador.';
 
   @override
-  String get newRoutine => 'Nueva rutina';
+  String get newExerciseCard => 'Nueva tarjeta';
 
   @override
-  String get editRoutine => 'Editar rutina';
+  String get editExerciseCard => 'Editar tarjeta';
 
   @override
   String get addExercise => 'Agregar ejercicio';
@@ -156,7 +156,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get previewTitle => 'Vista previa';
 
   @override
-  String get previewEmptyHint => 'Aquí verás tu rutina cuando escribas el título o completes ejercicios.';
+  String get previewEmptyHint => 'Aquí verás la tarjeta cuando escribas el título o completes ejercicios.';
 
   @override
   String get exercisesTitle => 'Ejercicios';
@@ -185,7 +185,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get fieldRepetitionsHint => '10';
 
   @override
-  String get saveRoutine => 'Guardar rutina';
+  String get saveExerciseCard => 'Guardar tarjeta';
 
   @override
   String get completeBeforeAddAnother => 'Completa nombre, series y repeticiones antes de agregar otro.';

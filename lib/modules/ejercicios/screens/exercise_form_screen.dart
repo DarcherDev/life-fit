@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../l10n/app_localizations.dart';
-import '../../models/checklist_item.dart';
-import '../../models/routine_card.dart';
-import '../../screens/planner/day_routine_screen.dart';
-import '../../services/local_storage_service.dart';
-import '../../utils/checklist_l10n.dart';
-import '../../widgets/routine_card_preview.dart';
+import 'package:life_fit/l10n/app_localizations.dart';
+import 'package:life_fit/core/navigation/app_navigation.dart';
+import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/modules/ejercicios/widgets/exercise_card_preview.dart';
+import 'package:life_fit/shared/models/checklist_item.dart';
+import 'package:life_fit/shared/models/routine_card.dart';
+import 'package:life_fit/shared/utils/checklist_l10n.dart';
 
-class RoutineFormScreen extends StatefulWidget {
-  const RoutineFormScreen({
+class ExerciseFormScreen extends StatefulWidget {
+  const ExerciseFormScreen({
     super.key,
     this.routine,
     this.autoAssignDateKey,
@@ -21,11 +21,11 @@ class RoutineFormScreen extends StatefulWidget {
   final String? autoAssignDateKey;
 
   @override
-  State<RoutineFormScreen> createState() => _RoutineFormScreenState();
+  State<ExerciseFormScreen> createState() => _ExerciseFormScreenState();
 }
 
-class _RoutineFormItem {
-  _RoutineFormItem({
+class _ExerciseFormItem {
+  _ExerciseFormItem({
     required this.id,
     required this.titleController,
     required this.seriesController,
@@ -41,13 +41,13 @@ class _RoutineFormItem {
   final GlobalKey itemKey = GlobalKey();
 }
 
-class _RoutineFormScreenState extends State<RoutineFormScreen> {
+class _ExerciseFormScreenState extends State<ExerciseFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _storage = LocalStorageService.instance;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _scrollController = ScrollController();
-  final _items = <_RoutineFormItem>[];
+  final _items = <_ExerciseFormItem>[];
   final _uuid = const Uuid();
 
   bool get _isEditing => widget.routine != null;
@@ -70,13 +70,13 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     }
   }
 
-  _RoutineFormItem _createFormItem({
+  _ExerciseFormItem _createFormItem({
     String? id,
     String title = '',
     int? series,
     int? repetitions,
   }) {
-    return _RoutineFormItem(
+    return _ExerciseFormItem(
       id: id ?? _uuid.v4(),
       titleController: TextEditingController(text: title),
       seriesController: TextEditingController(
@@ -111,7 +111,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     return parsed;
   }
 
-  ChecklistItem? _itemFromForm(_RoutineFormItem item) {
+  ChecklistItem? _itemFromForm(_ExerciseFormItem item) {
     final title = item.titleController.text.trim();
     final series = _parsePositiveInt(item.seriesController.text);
     final repetitions = _parsePositiveInt(item.repetitionsController.text);
@@ -128,7 +128,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     );
   }
 
-  bool _isItemComplete(_RoutineFormItem item) {
+  bool _isItemComplete(_ExerciseFormItem item) {
     return _itemFromForm(item) != null;
   }
 
@@ -270,11 +270,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
       if (!mounted) {
         return;
       }
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute<void>(
-          builder: (_) => DayRoutineScreen(dateKey: autoAssignDateKey),
-        ),
-      );
+      AppNavigation.replaceWithDayRoutine(context, autoAssignDateKey);
       return;
     }
 
@@ -288,7 +284,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEditing ? l10n.editRoutine : l10n.newRoutine),
+        title: Text(_isEditing ? l10n.editExerciseCard : l10n.newExerciseCard),
         actions: [
           IconButton(
             onPressed: _save,
@@ -367,7 +363,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
                 ),
               )
             else
-              RoutineCardPreview(routine: previewCard),
+              ExerciseCardPreview(routine: previewCard),
             const SizedBox(height: 24),
             Text(
               l10n.exercisesTitle,
@@ -482,7 +478,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
             FilledButton.icon(
               onPressed: _save,
               icon: const Icon(Icons.save),
-              label: Text(l10n.saveRoutine),
+              label: Text(l10n.saveExerciseCard),
             ),
           ],
         ),

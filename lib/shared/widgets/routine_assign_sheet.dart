@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../l10n/app_localizations.dart';
-import '../models/routine_card.dart';
-import '../services/local_storage_service.dart';
-import '../utils/locale_format.dart';
-import '../utils/routine_search.dart';
+import 'package:life_fit/l10n/app_localizations.dart';
+import 'package:life_fit/shared/models/routine_card.dart';
+import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/shared/utils/locale_format.dart';
+import 'package:life_fit/shared/utils/routine_search.dart';
 
 class RoutineAssignSheet {
   RoutineAssignSheet._();

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../l10n/app_localizations.dart';
-import '../models/checklist_item.dart';
-import '../models/routine_card.dart';
-import '../utils/checklist_l10n.dart';
+import 'package:life_fit/l10n/app_localizations.dart';
+import 'package:life_fit/shared/models/checklist_item.dart';
+import 'package:life_fit/shared/models/routine_card.dart';
+import 'package:life_fit/shared/utils/checklist_l10n.dart';
 
-class RoutineCardPreview extends StatelessWidget {
-  const RoutineCardPreview({
+/// Vista previa de una tarjeta del módulo **Ejercicios**.
+class ExerciseCardPreview extends StatelessWidget {
+  const ExerciseCardPreview({
     super.key,
     required this.routine,
     this.completedItemIds = const {},

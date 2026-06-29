@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:life_fit/models/checklist_item.dart';
-import 'package:life_fit/models/routine_card.dart';
-import 'package:life_fit/utils/routine_search.dart';
+import 'package:life_fit/shared/models/checklist_item.dart';
+import 'package:life_fit/shared/models/routine_card.dart';
+import 'package:life_fit/shared/utils/routine_search.dart';
 
 void main() {
   const routines = [

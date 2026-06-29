@@ -1,14 +1,22 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 
-import '../../l10n/app_localizations.dart';
-import '../../models/routine_card.dart';
-import '../../navigation/app_navigation.dart';
-import '../../services/local_storage_service.dart';
-import '../../utils/date_utils.dart';
-import '../../utils/locale_format.dart';
-import '../../widgets/routine_assign_sheet.dart';
-import '../../widgets/routine_card_preview.dart';
+import 'package:life_fit/core/navigation/app_navigation.dart';
+import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/l10n/app_localizations.dart';
+import 'package:life_fit/modules/ejercicios/widgets/exercise_card_preview.dart';
+import 'package:life_fit/modules/rutina/routine_day_module.dart';
+import 'package:life_fit/shared/models/routine_card.dart';
+import 'package:life_fit/shared/utils/date_utils.dart';
+import 'package:life_fit/shared/utils/locale_format.dart';
+import 'package:life_fit/shared/widgets/confirm_dialog.dart';
+import 'package:life_fit/shared/widgets/routine_assign_sheet.dart';
+
+/// Pantalla del módulo **Día de gym**.
+///
+/// Hoy ejecuta el submódulo [RoutineDayModule.ejercicios].
+/// [RoutineDayModule.calentamiento] y [RoutineDayModule.estiramiento]
+/// se integrarán aquí cuando estén implementados.
 
 class DayRoutineScreen extends StatefulWidget {
   const DayRoutineScreen({
@@ -122,27 +130,14 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
 
   Future<void> _removeRoutine() async {
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(l10n.removeRoutineTitle),
-          content: Text(l10n.removeRoutineMessage),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(l10n.cancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(l10n.remove),
-            ),
-          ],
-        );
-      },
+    final confirmed = await ConfirmDialog.show(
+      context,
+      title: l10n.removeRoutineTitle,
+      message: l10n.removeRoutineMessage,
+      confirmLabel: l10n.remove,
     );
 
-    if (confirmed != true) {
+    if (!confirmed) {
       return;
     }
 
@@ -248,7 +243,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
                           ),
                     ),
                     const SizedBox(height: 12),
-                    RoutineCardPreview(
+                    ExerciseCardPreview(
                       routine: routine,
                       interactive: !_isCelebrating,
                       completedItemIds: _completedItemIds,

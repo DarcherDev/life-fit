@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:life_fit/flows/today_gym_entry.dart';
-import 'package:life_fit/models/checklist_item.dart';
-import 'package:life_fit/models/routine_card.dart';
-import 'package:life_fit/services/local_storage_service.dart';
+import 'package:life_fit/modules/dia_gym/flows/today_gym_entry.dart';
+import 'package:life_fit/shared/models/checklist_item.dart';
+import 'package:life_fit/shared/models/routine_card.dart';
+import 'package:life_fit/core/services/local_storage_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

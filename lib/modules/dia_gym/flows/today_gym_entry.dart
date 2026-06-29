@@ -1,4 +1,4 @@
-import '../services/local_storage_service.dart';
+import 'package:life_fit/core/services/local_storage_service.dart';
 
 enum TodayGymEntry {
   ready,

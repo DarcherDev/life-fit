@@ -1,4 +1,4 @@
-import '../models/routine_card.dart';
+import 'package:life_fit/shared/models/routine_card.dart';
 
 List<RoutineCard> filterRoutineCards(
   List<RoutineCard> routines,

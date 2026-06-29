@@ -117,17 +117,17 @@ abstract class AppLocalizations {
   /// **'Rutina asignada para hoy'**
   String get homeGymDaySubtitle;
 
-  /// No description provided for @homeRoutinesTitle.
+  /// No description provided for @homeExercisesTitle.
   ///
   /// In es, this message translates to:
-  /// **'Rutina'**
-  String get homeRoutinesTitle;
+  /// **'Ejercicios'**
+  String get homeExercisesTitle;
 
-  /// No description provided for @homeRoutinesSubtitle.
+  /// No description provided for @homeExercisesSubtitle.
   ///
   /// In es, this message translates to:
-  /// **'Crea y personaliza tus tarjetas'**
-  String get homeRoutinesSubtitle;
+  /// **'Crea y personaliza tus tarjetas de ejercicios'**
+  String get homeExercisesSubtitle;
 
   /// No description provided for @homePlannerTitle.
   ///
@@ -213,11 +213,11 @@ abstract class AppLocalizations {
   /// **'Planificador'**
   String get plannerTitle;
 
-  /// No description provided for @createRoutinesFirst.
+  /// No description provided for @createExercisesFirst.
   ///
   /// In es, this message translates to:
-  /// **'Primero crea rutinas en la sección Rutina.'**
-  String get createRoutinesFirst;
+  /// **'Primero crea ejercicios en la sección Ejercicios.'**
+  String get createExercisesFirst;
 
   /// No description provided for @routineRemovedFromDay.
   ///
@@ -291,47 +291,47 @@ abstract class AppLocalizations {
   /// **'No hay rutinas que coincidan'**
   String get noMatchingRoutines;
 
-  /// No description provided for @routinesTitle.
+  /// No description provided for @exercisesModuleTitle.
   ///
   /// In es, this message translates to:
-  /// **'Rutina'**
-  String get routinesTitle;
+  /// **'Ejercicios'**
+  String get exercisesModuleTitle;
 
-  /// No description provided for @deleteRoutineTitle.
+  /// No description provided for @deleteExerciseCardTitle.
   ///
   /// In es, this message translates to:
-  /// **'Eliminar rutina'**
-  String get deleteRoutineTitle;
+  /// **'Eliminar tarjeta'**
+  String get deleteExerciseCardTitle;
 
-  /// No description provided for @deleteRoutineMessage.
+  /// No description provided for @deleteExerciseCardMessage.
   ///
   /// In es, this message translates to:
   /// **'¿Eliminar {title}? También se quitará del planificador.'**
-  String deleteRoutineMessage(String title);
+  String deleteExerciseCardMessage(String title);
 
-  /// No description provided for @noRoutinesYet.
+  /// No description provided for @noExerciseCardsYet.
   ///
   /// In es, this message translates to:
-  /// **'Aún no tienes rutinas'**
-  String get noRoutinesYet;
+  /// **'Aún no tienes tarjetas de ejercicios'**
+  String get noExerciseCardsYet;
 
-  /// No description provided for @noRoutinesHint.
+  /// No description provided for @noExerciseCardsHint.
   ///
   /// In es, this message translates to:
-  /// **'Crea tarjetas con ejercicios o tareas para usarlas en el planificador.'**
-  String get noRoutinesHint;
+  /// **'Crea tarjetas con ejercicios para usarlas en el planificador.'**
+  String get noExerciseCardsHint;
 
-  /// No description provided for @newRoutine.
+  /// No description provided for @newExerciseCard.
   ///
   /// In es, this message translates to:
-  /// **'Nueva rutina'**
-  String get newRoutine;
+  /// **'Nueva tarjeta'**
+  String get newExerciseCard;
 
-  /// No description provided for @editRoutine.
+  /// No description provided for @editExerciseCard.
   ///
   /// In es, this message translates to:
-  /// **'Editar rutina'**
-  String get editRoutine;
+  /// **'Editar tarjeta'**
+  String get editExerciseCard;
 
   /// No description provided for @addExercise.
   ///
@@ -378,7 +378,7 @@ abstract class AppLocalizations {
   /// No description provided for @previewEmptyHint.
   ///
   /// In es, this message translates to:
-  /// **'Aquí verás tu rutina cuando escribas el título o completes ejercicios.'**
+  /// **'Aquí verás la tarjeta cuando escribas el título o completes ejercicios.'**
   String get previewEmptyHint;
 
   /// No description provided for @exercisesTitle.
@@ -429,11 +429,11 @@ abstract class AppLocalizations {
   /// **'10'**
   String get fieldRepetitionsHint;
 
-  /// No description provided for @saveRoutine.
+  /// No description provided for @saveExerciseCard.
   ///
   /// In es, this message translates to:
-  /// **'Guardar rutina'**
-  String get saveRoutine;
+  /// **'Guardar tarjeta'**
+  String get saveExerciseCard;
 
   /// No description provided for @completeBeforeAddAnother.
   ///

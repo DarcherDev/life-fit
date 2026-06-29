@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/day_assignment.dart';
-import '../models/day_progress.dart';
-import '../models/routine_card.dart';
+import 'package:life_fit/shared/models/day_assignment.dart';
+import 'package:life_fit/shared/models/day_progress.dart';
+import 'package:life_fit/shared/models/routine_card.dart';
 
 class LocalStorageService {
   LocalStorageService._(this._prefs);

@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 
-import '../../l10n/app_localizations.dart';
-import '../../models/routine_card.dart';
-import '../../services/local_storage_service.dart';
-import '../../widgets/routine_card_preview.dart';
-import 'routine_form_screen.dart';
+import 'package:life_fit/l10n/app_localizations.dart';
+import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/shared/models/routine_card.dart';
+import 'package:life_fit/shared/widgets/confirm_dialog.dart';
+import 'package:life_fit/modules/ejercicios/screens/exercise_form_screen.dart';
+import 'package:life_fit/modules/ejercicios/widgets/exercise_card_preview.dart';
 
-class RoutinesScreen extends StatefulWidget {
-  const RoutinesScreen({super.key});
+/// Lista y CRUD de tarjetas del módulo **Ejercicios**.
+class ExercisesScreen extends StatefulWidget {
+  const ExercisesScreen({super.key});
 
   @override
-  State<RoutinesScreen> createState() => _RoutinesScreenState();
+  State<ExercisesScreen> createState() => _ExercisesScreenState();
 }
 
-class _RoutinesScreenState extends State<RoutinesScreen> {
+class _ExercisesScreenState extends State<ExercisesScreen> {
   final _storage = LocalStorageService.instance;
   List<RoutineCard> _routines = [];
 
@@ -32,7 +34,7 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
   Future<void> _openForm({RoutineCard? routine}) async {
     final saved = await Navigator.of(context).push<bool>(
       MaterialPageRoute<bool>(
-        builder: (_) => RoutineFormScreen(routine: routine),
+        builder: (_) => ExerciseFormScreen(routine: routine),
       ),
     );
 
@@ -43,27 +45,14 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
 
   Future<void> _deleteRoutine(RoutineCard routine) async {
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(l10n.deleteRoutineTitle),
-          content: Text(l10n.deleteRoutineMessage(routine.title)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(l10n.cancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(l10n.delete),
-            ),
-          ],
-        );
-      },
+    final confirmed = await ConfirmDialog.show(
+      context,
+      title: l10n.deleteExerciseCardTitle,
+      message: l10n.deleteExerciseCardMessage(routine.title),
+      confirmLabel: l10n.delete,
     );
 
-    if (confirmed != true) {
+    if (!confirmed) {
       return;
     }
 
@@ -77,7 +66,7 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.routinesTitle),
+        title: Text(l10n.exercisesModuleTitle),
       ),
       body: _routines.isEmpty
           ? Center(
@@ -93,12 +82,12 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      l10n.noRoutinesYet,
+                      l10n.noExerciseCardsYet,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      l10n.noRoutinesHint,
+                      l10n.noExerciseCardsHint,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -136,7 +125,7 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
                       onTap: () => _openForm(routine: routine),
                       onLongPress: () => _deleteRoutine(routine),
                       borderRadius: BorderRadius.circular(16),
-                      child: RoutineCardPreview(
+                      child: ExerciseCardPreview(
                         routine: routine,
                         compact: true,
                       ),
@@ -148,7 +137,7 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openForm(),
         icon: const Icon(Icons.add),
-        label: Text(l10n.newRoutine),
+        label: Text(l10n.newExerciseCard),
       ),
     );
   }

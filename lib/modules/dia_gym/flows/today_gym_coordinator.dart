@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../navigation/app_navigation.dart';
-import '../screens/planner/day_routine_screen.dart';
-import '../screens/routines/routine_form_screen.dart';
-import '../services/local_storage_service.dart';
-import '../widgets/routine_assign_sheet.dart';
+import 'package:life_fit/core/navigation/app_navigation.dart';
+import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/modules/ejercicios/screens/exercise_form_screen.dart';
+import 'package:life_fit/shared/widgets/routine_assign_sheet.dart';
+
 import 'today_gym_entry.dart';
 
 class TodayGymCoordinator {
@@ -17,7 +17,7 @@ class TodayGymCoordinator {
 
     switch (entry) {
       case TodayGymEntry.ready:
-        _openDayRoutine(context);
+        AppNavigation.openDayRoutine(context, dateKey);
         break;
       case TodayGymEntry.pickRoutine:
         await _pickAssignAndOpen(context, dateKey);
@@ -26,14 +26,6 @@ class TodayGymCoordinator {
         await _createAssignAndOpen(context, dateKey);
         break;
     }
-  }
-
-  static void _openDayRoutine(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => DayRoutineScreen(dateKey: AppNavigation.todayDateKey),
-      ),
-    );
   }
 
   static Future<void> _pickAssignAndOpen(
@@ -53,11 +45,7 @@ class TodayGymCoordinator {
 
     await LocalStorageService.instance.saveAssignment(dateKey, selectedId);
 
-    navigator.push(
-      MaterialPageRoute<void>(
-        builder: (_) => DayRoutineScreen(dateKey: AppNavigation.todayDateKey),
-      ),
-    );
+    navigator.push(AppNavigation.dayRoutineRoute(dateKey));
   }
 
   static Future<void> _createAssignAndOpen(
@@ -66,7 +54,7 @@ class TodayGymCoordinator {
   ) async {
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => RoutineFormScreen(autoAssignDateKey: dateKey),
+        builder: (_) => ExerciseFormScreen(autoAssignDateKey: dateKey),
       ),
     );
   }
