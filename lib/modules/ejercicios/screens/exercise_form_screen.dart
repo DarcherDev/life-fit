@@ -5,6 +5,9 @@ import 'package:uuid/uuid.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/core/navigation/app_navigation.dart';
 import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/modules/calentamiento/models/warm_up.dart';
+import 'package:life_fit/modules/calentamiento/models/warm_up_placement.dart';
+import 'package:life_fit/modules/calentamiento/widgets/warm_up_form_section.dart';
 import 'package:life_fit/modules/ejercicios/widgets/exercise_card_preview.dart';
 import 'package:life_fit/shared/models/checklist_item.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
@@ -47,8 +50,12 @@ class _ExerciseFormScreenState extends State<ExerciseFormScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _scrollController = ScrollController();
+  final _warmUpDescriptionController = TextEditingController();
+  final _warmUpMinutesController = TextEditingController();
   final _items = <_ExerciseFormItem>[];
   final _uuid = const Uuid();
+  var _warmUpEnabled = false;
+  var _warmUpPlacement = WarmUpPlacement.start;
 
   bool get _isEditing => widget.routine != null;
 
@@ -66,6 +73,12 @@ class _ExerciseFormScreenState extends State<ExerciseFormScreen> {
           series: item.series,
           repetitions: item.repetitions,
         ));
+      }
+      if (routine.warmUp != null) {
+        _warmUpEnabled = true;
+        _warmUpDescriptionController.text = routine.warmUp!.description;
+        _warmUpMinutesController.text = routine.warmUp!.minutes.toString();
+        _warmUpPlacement = routine.warmUpPlacement;
       }
     }
   }
@@ -93,6 +106,8 @@ class _ExerciseFormScreenState extends State<ExerciseFormScreen> {
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
+    _warmUpDescriptionController.dispose();
+    _warmUpMinutesController.dispose();
     _scrollController.dispose();
     for (final item in _items) {
       item.titleController.dispose();
@@ -186,6 +201,20 @@ class _ExerciseFormScreenState extends State<ExerciseFormScreen> {
     });
   }
 
+  WarmUp? _warmUpFromForm() {
+    if (!_warmUpEnabled) {
+      return null;
+    }
+
+    final description = _warmUpDescriptionController.text.trim();
+    final minutes = _parsePositiveInt(_warmUpMinutesController.text);
+    if (description.isEmpty || minutes == null) {
+      return null;
+    }
+
+    return WarmUp(description: description, minutes: minutes);
+  }
+
   List<ChecklistItem> _validPreviewItems() {
     return _items
         .map(_itemFromForm)
@@ -197,8 +226,9 @@ class _ExerciseFormScreenState extends State<ExerciseFormScreen> {
     final title = _titleController.text.trim();
     final description = _descriptionController.text.trim();
     final items = _validPreviewItems();
+    final warmUp = _warmUpFromForm();
 
-    if (title.isEmpty && description.isEmpty && items.isEmpty) {
+    if (title.isEmpty && description.isEmpty && items.isEmpty && warmUp == null) {
       return null;
     }
 
@@ -207,7 +237,16 @@ class _ExerciseFormScreenState extends State<ExerciseFormScreen> {
       title: title.isEmpty ? l10n.noTitle : title,
       description: description,
       items: items,
+      warmUp: warmUp,
+      warmUpPlacement: _warmUpPlacement,
     );
+  }
+
+  String? _validateWarmUpMinutes(String? value, AppLocalizations l10n) {
+    if (!_warmUpEnabled) {
+      return null;
+    }
+    return _validateSeries(value, l10n);
   }
 
   String? _validateSeries(String? value, AppLocalizations l10n) {
@@ -232,6 +271,7 @@ class _ExerciseFormScreenState extends State<ExerciseFormScreen> {
     }
 
     final validItems = _validPreviewItems();
+    final warmUp = _warmUpFromForm();
 
     if (validItems.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -251,11 +291,20 @@ class _ExerciseFormScreenState extends State<ExerciseFormScreen> {
       return;
     }
 
+    if (_warmUpEnabled && warmUp == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.completeWarmUpFields)),
+      );
+      return;
+    }
+
     final card = RoutineCard(
       id: widget.routine?.id ?? _uuid.v4(),
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
       items: validItems,
+      warmUp: warmUp,
+      warmUpPlacement: _warmUpPlacement,
     );
 
     await _storage.upsertRoutineCard(card);
@@ -330,6 +379,21 @@ class _ExerciseFormScreenState extends State<ExerciseFormScreen> {
                 border: const OutlineInputBorder(),
               ),
               onChanged: (_) => setState(() {}),
+            ),
+            const SizedBox(height: 24),
+            WarmUpFormSection(
+              enabled: _warmUpEnabled,
+              onEnabledChanged: (value) {
+                setState(() => _warmUpEnabled = value);
+              },
+              descriptionController: _warmUpDescriptionController,
+              minutesController: _warmUpMinutesController,
+              placement: _warmUpPlacement,
+              onPlacementChanged: (value) {
+                setState(() => _warmUpPlacement = value);
+              },
+              validateMinutes: (value) => _validateWarmUpMinutes(value, l10n),
+              onFieldsChanged: () => setState(() {}),
             ),
             const SizedBox(height: 24),
             Text(

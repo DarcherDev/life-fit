@@ -494,6 +494,72 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'¡Rutina completada! 🎉'**
   String get routineCompleted;
+
+  /// No description provided for @warmUpTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Calentamiento'**
+  String get warmUpTitle;
+
+  /// No description provided for @warmUpEnableSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Caminadora, bici estática, elíptica, etc.'**
+  String get warmUpEnableSubtitle;
+
+  /// No description provided for @warmUpDescriptionLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Actividad'**
+  String get warmUpDescriptionLabel;
+
+  /// No description provided for @warmUpDescriptionHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Caminadora inclinada'**
+  String get warmUpDescriptionHint;
+
+  /// No description provided for @warmUpMinutesLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Tiempo (minutos)'**
+  String get warmUpMinutesLabel;
+
+  /// No description provided for @warmUpMinutesHint.
+  ///
+  /// In es, this message translates to:
+  /// **'10'**
+  String get warmUpMinutesHint;
+
+  /// No description provided for @warmUpPlacementTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuándo hacerlo?'**
+  String get warmUpPlacementTitle;
+
+  /// No description provided for @warmUpPlacementStart.
+  ///
+  /// In es, this message translates to:
+  /// **'Al inicio'**
+  String get warmUpPlacementStart;
+
+  /// No description provided for @warmUpPlacementEnd.
+  ///
+  /// In es, this message translates to:
+  /// **'Al final'**
+  String get warmUpPlacementEnd;
+
+  /// No description provided for @warmUpMinutesFormat.
+  ///
+  /// In es, this message translates to:
+  /// **'{minutes} min'**
+  String warmUpMinutesFormat(int minutes);
+
+  /// No description provided for @completeWarmUpFields.
+  ///
+  /// In es, this message translates to:
+  /// **'Completa la actividad y los minutos del calentamiento.'**
+  String get completeWarmUpFields;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

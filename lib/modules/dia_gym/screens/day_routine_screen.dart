@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:life_fit/core/navigation/app_navigation.dart';
 import 'package:life_fit/core/services/local_storage_service.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
+import 'package:life_fit/modules/calentamiento/models/warm_up.dart';
 import 'package:life_fit/modules/ejercicios/widgets/exercise_card_preview.dart';
 import 'package:life_fit/modules/rutina/routine_day_module.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
@@ -14,9 +15,8 @@ import 'package:life_fit/shared/widgets/routine_assign_sheet.dart';
 
 /// Pantalla del módulo **Día de gym**.
 ///
-/// Hoy ejecuta el submódulo [RoutineDayModule.ejercicios].
-/// [RoutineDayModule.calentamiento] y [RoutineDayModule.estiramiento]
-/// se integrarán aquí cuando estén implementados.
+/// Hoy ejecuta ejercicios y calentamiento opcional.
+/// [RoutineDayModule.estiramiento] se integrará cuando esté implementado.
 
 class DayRoutineScreen extends StatefulWidget {
   const DayRoutineScreen({
@@ -44,9 +44,17 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
     if (routine == null || routine.items.isEmpty) {
       return false;
     }
-    return routine.items.every(
+
+    final exercisesDone = routine.items.every(
       (item) => _completedItemIds.contains(item.id),
     );
+
+    if (!routine.hasWarmUp) {
+      return exercisesDone;
+    }
+
+    return exercisesDone &&
+        _completedItemIds.contains(warmUpProgressItemId);
   }
 
   @override

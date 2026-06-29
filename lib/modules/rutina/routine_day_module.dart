@@ -1,7 +1,7 @@
 /// Los tres módulos que componen una rutina del día de gym.
 ///
-/// Hoy solo [ejercicios] está implementado. [calentamiento] y [estiramiento]
-/// tienen carpeta propia y se integrarán en [DayRoutineScreen] más adelante.
+/// [ejercicios] y [calentamiento] están integrados en la tarjeta y el día de gym.
+/// [estiramiento] tendrá carpeta propia cuando se implemente.
 enum RoutineDayModule {
   calentamiento,
   ejercicios,

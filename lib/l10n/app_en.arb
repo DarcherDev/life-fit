@@ -66,5 +66,16 @@
   "noRoutineForDay": "No routine assigned for this day",
   "todayRoutine": "Today's routine",
   "finishRoutine": "Finish routine",
-  "routineCompleted": "Routine completed! 🎉"
+  "routineCompleted": "Routine completed! 🎉",
+  "warmUpTitle": "Warm-up",
+  "warmUpEnableSubtitle": "Treadmill, stationary bike, elliptical, etc.",
+  "warmUpDescriptionLabel": "Activity",
+  "warmUpDescriptionHint": "E.g. Incline treadmill",
+  "warmUpMinutesLabel": "Time (minutes)",
+  "warmUpMinutesHint": "10",
+  "warmUpPlacementTitle": "When to do it?",
+  "warmUpPlacementStart": "At the start",
+  "warmUpPlacementEnd": "At the end",
+  "warmUpMinutesFormat": "{minutes} min",
+  "completeWarmUpFields": "Complete the warm-up activity and minutes."
 }

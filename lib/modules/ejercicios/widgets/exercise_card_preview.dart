@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:life_fit/l10n/app_localizations.dart';
+import 'package:life_fit/modules/calentamiento/models/warm_up.dart';
+import 'package:life_fit/modules/calentamiento/models/warm_up_placement.dart';
+import 'package:life_fit/modules/calentamiento/widgets/warm_up_preview_tile.dart';
 import 'package:life_fit/shared/models/checklist_item.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
 import 'package:life_fit/shared/utils/checklist_l10n.dart';
 
-/// Vista previa de una tarjeta del módulo **Ejercicios**.
+/// Vista previa de una tarjeta del módulo **Ejercicios** (con calentamiento opcional).
 class ExerciseCardPreview extends StatelessWidget {
   const ExerciseCardPreview({
     super.key,
@@ -27,6 +30,11 @@ class ExerciseCardPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final warmUp = routine.warmUp;
+    final showWarmUpAtStart =
+        warmUp != null && routine.warmUpPlacement == WarmUpPlacement.start;
+    final showWarmUpAtEnd =
+        warmUp != null && routine.warmUpPlacement == WarmUpPlacement.end;
 
     return Container(
       decoration: BoxDecoration(
@@ -71,15 +79,34 @@ class ExerciseCardPreview extends StatelessWidget {
                         ),
                   ),
                 ],
+                if (showWarmUpAtStart) ...[
+                  SizedBox(height: compact ? 12 : 16),
+                  _buildWarmUpTile(warmUp),
+                ],
                 if (routine.items.isNotEmpty) ...[
                   SizedBox(height: compact ? 12 : 16),
                   ...routine.items.map((item) => _buildItem(context, item, l10n)),
+                ],
+                if (showWarmUpAtEnd) ...[
+                  SizedBox(height: compact ? 12 : 16),
+                  _buildWarmUpTile(warmUp),
                 ],
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildWarmUpTile(WarmUp warmUp) {
+    return WarmUpPreviewTile(
+      warmUp: warmUp,
+      interactive: interactive,
+      isCompleted: completedItemIds.contains(warmUpProgressItemId),
+      onToggle: onItemToggle == null
+          ? null
+          : (completed) => onItemToggle!(warmUpProgressItemId, completed),
     );
   }
 

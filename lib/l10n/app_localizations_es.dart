@@ -218,4 +218,39 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get routineCompleted => '¡Rutina completada! 🎉';
+
+  @override
+  String get warmUpTitle => 'Calentamiento';
+
+  @override
+  String get warmUpEnableSubtitle => 'Caminadora, bici estática, elíptica, etc.';
+
+  @override
+  String get warmUpDescriptionLabel => 'Actividad';
+
+  @override
+  String get warmUpDescriptionHint => 'Ej. Caminadora inclinada';
+
+  @override
+  String get warmUpMinutesLabel => 'Tiempo (minutos)';
+
+  @override
+  String get warmUpMinutesHint => '10';
+
+  @override
+  String get warmUpPlacementTitle => '¿Cuándo hacerlo?';
+
+  @override
+  String get warmUpPlacementStart => 'Al inicio';
+
+  @override
+  String get warmUpPlacementEnd => 'Al final';
+
+  @override
+  String warmUpMinutesFormat(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get completeWarmUpFields => 'Completa la actividad y los minutos del calentamiento.';
 }
