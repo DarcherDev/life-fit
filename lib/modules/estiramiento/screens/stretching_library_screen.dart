@@ -8,7 +8,9 @@ import 'package:life_fit/modules/estiramiento/screens/stretching_template_form_s
 import 'package:life_fit/shared/widgets/confirm_dialog.dart';
 
 class StretchingLibraryScreen extends StatefulWidget {
-  const StretchingLibraryScreen({super.key});
+  const StretchingLibraryScreen({super.key, this.creationMode = false});
+
+  final bool creationMode;
 
   @override
   State<StretchingLibraryScreen> createState() =>
@@ -23,6 +25,13 @@ class _StretchingLibraryScreenState extends State<StretchingLibraryScreen> {
   void initState() {
     super.initState();
     _load();
+    if (widget.creationMode) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _templates.isEmpty) {
+          _openForm();
+        }
+      });
+    }
   }
 
   void _load() {
@@ -30,12 +39,21 @@ class _StretchingLibraryScreenState extends State<StretchingLibraryScreen> {
   }
 
   Future<void> _openForm({StretchingTemplate? template}) async {
-    final saved = await Navigator.of(context).push<bool>(
-      MaterialPageRoute<bool>(
+    final createdId = await Navigator.of(context).push<String>(
+      MaterialPageRoute<String>(
         builder: (_) => StretchingTemplateFormScreen(template: template),
       ),
     );
-    if (saved == true) {
+    if (!mounted) {
+      return;
+    }
+
+    if (widget.creationMode) {
+      Navigator.of(context).pop(createdId);
+      return;
+    }
+
+    if (createdId != null) {
       _load();
     }
   }
@@ -71,11 +89,13 @@ class _StretchingLibraryScreenState extends State<StretchingLibraryScreen> {
 
     return AppScaffold(
       title: l10n.stretchingLibraryTitle,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openForm(),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.newStretchingTemplate),
-      ),
+      floatingActionButton: widget.creationMode
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: () => _openForm(),
+              icon: const Icon(Icons.add),
+              label: Text(l10n.newStretchingTemplate),
+            ),
       body: _templates.isEmpty
           ? Center(
               child: Padding(

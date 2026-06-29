@@ -109,7 +109,7 @@ class _ExerciseTemplateFormScreenState
 
     await _storage.upsertExerciseTemplate(template);
     if (mounted) {
-      Navigator.of(context).pop(true);
+      Navigator.of(context).pop(template.id);
     }
   }
 

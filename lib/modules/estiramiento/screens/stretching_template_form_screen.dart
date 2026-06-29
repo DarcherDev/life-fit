@@ -67,7 +67,7 @@ class _StretchingTemplateFormScreenState
 
     await _storage.upsertStretchingTemplate(template);
     if (mounted) {
-      Navigator.of(context).pop(true);
+      Navigator.of(context).pop(template.id);
     }
   }
 

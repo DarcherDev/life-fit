@@ -8,7 +8,9 @@ import 'package:life_fit/modules/calentamiento/screens/warm_up_template_form_scr
 import 'package:life_fit/shared/widgets/confirm_dialog.dart';
 
 class WarmUpLibraryScreen extends StatefulWidget {
-  const WarmUpLibraryScreen({super.key});
+  const WarmUpLibraryScreen({super.key, this.creationMode = false});
+
+  final bool creationMode;
 
   @override
   State<WarmUpLibraryScreen> createState() => _WarmUpLibraryScreenState();
@@ -22,6 +24,13 @@ class _WarmUpLibraryScreenState extends State<WarmUpLibraryScreen> {
   void initState() {
     super.initState();
     _load();
+    if (widget.creationMode) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _templates.isEmpty) {
+          _openForm();
+        }
+      });
+    }
   }
 
   void _load() {
@@ -29,12 +38,21 @@ class _WarmUpLibraryScreenState extends State<WarmUpLibraryScreen> {
   }
 
   Future<void> _openForm({WarmUpTemplate? template}) async {
-    final saved = await Navigator.of(context).push<bool>(
-      MaterialPageRoute<bool>(
+    final createdId = await Navigator.of(context).push<String>(
+      MaterialPageRoute<String>(
         builder: (_) => WarmUpTemplateFormScreen(template: template),
       ),
     );
-    if (saved == true) {
+    if (!mounted) {
+      return;
+    }
+
+    if (widget.creationMode) {
+      Navigator.of(context).pop(createdId);
+      return;
+    }
+
+    if (createdId != null) {
       _load();
     }
   }
@@ -70,11 +88,13 @@ class _WarmUpLibraryScreenState extends State<WarmUpLibraryScreen> {
 
     return AppScaffold(
       title: l10n.warmUpLibraryTitle,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openForm(),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.newWarmUpTemplate),
-      ),
+      floatingActionButton: widget.creationMode
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: () => _openForm(),
+              icon: const Icon(Icons.add),
+              label: Text(l10n.newWarmUpTemplate),
+            ),
       body: _templates.isEmpty
           ? Center(
               child: Padding(

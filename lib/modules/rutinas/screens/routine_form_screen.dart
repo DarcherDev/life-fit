@@ -80,9 +80,11 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     final l10n = AppLocalizations.of(context);
     final templates = _storage.getWarmUpTemplates();
     if (templates.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.warmUpLibraryEmpty)),
-      );
+      final createdId = await AppNavigation.openWarmUpLibraryForCreation(context);
+      if (!mounted || createdId == null) {
+        return;
+      }
+      setState(() => _warmUpId = createdId);
       return;
     }
 
@@ -110,9 +112,16 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     final l10n = AppLocalizations.of(context);
     final templates = _storage.getExerciseTemplates();
     if (templates.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.exerciseLibraryEmpty)),
-      );
+      final createdId =
+          await AppNavigation.openExerciseLibraryForCreation(context);
+      if (!mounted || createdId == null) {
+        return;
+      }
+      setState(() {
+        _exerciseSlots.add(
+          RoutineExerciseSlot(slotId: _uuid.v4(), exerciseId: createdId),
+        );
+      });
       return;
     }
 
@@ -147,9 +156,16 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     final l10n = AppLocalizations.of(context);
     final templates = _storage.getStretchingTemplates();
     if (templates.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.stretchingLibraryEmpty)),
-      );
+      final createdId =
+          await AppNavigation.openStretchingLibraryForCreation(context);
+      if (!mounted || createdId == null) {
+        return;
+      }
+      setState(() {
+        _stretchingSlots.add(
+          RoutineStretchingSlot(slotId: _uuid.v4(), stretchingId: createdId),
+        );
+      });
       return;
     }
 

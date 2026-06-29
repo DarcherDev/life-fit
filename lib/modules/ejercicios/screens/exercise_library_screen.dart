@@ -9,7 +9,9 @@ import 'package:life_fit/shared/utils/template_l10n.dart';
 import 'package:life_fit/shared/widgets/confirm_dialog.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
-  const ExerciseLibraryScreen({super.key});
+  const ExerciseLibraryScreen({super.key, this.creationMode = false});
+
+  final bool creationMode;
 
   @override
   State<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
@@ -23,6 +25,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   void initState() {
     super.initState();
     _load();
+    if (widget.creationMode) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _templates.isEmpty) {
+          _openForm();
+        }
+      });
+    }
   }
 
   void _load() {
@@ -30,12 +39,21 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   Future<void> _openForm({ExerciseTemplate? template}) async {
-    final saved = await Navigator.of(context).push<bool>(
-      MaterialPageRoute<bool>(
+    final createdId = await Navigator.of(context).push<String>(
+      MaterialPageRoute<String>(
         builder: (_) => ExerciseTemplateFormScreen(template: template),
       ),
     );
-    if (saved == true) {
+    if (!mounted) {
+      return;
+    }
+
+    if (widget.creationMode) {
+      Navigator.of(context).pop(createdId);
+      return;
+    }
+
+    if (createdId != null) {
       _load();
     }
   }
@@ -71,11 +89,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
     return AppScaffold(
       title: l10n.exerciseLibraryTitle,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openForm(),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.newExerciseTemplate),
-      ),
+      floatingActionButton: widget.creationMode
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: () => _openForm(),
+              icon: const Icon(Icons.add),
+              label: Text(l10n.newExerciseTemplate),
+            ),
       body: _templates.isEmpty
           ? Center(
               child: Padding(
