@@ -43,40 +43,61 @@ class StretchingPreviewTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (interactive)
-            Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: Checkbox(
-                value: isCompleted,
-                activeColor: _accentColor,
-                onChanged: (value) => onToggle?.call(value ?? false),
-              ),
-            )
-          else
-            const Padding(
-              padding: EdgeInsets.only(top: 2, right: 12),
-              child: Icon(Icons.self_improvement, color: _accentColor, size: 20),
-            ),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.description,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    decoration: isCompleted ? TextDecoration.lineThrough : null,
-                  ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: interactive && onToggle != null
+                    ? () => onToggle!(!isCompleted)
+                    : null,
+                borderRadius: BorderRadius.circular(8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (interactive)
+                      AbsorbPointer(
+                        child: Checkbox(
+                          value: isCompleted,
+                          activeColor: _accentColor,
+                          onChanged: (_) {},
+                        ),
+                      )
+                    else
+                      const Padding(
+                        padding: EdgeInsets.only(top: 2, right: 12),
+                        child: Icon(
+                          Icons.self_improvement,
+                          color: _accentColor,
+                          size: 20,
+                        ),
+                      ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.description,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              decoration:
+                                  isCompleted ? TextDecoration.lineThrough : null,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            l10n.stretchingRepetitionsFormat(item.repetitions),
+                            style: TextStyle(
+                              color: colorScheme.onSurfaceVariant,
+                              decoration:
+                                  isCompleted ? TextDecoration.lineThrough : null,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  l10n.stretchingRepetitionsFormat(item.repetitions),
-                  style: TextStyle(
-                    color: colorScheme.onSurfaceVariant,
-                    decoration: isCompleted ? TextDecoration.lineThrough : null,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
           if (onReplace != null)

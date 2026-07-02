@@ -236,56 +236,71 @@ class RoutineCardPreview extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (interactive)
-            Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: Checkbox(
-                value: isCompleted,
-                activeColor: _accentColor,
-                onChanged: (value) {
-                  onItemToggle?.call(item.slotId, value ?? false);
-                },
-              ),
-            )
-          else
-            Container(
-              width: 18,
-              height: 18,
-              margin: const EdgeInsets.only(top: 3, right: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: colorScheme.outline, width: 2),
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    decoration:
-                        isCompleted ? TextDecoration.lineThrough : null,
-                    color: item.isMissing
-                        ? colorScheme.error
-                        : (isCompleted
-                            ? colorScheme.outline
-                            : colorScheme.onSurface),
-                  ),
-                ),
-                if (subtitle.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      color: colorScheme.onSurfaceVariant,
-                      decoration:
-                          isCompleted ? TextDecoration.lineThrough : null,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: interactive && onItemToggle != null
+                    ? () => onItemToggle!(item.slotId, !isCompleted)
+                    : null,
+                borderRadius: BorderRadius.circular(8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (interactive)
+                      AbsorbPointer(
+                        child: Checkbox(
+                          value: isCompleted,
+                          activeColor: _accentColor,
+                          onChanged: (_) {},
+                        ),
+                      )
+                    else
+                      Container(
+                        width: 18,
+                        height: 18,
+                        margin: const EdgeInsets.only(top: 3, right: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: colorScheme.outline, width: 2),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              decoration: isCompleted
+                                  ? TextDecoration.lineThrough
+                                  : null,
+                              color: item.isMissing
+                                  ? colorScheme.error
+                                  : (isCompleted
+                                      ? colorScheme.outline
+                                      : colorScheme.onSurface),
+                            ),
+                          ),
+                          if (subtitle.isNotEmpty) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              subtitle,
+                              style: TextStyle(
+                                color: colorScheme.onSurfaceVariant,
+                                decoration: isCompleted
+                                    ? TextDecoration.lineThrough
+                                    : null,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ],
+                  ],
+                ),
+              ),
             ),
           ),
           if (canReplace || canEdit)
