@@ -4,6 +4,18 @@ Todos los cambios notables de Life Fit se documentan en este archivo.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el proyecto usa [Semantic Versioning](https://semver.org/lang/es/).
 
+## [2.6.1] - 2026-07-02
+
+**Build:** `2.6.1+13`
+
+### Añadido
+- `release-notes-v2.0.0.md` versionado en el repositorio (notas de la release 2.0.0).
+
+### Cambiado
+- Regla Cursor **`/push`** actualizada: exige commitear `release-notes-vX.Y.Z.md`, recuperar archivos `release-notes-*.md` olvidados y usarlos en `gh release create`.
+
+---
+
 ## [2.6.0] - 2026-07-02
 
 **Build:** `2.6.0+12`
@@ -127,6 +139,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y e
 - Localización en español para fechas (`intl`, `flutter_localizations`).
 - Tests iniciales de almacenamiento y widget de Home.
 
+[2.6.1]: https://github.com/DarcherDev/life-fit/releases/tag/v2.6.1
 [2.6.0]: https://github.com/DarcherDev/life-fit/releases/tag/v2.6.0
 [2.0.0]: https://github.com/DarcherDev/life-fit/releases/tag/v2.0.0
 [1.3.0]: https://github.com/DarcherDev/life-fit/releases/tag/v1.3.0
