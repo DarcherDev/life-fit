@@ -13,6 +13,7 @@ import 'package:life_fit/core/repositories/local/shared_prefs_json_store.dart';
 import 'package:life_fit/core/repositories/routine_repository.dart';
 import 'package:life_fit/core/repositories/stretching_template_repository.dart';
 import 'package:life_fit/core/repositories/warm_up_template_repository.dart';
+import 'package:life_fit/core/services/default_library_seed.dart';
 import 'package:life_fit/core/services/storage_migration.dart';
 import 'package:life_fit/shared/utils/routine_resolver.dart';
 
@@ -39,6 +40,7 @@ class AppRepositories {
   static Future<AppRepositories> init() async {
     final prefs = await SharedPreferences.getInstance();
     await StorageMigration.runIfNeeded(prefs);
+    await DefaultLibrarySeed.runIfNeeded(prefs);
 
     final store = SharedPrefsJsonStore(prefs);
     final assignments = LocalDayAssignmentRepository(store);

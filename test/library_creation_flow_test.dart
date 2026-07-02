@@ -14,7 +14,10 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() async {
-    SharedPreferences.setMockInitialValues({'library_migration_v1_done': true});
+    SharedPreferences.setMockInitialValues({
+      'library_migration_v1_done': true,
+      'default_library_seed_v1_done': true,
+    });
     await AppRepositories.init();
     await ThemeService.instance.init();
     await WeightUnitService.instance.init();

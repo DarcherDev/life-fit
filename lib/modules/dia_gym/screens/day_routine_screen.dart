@@ -289,6 +289,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
                     RoutineCardPreview(
                       routine: resolved,
                       interactive: !_isCelebrating,
+                      pendingItemsFirst: true,
                       completedItemIds: _completedItemIds,
                       onItemToggle: _toggleItem,
                       onExerciseWeightEdit: _editExerciseWeight,

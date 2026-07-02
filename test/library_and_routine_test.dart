@@ -137,7 +137,10 @@ void main() {
   });
 
   test('no elimina plantilla de ejercicio si está en uso', () async {
-    SharedPreferences.setMockInitialValues({});
+    SharedPreferences.setMockInitialValues({
+      'library_migration_v1_done': true,
+      'default_library_seed_v1_done': true,
+    });
     await AppRepositories.init();
     final repos = AppRepositories.instance;
 

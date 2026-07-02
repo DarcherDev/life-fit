@@ -18,6 +18,7 @@ class RoutineCardPreview extends StatelessWidget {
     this.onItemToggle,
     this.onExerciseWeightEdit,
     this.compact = false,
+    this.pendingItemsFirst = false,
   });
 
   final ResolvedRoutine routine;
@@ -26,8 +27,70 @@ class RoutineCardPreview extends StatelessWidget {
   final void Function(String itemId, bool completed)? onItemToggle;
   final void Function(ResolvedExercise exercise)? onExerciseWeightEdit;
   final bool compact;
+  final bool pendingItemsFirst;
 
   static const _accentColor = Color(0xFF16A34A);
+
+  List<Widget> _orderedChecklistItems(
+    BuildContext context,
+    AppLocalizations l10n,
+    ResolvedWarmUp? warmUp,
+    bool showWarmUpAtStart,
+    bool showWarmUpAtEnd,
+  ) {
+    final entries = <_ChecklistEntry>[];
+
+    void addWarmUp(ResolvedWarmUp value) {
+      entries.add(
+        _ChecklistEntry(
+          isCompleted: completedItemIds.contains(warmUpProgressItemId),
+          widget: _buildWarmUpTile(value),
+        ),
+      );
+    }
+
+    if (showWarmUpAtStart && warmUp != null) {
+      addWarmUp(warmUp);
+    }
+
+    for (final item in routine.stretchingItems) {
+      entries.add(
+        _ChecklistEntry(
+          isCompleted: completedItemIds.contains(item.slotId),
+          widget: _buildStretchingTile(item),
+        ),
+      );
+    }
+
+    for (final item in routine.exercises) {
+      entries.add(
+        _ChecklistEntry(
+          isCompleted: completedItemIds.contains(item.slotId),
+          widget: _buildExercise(context, item, l10n),
+        ),
+      );
+    }
+
+    if (showWarmUpAtEnd && warmUp != null) {
+      addWarmUp(warmUp);
+    }
+
+    final ordered = pendingItemsFirst
+        ? [
+            ...entries.where((entry) => !entry.isCompleted),
+            ...entries.where((entry) => entry.isCompleted),
+          ]
+        : entries;
+
+    return ordered
+        .map(
+          (entry) => Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: entry.widget,
+          ),
+        )
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,22 +153,17 @@ class RoutineCardPreview extends StatelessWidget {
                     ),
                   ),
                 ],
-                if (showWarmUpAtStart) ...[
+                if (routine.hasWarmUp ||
+                    routine.stretchingItems.isNotEmpty ||
+                    routine.exercises.isNotEmpty) ...[
                   SizedBox(height: compact ? 12 : 16),
-                  _buildWarmUpTile(warmUp),
-                ],
-                if (routine.stretchingItems.isNotEmpty) ...[
-                  SizedBox(height: compact ? 12 : 16),
-                  ...routine.stretchingItems.map(_buildStretchingTile),
-                ],
-                if (routine.exercises.isNotEmpty) ...[
-                  SizedBox(height: compact ? 12 : 16),
-                  ...routine.exercises
-                      .map((item) => _buildExercise(context, item, l10n)),
-                ],
-                if (showWarmUpAtEnd) ...[
-                  SizedBox(height: compact ? 12 : 16),
-                  _buildWarmUpTile(warmUp),
+                  ..._orderedChecklistItems(
+                    context,
+                    l10n,
+                    warmUp,
+                    showWarmUpAtStart,
+                    showWarmUpAtEnd,
+                  ),
                 ],
               ],
             ),
@@ -153,7 +211,7 @@ class RoutineCardPreview extends StatelessWidget {
         interactive && !item.isMissing && onExerciseWeightEdit != null;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: EdgeInsets.zero,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: colorScheme.surfaceVariant,
@@ -225,4 +283,14 @@ class RoutineCardPreview extends StatelessWidget {
       ),
     );
   }
+}
+
+class _ChecklistEntry {
+  const _ChecklistEntry({
+    required this.isCompleted,
+    required this.widget,
+  });
+
+  final bool isCompleted;
+  final Widget widget;
 }

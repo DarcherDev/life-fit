@@ -7,7 +7,6 @@ import 'package:life_fit/shared/widgets/exercise_weight_dialog.dart';
 import 'package:life_fit/core/navigation/app_navigation.dart';
 import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up_placement.dart';
-import 'package:life_fit/modules/rutinas/widgets/routine_card_preview.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
 import 'package:life_fit/shared/models/routine_exercise_slot.dart';
 import 'package:life_fit/shared/models/routine_stretching_slot.dart';
@@ -62,18 +61,6 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     _titleController.dispose();
     _descriptionController.dispose();
     super.dispose();
-  }
-
-  RoutineCard _buildCard() {
-    return RoutineCard(
-      id: widget.routine?.id ?? 'preview',
-      title: _titleController.text.trim(),
-      description: _descriptionController.text.trim(),
-      exerciseSlots: List.unmodifiable(_exerciseSlots),
-      warmUpId: _warmUpId,
-      warmUpPlacement: _warmUpPlacement,
-      stretchingSlots: List.unmodifiable(_stretchingSlots),
-    );
   }
 
   Future<void> _assignWarmUpFromCreatedId(String? createdId) async {
@@ -419,7 +406,6 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final libraries = _repos.getLibraries();
-    final preview = resolveRoutine(_buildCard(), libraries, l10n: l10n);
     final warmUpTemplate = _warmUpId == null
         ? null
         : libraries.warmUps[_warmUpId];
@@ -427,10 +413,22 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     return AppScaffold(
       title: _isEditing ? l10n.editRoutine : l10n.newRoutine,
       actions: [
-        IconButton(
-          onPressed: _save,
-          icon: const Icon(Icons.check),
-          tooltip: l10n.save,
+        Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: FilledButton(
+            onPressed: _save,
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFF16A34A),
+              foregroundColor: Colors.white,
+              minimumSize: const Size(48, 40),
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: const Icon(Icons.check, size: 28, weight: 700),
+          ),
         ),
       ],
       body: Form(
@@ -450,7 +448,6 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
                 }
                 return null;
               },
-              onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 16),
             TextFormField(
@@ -459,7 +456,6 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
                 labelText: l10n.fieldDescription,
                 border: const OutlineInputBorder(),
               ),
-              onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 24),
             Text(
@@ -527,20 +523,6 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
               onRemove: _removeStretchingSlot,
             ),
             _buildExerciseSlotList(libraries),
-            Text(
-              l10n.previewTitle,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: 12),
-            RoutineCardPreview(routine: preview),
-            const SizedBox(height: 24),
-            FilledButton.icon(
-              onPressed: _save,
-              icon: const Icon(Icons.save),
-              label: Text(l10n.saveRoutine),
-            ),
           ],
         ),
       ),
