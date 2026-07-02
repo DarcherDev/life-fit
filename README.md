@@ -46,6 +46,7 @@ Life Fit te ayuda a organizar tus entrenamientos sin depender de hojas de cálcu
 
 ### Almacenamiento
 - Datos guardados localmente en el dispositivo (`shared_preferences`).
+- Capa de repositorios (`AppRepositories`) con interfaces por dominio; implementaciones en `lib/core/repositories/local/`.
 - Migración automática one-shot desde el formato antiguo (ítems embebidos en rutinas).
 - Sin cuenta ni conexión a internet requerida.
 
@@ -91,7 +92,8 @@ lib/
 ├── core/
 │   ├── home/              # Home con 6 opciones
 │   ├── navigation/        # Navegación centralizada
-│   ├── services/          # LocalStorage, migración, tema, locale, peso
+│   ├── repositories/      # Interfaces y persistencia local (SOLID)
+│   ├── services/          # Migración, tema, locale, peso
 │   └── widgets/           # AppDrawer, AppScaffold
 ├── modules/
 │   ├── calentamiento/     # Biblioteca de calentamientos
@@ -123,6 +125,14 @@ Convención:
 - **+N** — número de build; siempre incrementar al generar un APK instalable.
 
 Historial detallado en [CHANGELOG.md](CHANGELOG.md).
+
+## Novedades de la release 2.0.0
+
+Respecto a la `1.3.0+5`:
+
+- **Arquitectura SOLID en persistencia:** repositorios por dominio con `AppRepositories` como raíz de composición; eliminado el singleton `LocalStorageService`.
+- **Limpieza de código** muerto y regla de diseño actualizada con principios SOLID.
+- **Flujo `/push`** con APK compilado adjunto en cada GitHub Release.
 
 ## Novedades de la release 1.3.0
 

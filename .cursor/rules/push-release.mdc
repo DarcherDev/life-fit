@@ -1,11 +1,13 @@
 ---
-description: Flujo de publicación a GitHub (/push). Revisar commits, README, CHANGELOG, versión y tag.
+description: Flujo de publicación a GitHub (/push). Revisar commits, README, CHANGELOG, compilar APK y release.
 alwaysApply: false
 ---
 
 # /push — Publicar cambios en GitHub
 
 Invocar cuando el usuario diga **`/push`**, **"haz push"** o pida publicar en GitHub.
+
+> **Versión:** el bump de `pubspec.yaml` y `README.md` se hace en **`/commit`** (PATCH / MINOR / MAJOR). En `/push` solo se **lee** la versión ya commiteada; no proponer ni modificar versiones aquí.
 
 ## 1. Auditar cambios
 
@@ -26,78 +28,109 @@ Revisar si hubo cambios en modelos, JSON o claves de almacenamiento:
 
 - `lib/shared/models/`
 - `lib/modules/**/models/`
-- Claves en `LocalStorageService` (`routine_cards`, `day_assignments`, `day_progress`, etc.)
+- Claves en `lib/core/repositories/` o persistencia (`routine_cards`, `day_assignments`, `day_progress`, etc.)
 - Nuevos campos en `RoutineCard`, `ChecklistItem`, `WarmUp`, etc.
 
 Si hay cambios de estructura o persistencia → **actualizar `README.md`** (sección funciones, modelos o estructura del proyecto). El README debe reflejar el estado real del código, no la estructura antigua.
 
-## 3. Versión
+## 3. Documentación obligatoria antes del push
 
-Leer `pubspec.yaml` (`version: X.Y.Z+N`).
+Leer la versión actual en `pubspec.yaml` (`version: X.Y.Z+N`) — ya definida en el último `/commit`.
 
-Si el usuario **no indicó versión**, proponer una siguiendo SemVer del README:
+1. **`CHANGELOG.md`** — nueva sección `[X.Y.Z] - fecha` con Añadido / Cambiado / Corregido (Keep a Changelog), alineada con los commits a publicar.
+2. **`README.md`** — actualizar novedades o estructura si aplica (la línea `Versión actual` debe coincidir con `pubspec.yaml`; si no, corregirla sin hacer bump).
 
-| Tipo de cambio | Bump | Ejemplo |
-|----------------|------|---------|
-| Bugfix | PATCH | `1.1.0` → `1.1.1` |
-| Nueva función | MINOR | `1.1.0` → `1.2.0` |
-| Cambio incompatible | MAJOR | `1.x` → `2.0.0` |
+Hacer commit de docs solo si hubo cambios en CHANGELOG o README como parte de este flujo.
 
-Siempre incrementar el **build number** (`+N`) al publicar.
-
-**Preguntar al usuario** la versión propuesta antes de aplicarla, salvo que ya la haya dado explícitamente.
-
-## 4. Documentación obligatoria antes del push
-
-1. **`CHANGELOG.md`** — nueva sección `[X.Y.Z] - fecha` con Añadido / Cambiado / Corregido (Keep a Changelog).
-2. **`README.md`** — actualizar `Versión actual`, novedades o estructura si aplica.
-3. **`pubspec.yaml`** — alinear `version` con la release.
-
-Hacer commit de docs/versión solo si el usuario lo pidió o es parte del flujo `/push` acordado.
-
-## 5. Validar
+## 4. Validar
 
 ```bash
 flutter analyze
 flutter test
 ```
 
-No hacer push si fallan tests o analyze, salvo que el usuario acepte explícitamente.
+No continuar si fallan tests o analyze, salvo que el usuario acepte explícitamente.
 
-## 6. Push y release
+## 5. Push
 
 ```bash
 git push -u origin HEAD
-git push origin vX.Y.Z   # si se creó tag
 ```
 
-### Tag y GitHub Release
+Si se commiteó documentación en el paso 3, incluir ese commit en el push.
 
-- **Si hay correcciones de bug** (sección *Corregido* en CHANGELOG): crear tag y release obligatoriamente.
+## 6. Compilar APK y crear release
+
+**Orden obligatorio:** compilar el APK **antes** de crear el tag y la release. La release debe incluir el binario instalable para que cualquiera pueda descargarlo y probarlo.
+
+### 6.1 Compilar APK
+
+```bash
+flutter build apk --release
+```
+
+El artefacto queda en:
+
+```
+build/app/outputs/flutter-apk/app-release.apk
+```
+
+Renombrar para la release (opcional pero recomendado):
+
+```
+life-fit-vX.Y.Z.apk
+```
+
+No crear tag ni release si la compilación falla.
+
+### 6.2 Tag
+
+Usar la versión **X.Y.Z** leída de `pubspec.yaml` (sin el build number):
 
 ```bash
 git tag -a vX.Y.Z -m "vX.Y.Z"
-gh release create vX.Y.Z --title "vX.Y.Z" --notes "$(cat <<'EOF'
+git push origin vX.Y.Z
+```
+
+### 6.3 GitHub Release con APK
+
+Crear la release con notas basadas en el CHANGELOG y **adjuntar el APK**:
+
+```bash
+gh release create vX.Y.Z \
+  --title "vX.Y.Z" \
+  --notes-file CHANGELOG_SNIPPET.md \
+  build/app/outputs/flutter-apk/app-release.apk
+```
+
+En PowerShell, si `gh release create` no acepta bien el heredoc, preparar un archivo temporal con las notas (resumen de la sección `[X.Y.Z]` del CHANGELOG + test plan) y pasarlo con `--notes-file`.
+
+**Contenido mínimo de las notas de release:**
+
+```markdown
 ## Resumen
-- ...
+- (bullets extraídos del CHANGELOG de esta versión)
+
+## Instalación
+1. Descargar `app-release.apk` (o `life-fit-vX.Y.Z.apk`) de los assets de esta release.
+2. Instalar en Android (permitir orígenes desconocidos si aplica).
 
 ## Test plan
 - [ ] ...
-EOF
-)"
 ```
 
-- Si solo hay features (MINOR) sin bugs: sugerir tag + release; crear si el usuario confirma o pidió release completa.
+- **Si hay correcciones de bug** (sección *Corregido* en CHANGELOG): tag + release con APK son **obligatorios**.
+- Si solo hay features o refactors: crear tag + release con APK igualmente (el APK es el entregable principal de cada release).
 
 ## 7. Respuesta al usuario
 
 Entregar:
 
 1. Resumen de commits incluidos en el push.
-2. Versión publicada y build number.
+2. Versión publicada (`X.Y.Z+N` leída de `pubspec.yaml`) y tag `vX.Y.Z`.
 3. Cambios hechos en README / CHANGELOG.
-4. URL del release (si se creó).
-5. Recordatorio de APK si hubo bump de versión visible.
+4. Confirmación de que el APK se compiló y se adjuntó a la release.
+5. URL de la release en GitHub (descarga directa del APK).
 
 ## Ejemplo — nuevo campo en modelo
 

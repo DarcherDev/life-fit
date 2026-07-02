@@ -4,6 +4,22 @@ Todos los cambios notables de Life Fit se documentan en este archivo.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el proyecto usa [Semantic Versioning](https://semver.org/lang/es/).
 
+## [2.0.0] - 2026-07-02
+
+**Build:** `2.0.0+6`
+
+### Cambiado
+- **Persistencia SOLID:** `LocalStorageService` sustituido por capa de repositorios (`AppRepositories`) con interfaces por dominio (ejercicios, estiramientos, calentamiento, rutinas, asignaciones, progreso).
+- Pantallas y flujos migrados a dependencias tipadas; `RoutineAssignSheet` recibe la lista de rutinas como parámetro.
+- `resolveTodayGymEntry` acepta repositorios de asignación y rutinas en lugar del singleton monolítico.
+- Regla Cursor **`diseno-reutilizable`** ampliada con principios SOLID (SRP, OCP, LSP, ISP, DIP).
+- Regla Cursor **`/push`** actualizada: versionamiento en `/commit`; release con APK compilado adjunto.
+
+### Eliminado
+- Código muerto: `template_search.dart`, `checklist_l10n.dart`, `warm_up_form_section.dart`, constante `routineDayModuleOrder` sin uso.
+
+---
+
 ## [1.3.0] - 2026-06-29
 
 **Build:** `1.3.0+5`
