@@ -11,16 +11,25 @@ Life Fit te ayuda a organizar tus entrenamientos sin depender de hojas de cálcu
 
 ## Funciones principales
 
+### Home
+- Anillo de progreso de la rutina de hoy (ítems completados / total) con acceso al día de gym.
+- Acceso inteligente al día de gym según el estado del día (rutina asignada, selector o creación).
+
 ### Día de gym
 - Acceso inteligente desde Home según el estado del día:
   - Si ya hay rutina asignada → abre la sesión directamente.
   - Si hay rutinas pero hoy no está asignada → selector para elegir y asignar.
   - Si no hay rutinas creadas → formulario para crear una y asignarla al instante.
 - Checklist por ejercicio, estiramiento y calentamiento (datos resueltos desde bibliotecas).
+- Marcar ítem tocando toda la fila del checklist.
+- Editar series, repeticiones y peso del ejercicio en la sesión.
+- Reemplazar ejercicio, estiramiento o calentamiento por otro de la biblioteca.
 - Confetti al completar la rutina o pulsar **Terminar rutina**.
 
 ### Bibliotecas (Ejercicios, Estiramientos, Calentamiento)
 - CRUD independiente para cada tipo de ítem reutilizable.
+- **Catálogo inicial** al instalar la app por primera vez.
+- **Buscador** con filtrado en tiempo real y botón para crear ítem desde la búsqueda.
 - **Ejercicio:** título, series, repeticiones, descripción opcional, **peso opcional** (kg/lb según ajustes).
 - **Estiramiento:** descripción y repeticiones.
 - **Calentamiento:** descripción y minutos.
@@ -40,9 +49,9 @@ Life Fit te ayuda a organizar tus entrenamientos sin depender de hojas de cálcu
 - Opción de quitar la asignación de un día.
 
 ### Ajustes (drawer)
-- Tema claro, oscuro o seguir el sistema.
-- Idioma español / inglés.
-- Unidad de peso: kilogramos o libras (los datos se guardan siempre en kg).
+- **Ajustes** en diálogo modal: tema claro, oscuro o seguir el sistema; idioma español / inglés; unidad de peso kg/lb.
+- **Mi proceso:** edad, altura y peso corporal persistentes en el dispositivo.
+- **Acerca de:** versión de la app y enlace a la licencia.
 
 ### Almacenamiento
 - Datos guardados localmente en el dispositivo (`shared_preferences`).
@@ -62,6 +71,7 @@ Las rutinas guardan **referencias por ID**, no copias de los ítems.
 | `routine_cards` | Rutinas con slots (`RoutineExerciseSlot`, `RoutineStretchingSlot`, `warmUpId`) |
 | `day_assignments` | Rutina asignada por fecha |
 | `day_progress` | Ítems completados por `slotId` |
+| `personal_profile` | Edad, altura y peso corporal del usuario |
 
 El helper `resolveRoutine` une rutina + bibliotecas en runtime para preview y día de gym.
 
@@ -84,16 +94,20 @@ El helper `resolveRoutine` une rutina + bibliotecas en runtime para preview y d�
 | `intl` + `flutter_localizations` | Fechas y textos en español |
 | `confetti` | Animación al completar rutina |
 | `uuid` | Identificadores únicos |
+| `package_info_plus` | Versión de la app en Acerca de |
 
 ## Estructura del proyecto
 
 ```
 lib/
 ├── core/
-│   ├── home/              # Home con 6 opciones
+│   ├── about/             # Licencia y diálogo Acerca de
+│   ├── home/              # Home con anillo de progreso y 6 opciones
 │   ├── navigation/        # Navegación centralizada
+│   ├── profile/           # Mi proceso (perfil personal)
 │   ├── repositories/      # Interfaces y persistencia local (SOLID)
-│   ├── services/          # Migración, tema, locale, peso
+│   ├── services/          # Migración, tema, locale, peso, perfil
+│   ├── settings/          # Panel de ajustes (diálogo)
 │   └── widgets/           # AppDrawer, AppScaffold
 ├── modules/
 │   ├── calentamiento/     # Biblioteca de calentamientos
@@ -105,7 +119,7 @@ lib/
 └── shared/
     ├── models/            # RoutineCard, slots, ResolvedRoutine
     ├── utils/             # routine_resolver, búsqueda
-    └── widgets/           # LibraryPickerSheet, RoutineAssignSheet
+    └── widgets/           # LibraryPickerSheet, LibrarySearchableList, RoutineAssignSheet
 ```
 
 ## Versionado
@@ -125,6 +139,16 @@ Convención:
 - **+N** — número de build; siempre incrementar al generar un APK instalable.
 
 Historial detallado en [CHANGELOG.md](CHANGELOG.md).
+
+## Novedades de la release 2.6.0
+
+Respecto a la `2.0.0+6`:
+
+- **Biblioteca base** al instalar con ejercicios, estiramientos y calentamientos de ejemplo.
+- **Día de gym ampliado:** editar series/reps/peso, reemplazar ítems y marcar completado tocando toda la fila.
+- **Búsqueda en bibliotecas** con creación desde búsqueda sin coincidencias.
+- **Ajustes y Mi proceso** en diálogos modales; anillo de progreso en Home.
+- **Licencia** source-available y diálogo Acerca de con versión de la app.
 
 ## Novedades de la release 2.0.0
 

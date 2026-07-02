@@ -4,6 +4,28 @@ Todos los cambios notables de Life Fit se documentan en este archivo.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el proyecto usa [Semantic Versioning](https://semver.org/lang/es/).
 
+## [2.6.0] - 2026-07-02
+
+**Build:** `2.6.0+12`
+
+### Añadido
+- **Biblioteca base al instalar:** catálogo inicial de ejercicios, estiramientos y calentamientos (`default_library_catalog`, `default_library_seed`).
+- **Día de gym:** editar series, repeticiones y peso del ejercicio desde la sesión; reemplazar ejercicio, estiramiento o calentamiento con picker de biblioteca.
+- **Checklist:** marcar ítem completado tocando toda la fila (no solo el checkbox).
+- **Ajustes y Mi proceso:** tema, idioma y unidad de peso en diálogo modal; registro de edad, altura y peso corporal (`PersonalProfileService`).
+- **Búsqueda en bibliotecas:** widget reutilizable `LibrarySearchableList` con filtrado y creación desde búsqueda sin coincidencias.
+- **Home:** anillo de progreso de la rutina de hoy con enlace directo al día de gym.
+- **Licencia:** archivo `LICENSE` (source-available), diálogo Acerca de con versión (`package_info_plus`) y pantalla de licencia.
+
+### Cambiado
+- Drawer simplificado: accesos a Ajustes, Mi proceso y Acerca de en lugar de controles inline.
+- Mejoras de UX en preview de rutina y compositor (alineadas con flujos del día de gym).
+
+### Tests
+- Cobertura para seed de biblioteca, búsqueda en bibliotecas, perfil personal y progreso de rutina.
+
+---
+
 ## [2.0.0] - 2026-07-02
 
 **Build:** `2.0.0+6`
@@ -105,6 +127,8 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y e
 - Localización en español para fechas (`intl`, `flutter_localizations`).
 - Tests iniciales de almacenamiento y widget de Home.
 
+[2.6.0]: https://github.com/DarcherDev/life-fit/releases/tag/v2.6.0
+[2.0.0]: https://github.com/DarcherDev/life-fit/releases/tag/v2.0.0
 [1.3.0]: https://github.com/DarcherDev/life-fit/releases/tag/v1.3.0
 [1.2.0]: https://github.com/DarcherDev/life-fit/releases/tag/v1.2.0
 [1.1.0]: https://github.com/DarcherDev/life-fit/releases/tag/v1.1.0
