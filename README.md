@@ -2,7 +2,7 @@
 
 App personal para gestionar rutinas de gimnasio: mantén bibliotecas reutilizables de ejercicios, estiramientos y calentamientos; compón rutinas por referencia; asígnalas en un calendario y marca tu progreso día a día.
 
-**Versión actual:** `2.6.1+13`  
+**Versión actual:** `2.6.2+14`  
 **Repositorio:** [github.com/DarcherDev/life-fit](https://github.com/DarcherDev/life-fit)
 
 ## Para qué sirve
@@ -127,7 +127,7 @@ lib/
 El número de versión vive en `pubspec.yaml`:
 
 ```yaml
-version: 2.6.1+13
+version: 2.6.2+14
 #        │     └── build number (versionCode Android, debe subir en cada APK)
 #        └── versión visible (versionName)
 ```
@@ -149,45 +149,6 @@ Respecto a la `2.0.0+6`:
 - **Búsqueda en bibliotecas** con creación desde búsqueda sin coincidencias.
 - **Ajustes y Mi proceso** en diálogos modales; anillo de progreso en Home.
 - **Licencia** source-available y diálogo Acerca de con versión de la app.
-
-## Novedades de la release 2.0.0
-
-Respecto a la `1.3.0+5`:
-
-- **Arquitectura SOLID en persistencia:** repositorios por dominio con `AppRepositories` como raíz de composición; eliminado el singleton `LocalStorageService`.
-- **Limpieza de código** muerto y regla de diseño actualizada con principios SOLID.
-- **Flujo `/push`** con APK compilado adjunto en cada GitHub Release.
-
-## Novedades de la release 1.3.0
-
-Respecto a la `1.2.0+3`:
-
-- **Flujos de agente Cursor** documentados: `/commit` (commits locales con versión), `/pull` (sincronizar y fusionar `develop`) y `/push` (publicar en GitHub con CHANGELOG y release).
-- **Estándar de commits** unificado: una línea, español, imperativo, tipos y scopes por módulo.
-
-## Novedades de la release 1.2.0
-
-Respecto a la `1.1.0+2`:
-
-- **Localización** español e inglés con selector en el drawer.
-- **Modo oscuro** y tema persistente (claro / oscuro / sistema).
-- **Bibliotecas reutilizables** y compositor de rutina por referencias, con migración automática.
-- **Drawer de ajustes:** tema, idioma y unidad de peso (kg/lb).
-- **Peso opcional** por ejercicio, editable en biblioteca, compositor y día de gym.
-- **Flujos sin datos:** crear desde biblioteca vacía o desde búsqueda sin coincidencias en el picker.
-- **Correcciones:** crash al editar peso; FAB y navegación en bibliotecas vacías.
-
-## Novedades de la release 1.1.0
-
-Respecto a la `1.0.0+1`:
-
-- **Bibliotecas reutilizables:** ejercicios, estiramientos y calentamientos con CRUD independiente.
-- **Compositor de rutina:** arma rutinas por referencia (sin reescribir series/reps en cada rutina).
-- **Home ampliado:** Día de gym, Rutina, Planificador, Ejercicios, Estiramientos y Calentamiento.
-- **Migración automática** desde rutinas con ítems embebidos al nuevo modelo por referencias.
-- **Flujo inteligente Día de gym:** el coordinador decide si abrir la sesión, mostrar el selector o crear una rutina nueva.
-- **Bottom sheet de asignación mejorado:** media pantalla, lista con scroll y buscador por título/descripción.
-- **Tests** para migración, resolver, borrado en uso, entrada de día de gym y filtrado de búsqueda.
 
 ## Cómo compilar
 

@@ -38,8 +38,24 @@ Si hay cambios de estructura o persistencia → **actualizar `README.md`** (secc
 Leer la versión actual en `pubspec.yaml` (`version: X.Y.Z+N`) — ya definida en el último `/commit`.
 
 1. **`CHANGELOG.md`** — nueva sección `[X.Y.Z] - fecha` con Añadido / Cambiado / Corregido (Keep a Changelog), alineada con los commits a publicar.
-2. **`README.md`** — actualizar novedades o estructura si aplica (la línea `Versión actual` debe coincidir con `pubspec.yaml`; si no, corregirla sin hacer bump).
+2. **`README.md`** — la línea `Versión actual` debe coincidir con `pubspec.yaml`; si no, corregirla sin hacer bump. Actualizar funciones, modelos o estructura solo si aplica (paso 2).
 3. **`release-notes-vX.Y.Z.md`** — archivo versionado en la raíz del repo (sustituir `X.Y.Z` por la versión leída de `pubspec.yaml`). Es la fuente de verdad para las notas de la GitHub Release y debe quedar en el historial de git.
+
+### `README.md` — sección única de novedades
+
+- El README lleva **una sola** sección `## Novedades de la release X.Y.Z`. **No acumular** bloques por cada versión anterior.
+- El historial completo de versiones vive en **`CHANGELOG.md`**, no en el README.
+- **Sustituir** (no añadir debajo) esa sección cuando la release publicada tenga novedades relevantes para el usuario (típicamente MINOR o MAJOR).
+- En releases **PATCH** solo de docs, tooling o proceso (sin cambios visibles en la app), **no tocar** la sección de novedades si el contenido sigue siendo válido.
+- Formato de la sección:
+
+```markdown
+## Novedades de la release X.Y.Z
+
+Respecto a la `A.B.C+N`:
+
+- (bullets resumidos de lo más destacado de esta release)
+```
 
 ### Archivo `release-notes-vX.Y.Z.md`
 
