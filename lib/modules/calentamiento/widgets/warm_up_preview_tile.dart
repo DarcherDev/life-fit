@@ -10,12 +10,14 @@ class WarmUpPreviewTile extends StatelessWidget {
     this.interactive = false,
     this.isCompleted = false,
     this.onToggle,
+    this.onReplace,
   });
 
   final WarmUp warmUp;
   final bool interactive;
   final bool isCompleted;
   final ValueChanged<bool>? onToggle;
+  final VoidCallback? onReplace;
 
   static const _accentColor = Color(0xFFEA580C);
 
@@ -86,6 +88,13 @@ class WarmUpPreviewTile extends StatelessWidget {
               ],
             ),
           ),
+          if (onReplace != null)
+            IconButton(
+              onPressed: onReplace,
+              icon: const Icon(Icons.swap_horiz, size: 20),
+              tooltip: l10n.changeWarmUp,
+              visualDensity: VisualDensity.compact,
+            ),
         ],
       ),
     );

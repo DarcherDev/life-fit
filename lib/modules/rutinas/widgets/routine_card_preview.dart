@@ -17,6 +17,9 @@ class RoutineCardPreview extends StatelessWidget {
     this.interactive = false,
     this.onItemToggle,
     this.onExerciseWeightEdit,
+    this.onExerciseReplace,
+    this.onStretchingReplace,
+    this.onWarmUpReplace,
     this.compact = false,
     this.pendingItemsFirst = false,
   });
@@ -26,6 +29,9 @@ class RoutineCardPreview extends StatelessWidget {
   final bool interactive;
   final void Function(String itemId, bool completed)? onItemToggle;
   final void Function(ResolvedExercise exercise)? onExerciseWeightEdit;
+  final void Function(ResolvedExercise exercise)? onExerciseReplace;
+  final void Function(ResolvedStretching stretching)? onStretchingReplace;
+  final VoidCallback? onWarmUpReplace;
   final bool compact;
   final bool pendingItemsFirst;
 
@@ -174,6 +180,9 @@ class RoutineCardPreview extends StatelessWidget {
   }
 
   Widget _buildWarmUpTile(ResolvedWarmUp warmUp) {
+    final canReplace =
+        interactive && !warmUp.isMissing && onWarmUpReplace != null;
+
     return WarmUpPreviewTile(
       warmUp: WarmUp(description: warmUp.description, minutes: warmUp.minutes),
       interactive: interactive,
@@ -181,10 +190,14 @@ class RoutineCardPreview extends StatelessWidget {
       onToggle: onItemToggle == null
           ? null
           : (completed) => onItemToggle!(warmUpProgressItemId, completed),
+      onReplace: canReplace ? onWarmUpReplace : null,
     );
   }
 
   Widget _buildStretchingTile(ResolvedStretching item) {
+    final canReplace =
+        interactive && !item.isMissing && onStretchingReplace != null;
+
     return StretchingPreviewTile(
       item: StretchingItem(
         id: item.slotId,
@@ -196,6 +209,7 @@ class RoutineCardPreview extends StatelessWidget {
       onToggle: onItemToggle == null
           ? null
           : (completed) => onItemToggle!(item.slotId, completed),
+      onReplace: canReplace ? () => onStretchingReplace!(item) : null,
     );
   }
 
@@ -207,8 +221,10 @@ class RoutineCardPreview extends StatelessWidget {
     final isCompleted = completedItemIds.contains(item.slotId);
     final subtitle = item.localizedSubtitle(l10n);
     final colorScheme = Theme.of(context).colorScheme;
-    final canEditWeight =
+    final canEdit =
         interactive && !item.isMissing && onExerciseWeightEdit != null;
+    final canReplace =
+        interactive && !item.isMissing && onExerciseReplace != null;
 
     return Container(
       margin: EdgeInsets.zero,
@@ -272,12 +288,25 @@ class RoutineCardPreview extends StatelessWidget {
               ],
             ),
           ),
-          if (canEditWeight)
-            IconButton(
-              onPressed: () => onExerciseWeightEdit!(item),
-              icon: const Icon(Icons.edit_outlined, size: 20),
-              tooltip: l10n.editExercise,
-              visualDensity: VisualDensity.compact,
+          if (canReplace || canEdit)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (canReplace)
+                  IconButton(
+                    onPressed: () => onExerciseReplace!(item),
+                    icon: const Icon(Icons.swap_horiz, size: 20),
+                    tooltip: l10n.changeExercise,
+                    visualDensity: VisualDensity.compact,
+                  ),
+                if (canEdit)
+                  IconButton(
+                    onPressed: () => onExerciseWeightEdit!(item),
+                    icon: const Icon(Icons.edit_outlined, size: 20),
+                    tooltip: l10n.editExercise,
+                    visualDensity: VisualDensity.compact,
+                  ),
+              ],
             ),
         ],
       ),

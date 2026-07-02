@@ -10,12 +10,14 @@ class StretchingPreviewTile extends StatelessWidget {
     this.interactive = false,
     this.isCompleted = false,
     this.onToggle,
+    this.onReplace,
   });
 
   final StretchingItem item;
   final bool interactive;
   final bool isCompleted;
   final ValueChanged<bool>? onToggle;
+  final VoidCallback? onReplace;
 
   static const _accentColor = Color(0xFF7C3AED);
 
@@ -77,6 +79,13 @@ class StretchingPreviewTile extends StatelessWidget {
               ],
             ),
           ),
+          if (onReplace != null)
+            IconButton(
+              onPressed: onReplace,
+              icon: const Icon(Icons.swap_horiz, size: 20),
+              tooltip: l10n.changeStretching,
+              visualDensity: VisualDensity.compact,
+            ),
         ],
       ),
     );

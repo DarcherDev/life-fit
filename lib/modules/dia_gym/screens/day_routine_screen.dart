@@ -7,7 +7,11 @@ import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up.dart';
 import 'package:life_fit/modules/rutinas/widgets/routine_card_preview.dart';
+import 'package:life_fit/shared/models/routine_exercise_slot.dart';
+import 'package:life_fit/shared/models/routine_stretching_slot.dart';
 import 'package:life_fit/shared/utils/routine_resolver.dart';
+import 'package:life_fit/shared/utils/template_l10n.dart';
+import 'package:life_fit/shared/widgets/library_picker_sheet.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
 import 'package:life_fit/shared/utils/date_utils.dart';
 import 'package:life_fit/shared/utils/locale_format.dart';
@@ -137,6 +141,201 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
     if (mounted) {
       _loadData();
     }
+  }
+
+  Future<void> _persistRoutine(
+    RoutineCard updated, {
+    String? clearProgressForItemId,
+  }) async {
+    await _repos.routines.upsertRoutineCard(updated);
+    if (clearProgressForItemId != null &&
+        _completedItemIds.contains(clearProgressForItemId)) {
+      await _repos.progress.toggleItem(
+        widget.dateKey,
+        clearProgressForItemId,
+        false,
+      );
+    }
+    if (mounted) {
+      _loadData();
+    }
+  }
+
+  Future<void> _replaceExercise(ResolvedExercise exercise) async {
+    if (_isCelebrating) {
+      return;
+    }
+    final routine = _routine;
+    if (routine == null || exercise.isMissing) {
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context);
+    final templates = _repos.exerciseTemplates.getExerciseTemplates();
+    String? selectedId;
+    if (templates.isEmpty) {
+      selectedId = await AppNavigation.openExerciseLibraryForCreation(context);
+    } else {
+      final selected = await LibraryPickerSheet.show(
+        context,
+        title: l10n.changeExercise,
+        multiSelect: false,
+        selectedIds: [exercise.exerciseId],
+        createButtonLabel: l10n.newExerciseTemplate,
+        onCreateItem: () async =>
+            AppNavigation.openExerciseLibraryToCreate(context),
+        items: templates
+            .map(
+              (item) => LibraryPickerItem(
+                id: item.id,
+                title: item.title,
+                subtitle: item.localizedSubtitle(l10n),
+              ),
+            )
+            .toList(),
+      );
+      if (selected == null || selected.isEmpty) {
+        return;
+      }
+      selectedId = selected.first;
+    }
+
+    if (!mounted || selectedId == null || selectedId == exercise.exerciseId) {
+      return;
+    }
+
+    final updatedSlots = routine.exerciseSlots
+        .map(
+          (slot) => slot.slotId == exercise.slotId
+              ? RoutineExerciseSlot(
+                  slotId: slot.slotId,
+                  exerciseId: selectedId!,
+                )
+              : slot,
+        )
+        .toList();
+
+    await _persistRoutine(
+      routine.copyWith(exerciseSlots: updatedSlots),
+      clearProgressForItemId: exercise.slotId,
+    );
+  }
+
+  Future<void> _replaceStretching(ResolvedStretching stretching) async {
+    if (_isCelebrating) {
+      return;
+    }
+    final routine = _routine;
+    if (routine == null || stretching.isMissing) {
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context);
+    final templates = _repos.stretchingTemplates.getStretchingTemplates();
+    final currentSlot = routine.stretchingSlots.firstWhere(
+      (slot) => slot.slotId == stretching.slotId,
+    );
+    String? selectedId;
+    if (templates.isEmpty) {
+      selectedId =
+          await AppNavigation.openStretchingLibraryForCreation(context);
+    } else {
+      final selected = await LibraryPickerSheet.show(
+        context,
+        title: l10n.changeStretching,
+        multiSelect: false,
+        selectedIds: [currentSlot.stretchingId],
+        createButtonLabel: l10n.newStretchingTemplate,
+        onCreateItem: () async =>
+            AppNavigation.openStretchingLibraryToCreate(context),
+        items: templates
+            .map(
+              (item) => LibraryPickerItem(
+                id: item.id,
+                title: item.description,
+                subtitle: l10n.stretchingRepetitionsFormat(item.repetitions),
+              ),
+            )
+            .toList(),
+      );
+      if (selected == null || selected.isEmpty) {
+        return;
+      }
+      selectedId = selected.first;
+    }
+
+    if (!mounted || selectedId == null) {
+      return;
+    }
+
+    if (selectedId == currentSlot.stretchingId) {
+      return;
+    }
+
+    final updatedSlots = routine.stretchingSlots
+        .map(
+          (slot) => slot.slotId == stretching.slotId
+              ? RoutineStretchingSlot(
+                  slotId: slot.slotId,
+                  stretchingId: selectedId!,
+                )
+              : slot,
+        )
+        .toList();
+
+    await _persistRoutine(
+      routine.copyWith(stretchingSlots: updatedSlots),
+      clearProgressForItemId: stretching.slotId,
+    );
+  }
+
+  Future<void> _replaceWarmUp() async {
+    if (_isCelebrating) {
+      return;
+    }
+    final routine = _routine;
+    if (routine == null || !routine.hasWarmUp) {
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context);
+    final templates = _repos.warmUpTemplates.getWarmUpTemplates();
+    String? selectedId;
+    if (templates.isEmpty) {
+      selectedId = await AppNavigation.openWarmUpLibraryForCreation(context);
+    } else {
+      final selected = await LibraryPickerSheet.show(
+        context,
+        title: l10n.changeWarmUp,
+        multiSelect: false,
+        selectedIds: routine.warmUpId == null ? [] : [routine.warmUpId!],
+        createButtonLabel: l10n.newWarmUpTemplate,
+        onCreateItem: () async =>
+            AppNavigation.openWarmUpLibraryToCreate(context),
+        items: templates
+            .map(
+              (item) => LibraryPickerItem(
+                id: item.id,
+                title: item.description,
+                subtitle: l10n.warmUpMinutesFormat(item.minutes),
+              ),
+            )
+            .toList(),
+      );
+      if (selected == null || selected.isEmpty) {
+        return;
+      }
+      selectedId = selected.first;
+    }
+
+    if (!mounted || selectedId == null || selectedId == routine.warmUpId) {
+      return;
+    }
+
+    await _persistRoutine(
+      routine.copyWith(warmUpId: selectedId),
+      clearProgressForItemId: warmUpProgressItemId,
+    );
   }
 
   Future<void> _finishRoutine() async {
@@ -297,6 +496,9 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
                       completedItemIds: _completedItemIds,
                       onItemToggle: _toggleItem,
                       onExerciseWeightEdit: _editExerciseWeight,
+                      onExerciseReplace: _replaceExercise,
+                      onStretchingReplace: _replaceStretching,
+                      onWarmUpReplace: _replaceWarmUp,
                     ),
                     const SizedBox(height: 24),
                     FilledButton.icon(

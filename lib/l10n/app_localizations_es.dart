@@ -177,6 +177,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get changeRoutine => 'Cambiar rutina';
 
   @override
+  String get changeExercise => 'Cambiar ejercicio';
+
+  @override
+  String get changeStretching => 'Cambiar estiramiento';
+
+  @override
+  String get changeWarmUp => 'Cambiar calentamiento';
+
+  @override
   String get searchRoutineHint => 'Buscar rutina...';
 
   @override

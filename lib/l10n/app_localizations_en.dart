@@ -177,6 +177,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get changeRoutine => 'Change routine';
 
   @override
+  String get changeExercise => 'Change exercise';
+
+  @override
+  String get changeStretching => 'Change stretch';
+
+  @override
+  String get changeWarmUp => 'Change warm-up';
+
+  @override
   String get searchRoutineHint => 'Search routine...';
 
   @override

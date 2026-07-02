@@ -417,6 +417,24 @@ abstract class AppLocalizations {
   /// **'Cambiar rutina'**
   String get changeRoutine;
 
+  /// No description provided for @changeExercise.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar ejercicio'**
+  String get changeExercise;
+
+  /// No description provided for @changeStretching.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar estiramiento'**
+  String get changeStretching;
+
+  /// No description provided for @changeWarmUp.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar calentamiento'**
+  String get changeWarmUp;
+
   /// No description provided for @searchRoutineHint.
   ///
   /// In es, this message translates to:

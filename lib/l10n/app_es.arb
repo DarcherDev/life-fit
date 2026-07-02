@@ -80,6 +80,9 @@
     }
   },
   "changeRoutine": "Cambiar rutina",
+  "changeExercise": "Cambiar ejercicio",
+  "changeStretching": "Cambiar estiramiento",
+  "changeWarmUp": "Cambiar calentamiento",
   "searchRoutineHint": "Buscar rutina...",
   "removeRoutineFromDay": "Quitar rutina del día",
   "noMatchingRoutines": "No hay rutinas que coincidan",
