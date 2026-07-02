@@ -5,6 +5,7 @@ import 'package:life_fit/core/home/home_screen.dart';
 import 'package:life_fit/core/home/locale_prompt_host.dart';
 import 'package:life_fit/core/services/locale_service.dart';
 import 'package:life_fit/core/repositories/app_repositories.dart';
+import 'package:life_fit/core/services/personal_profile_service.dart';
 import 'package:life_fit/core/services/theme_service.dart';
 import 'package:life_fit/core/services/weight_unit_service.dart';
 import 'package:life_fit/core/theme/app_theme.dart';
@@ -16,6 +17,7 @@ Future<void> main() async {
   await LocaleService.instance.init();
   await ThemeService.instance.init();
   await WeightUnitService.instance.init();
+  await PersonalProfileService.instance.init();
   runApp(const LifeFitApp());
 }
 

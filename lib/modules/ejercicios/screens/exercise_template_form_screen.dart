@@ -11,9 +11,14 @@ import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/modules/ejercicios/models/exercise_template.dart';
 
 class ExerciseTemplateFormScreen extends StatefulWidget {
-  const ExerciseTemplateFormScreen({super.key, this.template});
+  const ExerciseTemplateFormScreen({
+    super.key,
+    this.template,
+    this.initialTitle,
+  });
 
   final ExerciseTemplate? template;
+  final String? initialTitle;
 
   @override
   State<ExerciseTemplateFormScreen> createState() =>
@@ -47,6 +52,8 @@ class _ExerciseTemplateFormScreenState
       if (weightText != null) {
         _weightController.text = weightText;
       }
+    } else if (widget.initialTitle != null) {
+      _titleController.text = widget.initialTitle!;
     }
   }
 

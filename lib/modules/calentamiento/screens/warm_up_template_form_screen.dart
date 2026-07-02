@@ -7,9 +7,14 @@ import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up_template.dart';
 
 class WarmUpTemplateFormScreen extends StatefulWidget {
-  const WarmUpTemplateFormScreen({super.key, this.template});
+  const WarmUpTemplateFormScreen({
+    super.key,
+    this.template,
+    this.initialDescription,
+  });
 
   final WarmUpTemplate? template;
+  final String? initialDescription;
 
   @override
   State<WarmUpTemplateFormScreen> createState() =>
@@ -30,6 +35,8 @@ class _WarmUpTemplateFormScreenState extends State<WarmUpTemplateFormScreen> {
     if (template != null) {
       _descriptionController.text = template.description;
       _minutesController.text = template.minutes.toString();
+    } else if (widget.initialDescription != null) {
+      _descriptionController.text = widget.initialDescription!;
     }
   }
 

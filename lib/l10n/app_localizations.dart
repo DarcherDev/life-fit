@@ -225,6 +225,78 @@ abstract class AppLocalizations {
   /// **'Ajustes'**
   String get settingsTitle;
 
+  /// No description provided for @settingsMenuSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tema, idioma y sistema de peso'**
+  String get settingsMenuSubtitle;
+
+  /// No description provided for @myProcessTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi proceso'**
+  String get myProcessTitle;
+
+  /// No description provided for @myProcessSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Edad, altura y peso corporal'**
+  String get myProcessSubtitle;
+
+  /// No description provided for @myProcessDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Registra tus datos físicos para llevar un control personal de tu evolución.'**
+  String get myProcessDescription;
+
+  /// No description provided for @personalAgeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Edad'**
+  String get personalAgeLabel;
+
+  /// No description provided for @personalAgeHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Años'**
+  String get personalAgeHint;
+
+  /// No description provided for @personalHeightLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Altura'**
+  String get personalHeightLabel;
+
+  /// No description provided for @personalHeightHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Centímetros'**
+  String get personalHeightHint;
+
+  /// No description provided for @personalBodyWeightLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Peso corporal'**
+  String get personalBodyWeightLabel;
+
+  /// No description provided for @invalidAge.
+  ///
+  /// In es, this message translates to:
+  /// **'Edad válida entre 1 y 120'**
+  String get invalidAge;
+
+  /// No description provided for @invalidHeight.
+  ///
+  /// In es, this message translates to:
+  /// **'Altura válida mayor que cero'**
+  String get invalidHeight;
+
+  /// No description provided for @profileSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Datos guardados'**
+  String get profileSaved;
+
   /// No description provided for @weightUnitTitle.
   ///
   /// In es, this message translates to:

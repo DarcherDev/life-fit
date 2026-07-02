@@ -56,7 +56,7 @@ void main() {
     expect(find.text('Calentamiento'), findsOneWidget);
   });
 
-  testWidgets('Drawer muestra sección de ajustes', (WidgetTester tester) async {
+  testWidgets('Drawer muestra accesos a ajustes y mi proceso', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         locale: Locale('es'),
@@ -79,10 +79,16 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Ajustes'), findsOneWidget);
+    expect(find.text('Tema, idioma y sistema de peso'), findsOneWidget);
+    expect(find.text('Mi proceso'), findsOneWidget);
+    expect(find.text('Edad, altura y peso corporal'), findsOneWidget);
+    expect(find.text('Tema'), findsNothing);
+
+    await tester.tap(find.text('Ajustes'));
+    await tester.pumpAndSettle();
+
     expect(find.text('Tema'), findsOneWidget);
     expect(find.text('Idioma'), findsOneWidget);
     expect(find.text('Sistema de peso'), findsOneWidget);
-    expect(find.text('Kilogramos'), findsOneWidget);
-    expect(find.text('Libras'), findsOneWidget);
   });
 }

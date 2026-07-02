@@ -6,6 +6,7 @@ import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/modules/estiramiento/models/stretching_template.dart';
 import 'package:life_fit/modules/estiramiento/screens/stretching_template_form_screen.dart';
 import 'package:life_fit/shared/widgets/confirm_dialog.dart';
+import 'package:life_fit/shared/widgets/library_searchable_list.dart';
 
 class StretchingLibraryScreen extends StatefulWidget {
   const StretchingLibraryScreen({
@@ -43,10 +44,16 @@ class _StretchingLibraryScreenState extends State<StretchingLibraryScreen> {
     setState(() => _templates = _stretchingTemplates.getStretchingTemplates());
   }
 
-  Future<void> _openForm({StretchingTemplate? template}) async {
+  Future<void> _openForm({
+    StretchingTemplate? template,
+    String? initialDescription,
+  }) async {
     final createdId = await Navigator.of(context).push<String>(
       MaterialPageRoute<String>(
-        builder: (_) => StretchingTemplateFormScreen(template: template),
+        builder: (_) => StretchingTemplateFormScreen(
+          template: template,
+          initialDescription: initialDescription,
+        ),
       ),
     );
     if (!mounted) {
@@ -75,7 +82,8 @@ class _StretchingLibraryScreenState extends State<StretchingLibraryScreen> {
       return;
     }
 
-    final deleted = await _stretchingTemplates.deleteStretchingTemplate(template.id);
+    final deleted =
+        await _stretchingTemplates.deleteStretchingTemplate(template.id);
     if (!mounted) {
       return;
     }
@@ -103,38 +111,39 @@ class _StretchingLibraryScreenState extends State<StretchingLibraryScreen> {
               icon: const Icon(Icons.add),
               label: Text(l10n.newStretchingTemplate),
             ),
-      body: _templates.isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Text(
-                  l10n.stretchingLibraryEmpty,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            )
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: _templates.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                final template = _templates[index];
-                return Card(
-                  child: ListTile(
-                    title: Text(template.description),
-                    subtitle: Text(
-                      l10n.stretchingRepetitionsFormat(template.repetitions),
-                    ),
-                    onTap: () => _openForm(template: template),
-                    onLongPress: () => _delete(template),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete_outline),
-                      onPressed: () => _delete(template),
-                    ),
-                  ),
-                );
-              },
+      body: LibrarySearchableList<StretchingTemplate>(
+        items: _templates,
+        titleFor: (template) => template.description,
+        subtitleFor: (template) =>
+            l10n.stretchingRepetitionsFormat(template.repetitions),
+        createButtonLabel: l10n.newStretchingTemplate,
+        onCreate: (query) => _openForm(initialDescription: query),
+        emptyLibraryWidget: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Text(
+              l10n.stretchingLibraryEmpty,
+              textAlign: TextAlign.center,
             ),
+          ),
+        ),
+        itemBuilder: (context, template) {
+          return Card(
+            child: ListTile(
+              title: Text(template.description),
+              subtitle: Text(
+                l10n.stretchingRepetitionsFormat(template.repetitions),
+              ),
+              onTap: () => _openForm(template: template),
+              onLongPress: () => _delete(template),
+              trailing: IconButton(
+                icon: const Icon(Icons.delete_outline),
+                onPressed: () => _delete(template),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

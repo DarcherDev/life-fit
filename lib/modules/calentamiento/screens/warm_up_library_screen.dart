@@ -6,6 +6,7 @@ import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up_template.dart';
 import 'package:life_fit/modules/calentamiento/screens/warm_up_template_form_screen.dart';
 import 'package:life_fit/shared/widgets/confirm_dialog.dart';
+import 'package:life_fit/shared/widgets/library_searchable_list.dart';
 
 class WarmUpLibraryScreen extends StatefulWidget {
   const WarmUpLibraryScreen({
@@ -42,10 +43,16 @@ class _WarmUpLibraryScreenState extends State<WarmUpLibraryScreen> {
     setState(() => _templates = _warmUpTemplates.getWarmUpTemplates());
   }
 
-  Future<void> _openForm({WarmUpTemplate? template}) async {
+  Future<void> _openForm({
+    WarmUpTemplate? template,
+    String? initialDescription,
+  }) async {
     final createdId = await Navigator.of(context).push<String>(
       MaterialPageRoute<String>(
-        builder: (_) => WarmUpTemplateFormScreen(template: template),
+        builder: (_) => WarmUpTemplateFormScreen(
+          template: template,
+          initialDescription: initialDescription,
+        ),
       ),
     );
     if (!mounted) {
@@ -102,36 +109,36 @@ class _WarmUpLibraryScreenState extends State<WarmUpLibraryScreen> {
               icon: const Icon(Icons.add),
               label: Text(l10n.newWarmUpTemplate),
             ),
-      body: _templates.isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Text(
-                  l10n.warmUpLibraryEmpty,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            )
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: _templates.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                final template = _templates[index];
-                return Card(
-                  child: ListTile(
-                    title: Text(template.description),
-                    subtitle: Text(l10n.warmUpMinutesFormat(template.minutes)),
-                    onTap: () => _openForm(template: template),
-                    onLongPress: () => _delete(template),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete_outline),
-                      onPressed: () => _delete(template),
-                    ),
-                  ),
-                );
-              },
+      body: LibrarySearchableList<WarmUpTemplate>(
+        items: _templates,
+        titleFor: (template) => template.description,
+        subtitleFor: (template) => l10n.warmUpMinutesFormat(template.minutes),
+        createButtonLabel: l10n.newWarmUpTemplate,
+        onCreate: (query) => _openForm(initialDescription: query),
+        emptyLibraryWidget: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Text(
+              l10n.warmUpLibraryEmpty,
+              textAlign: TextAlign.center,
             ),
+          ),
+        ),
+        itemBuilder: (context, template) {
+          return Card(
+            child: ListTile(
+              title: Text(template.description),
+              subtitle: Text(l10n.warmUpMinutesFormat(template.minutes)),
+              onTap: () => _openForm(template: template),
+              onLongPress: () => _delete(template),
+              trailing: IconButton(
+                icon: const Icon(Icons.delete_outline),
+                onPressed: () => _delete(template),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

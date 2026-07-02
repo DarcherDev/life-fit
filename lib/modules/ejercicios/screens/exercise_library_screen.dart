@@ -7,6 +7,7 @@ import 'package:life_fit/modules/ejercicios/models/exercise_template.dart';
 import 'package:life_fit/modules/ejercicios/screens/exercise_template_form_screen.dart';
 import 'package:life_fit/shared/utils/template_l10n.dart';
 import 'package:life_fit/shared/widgets/confirm_dialog.dart';
+import 'package:life_fit/shared/widgets/library_searchable_list.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
   const ExerciseLibraryScreen({
@@ -43,10 +44,16 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     setState(() => _templates = _exerciseTemplates.getExerciseTemplates());
   }
 
-  Future<void> _openForm({ExerciseTemplate? template}) async {
+  Future<void> _openForm({
+    ExerciseTemplate? template,
+    String? initialTitle,
+  }) async {
     final createdId = await Navigator.of(context).push<String>(
       MaterialPageRoute<String>(
-        builder: (_) => ExerciseTemplateFormScreen(template: template),
+        builder: (_) => ExerciseTemplateFormScreen(
+          template: template,
+          initialTitle: initialTitle,
+        ),
       ),
     );
     if (!mounted) {
@@ -103,36 +110,37 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               icon: const Icon(Icons.add),
               label: Text(l10n.newExerciseTemplate),
             ),
-      body: _templates.isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Text(
-                  l10n.exerciseLibraryEmpty,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            )
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: _templates.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                final template = _templates[index];
-                return Card(
-                  child: ListTile(
-                    title: Text(template.title),
-                    subtitle: Text(template.localizedSubtitle(l10n)),
-                    onTap: () => _openForm(template: template),
-                    onLongPress: () => _delete(template),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete_outline),
-                      onPressed: () => _delete(template),
-                    ),
-                  ),
-                );
-              },
+      body: LibrarySearchableList<ExerciseTemplate>(
+        items: _templates,
+        titleFor: (template) => template.title,
+        subtitleFor: (template) => template.localizedSubtitle(l10n),
+        extraFieldsFor: (template) => [template.description],
+        createButtonLabel: l10n.newExerciseTemplate,
+        onCreate: (query) => _openForm(initialTitle: query),
+        emptyLibraryWidget: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Text(
+              l10n.exerciseLibraryEmpty,
+              textAlign: TextAlign.center,
             ),
+          ),
+        ),
+        itemBuilder: (context, template) {
+          return Card(
+            child: ListTile(
+              title: Text(template.title),
+              subtitle: Text(template.localizedSubtitle(l10n)),
+              onTap: () => _openForm(template: template),
+              onLongPress: () => _delete(template),
+              trailing: IconButton(
+                icon: const Icon(Icons.delete_outline),
+                onPressed: () => _delete(template),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

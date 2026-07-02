@@ -7,9 +7,14 @@ import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/modules/estiramiento/models/stretching_template.dart';
 
 class StretchingTemplateFormScreen extends StatefulWidget {
-  const StretchingTemplateFormScreen({super.key, this.template});
+  const StretchingTemplateFormScreen({
+    super.key,
+    this.template,
+    this.initialDescription,
+  });
 
   final StretchingTemplate? template;
+  final String? initialDescription;
 
   @override
   State<StretchingTemplateFormScreen> createState() =>
@@ -31,6 +36,8 @@ class _StretchingTemplateFormScreenState
     if (template != null) {
       _descriptionController.text = template.description;
       _repetitionsController.text = template.repetitions.toString();
+    } else if (widget.initialDescription != null) {
+      _descriptionController.text = widget.initialDescription!;
     }
   }
 

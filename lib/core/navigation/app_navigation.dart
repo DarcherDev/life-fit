@@ -7,6 +7,8 @@ import 'package:life_fit/modules/ejercicios/screens/exercise_library_screen.dart
 import 'package:life_fit/modules/estiramiento/screens/stretching_library_screen.dart';
 import 'package:life_fit/modules/planificador/screens/planner_screen.dart';
 import 'package:life_fit/modules/rutinas/screens/routines_screen.dart';
+import 'package:life_fit/core/settings/screens/settings_screen.dart';
+import 'package:life_fit/core/profile/screens/my_process_screen.dart';
 import 'package:life_fit/shared/utils/date_utils.dart';
 
 class AppNavigation {
@@ -105,6 +107,18 @@ class AppNavigation {
   static void openPlanner(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute<void>(builder: (_) => const PlannerScreen()),
+    );
+  }
+
+  static void openSettings(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => const SettingsScreen()),
+    );
+  }
+
+  static void openMyProcess(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => const MyProcessScreen()),
     );
   }
 }

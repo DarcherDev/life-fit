@@ -71,6 +71,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTitle => 'Settings';
 
   @override
+  String get settingsMenuSubtitle => 'Theme, language and weight system';
+
+  @override
+  String get myProcessTitle => 'My progress';
+
+  @override
+  String get myProcessSubtitle => 'Age, height and body weight';
+
+  @override
+  String get myProcessDescription => 'Record your physical data to track your personal progress over time.';
+
+  @override
+  String get personalAgeLabel => 'Age';
+
+  @override
+  String get personalAgeHint => 'Years';
+
+  @override
+  String get personalHeightLabel => 'Height';
+
+  @override
+  String get personalHeightHint => 'Centimeters';
+
+  @override
+  String get personalBodyWeightLabel => 'Body weight';
+
+  @override
+  String get invalidAge => 'Enter a valid age between 1 and 120';
+
+  @override
+  String get invalidHeight => 'Enter a valid height greater than zero';
+
+  @override
+  String get profileSaved => 'Profile saved';
+
+  @override
   String get weightUnitTitle => 'Weight system';
 
   @override
