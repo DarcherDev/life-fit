@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:life_fit/l10n/app_localizations.dart';
-import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up_template.dart';
 
 class WarmUpTemplateFormScreen extends StatefulWidget {
@@ -18,7 +18,7 @@ class WarmUpTemplateFormScreen extends StatefulWidget {
 
 class _WarmUpTemplateFormScreenState extends State<WarmUpTemplateFormScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _storage = LocalStorageService.instance;
+  final _warmUpTemplates = AppRepositories.instance.warmUpTemplates;
   final _descriptionController = TextEditingController();
   final _minutesController = TextEditingController();
   final _uuid = const Uuid();
@@ -64,7 +64,7 @@ class _WarmUpTemplateFormScreenState extends State<WarmUpTemplateFormScreen> {
       minutes: minutes,
     );
 
-    await _storage.upsertWarmUpTemplate(template);
+    await _warmUpTemplates.upsertWarmUpTemplate(template);
     if (mounted) {
       Navigator.of(context).pop(template.id);
     }

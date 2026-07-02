@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
-import 'package:life_fit/core/services/local_storage_service.dart';
 import 'package:life_fit/shared/utils/locale_format.dart';
 import 'package:life_fit/shared/utils/routine_search.dart';
 
@@ -14,12 +13,12 @@ class RoutineAssignSheet {
   static Future<String?> show(
     BuildContext context, {
     required DateTime date,
+    required List<RoutineCard> routines,
     String? currentRoutineId,
     bool allowRemove = false,
     String? title,
   }) {
     final l10n = AppLocalizations.of(context);
-    final routines = LocalStorageService.instance.getRoutineCards();
     final formattedDate = formatShortDate(context, date);
     final sheetTitle = title ??
         (currentRoutineId == null

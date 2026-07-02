@@ -5,7 +5,7 @@ import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/shared/widgets/exercise_weight_dialog.dart';
 import 'package:life_fit/core/navigation/app_navigation.dart';
-import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up_placement.dart';
 import 'package:life_fit/modules/rutinas/widgets/routine_card_preview.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
@@ -31,7 +31,7 @@ class RoutineFormScreen extends StatefulWidget {
 
 class _RoutineFormScreenState extends State<RoutineFormScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _storage = LocalStorageService.instance;
+  final _repos = AppRepositories.instance;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _uuid = const Uuid();
@@ -107,7 +107,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
 
   Future<void> _pickWarmUp() async {
     final l10n = AppLocalizations.of(context);
-    final templates = _storage.getWarmUpTemplates();
+    final templates = _repos.warmUpTemplates.getWarmUpTemplates();
     if (templates.isEmpty) {
       await _assignWarmUpFromCreatedId(
         await AppNavigation.openWarmUpLibraryForCreation(context),
@@ -143,7 +143,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
 
   Future<void> _pickExercises() async {
     final l10n = AppLocalizations.of(context);
-    final templates = _storage.getExerciseTemplates();
+    final templates = _repos.exerciseTemplates.getExerciseTemplates();
     if (templates.isEmpty) {
       await _assignExerciseFromCreatedId(
         await AppNavigation.openExerciseLibraryForCreation(context),
@@ -186,7 +186,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
 
   Future<void> _pickStretchings() async {
     final l10n = AppLocalizations.of(context);
-    final templates = _storage.getStretchingTemplates();
+    final templates = _repos.stretchingTemplates.getStretchingTemplates();
     if (templates.isEmpty) {
       await _assignStretchingFromCreatedId(
         await AppNavigation.openStretchingLibraryForCreation(context),
@@ -236,7 +236,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
   }
 
   Future<void> _editExerciseWeight(RoutineExerciseSlot slot) async {
-    final template = _storage.getLibraries().exercises[slot.exerciseId];
+    final template = _repos.getLibraries().exercises[slot.exerciseId];
     if (template == null) {
       return;
     }
@@ -250,7 +250,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
       return;
     }
 
-    await _storage.upsertExerciseTemplate(
+    await _repos.exerciseTemplates.upsertExerciseTemplate(
       template.copyWith(
         weightKg: result.weightKg,
         clearWeightKg: result.weightKg == null,
@@ -345,14 +345,14 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
       stretchingSlots: List.unmodifiable(_stretchingSlots),
     );
 
-    await _storage.upsertRoutineCard(card);
+    await _repos.routines.upsertRoutineCard(card);
     if (!mounted) {
       return;
     }
 
     final autoAssignDateKey = widget.autoAssignDateKey;
     if (autoAssignDateKey != null) {
-      await _storage.saveAssignment(autoAssignDateKey, card.id);
+      await _repos.assignments.saveAssignment(autoAssignDateKey, card.id);
       if (!mounted) {
         return;
       }
@@ -418,7 +418,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final libraries = _storage.getLibraries();
+    final libraries = _repos.getLibraries();
     final preview = resolveRoutine(_buildCard(), libraries, l10n: l10n);
     final warmUpTemplate = _warmUpId == null
         ? null

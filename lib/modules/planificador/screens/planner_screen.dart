@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import 'package:life_fit/core/widgets/app_scaffold.dart';
-import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
 import 'package:life_fit/shared/utils/date_utils.dart';
@@ -17,7 +17,7 @@ class PlannerScreen extends StatefulWidget {
 }
 
 class _PlannerScreenState extends State<PlannerScreen> {
-  final _storage = LocalStorageService.instance;
+  final _repos = AppRepositories.instance;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   Map<String, String> _assignmentsByDate = {};
@@ -30,7 +30,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
   }
 
   void _loadAssignments() {
-    final assignments = _storage.getAssignments();
+    final assignments = _repos.assignments.getAssignments();
     setState(() {
       _assignmentsByDate = {
         for (final assignment in assignments)
@@ -48,12 +48,12 @@ class _PlannerScreenState extends State<PlannerScreen> {
     if (routineId == null) {
       return null;
     }
-    return _storage.getRoutineById(routineId);
+    return _repos.routines.getRoutineById(routineId);
   }
 
   Future<void> _showAssignSheet(DateTime day) async {
     final l10n = AppLocalizations.of(context);
-    final routines = _storage.getRoutineCards();
+    final routines = _repos.routines.getRoutineCards();
     if (routines.isEmpty) {
       if (!mounted) {
         return;
@@ -70,6 +70,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
     final selectedId = await RoutineAssignSheet.show(
       context,
       date: day,
+      routines: routines,
       currentRoutineId: currentRoutineId,
       allowRemove: true,
     );
@@ -79,7 +80,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
     }
 
     final routineId = selectedId.isEmpty ? null : selectedId;
-    await _storage.saveAssignment(dateKey, routineId);
+    await _repos.assignments.saveAssignment(dateKey, routineId);
     _loadAssignments();
 
     if (!mounted) {

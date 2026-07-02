@@ -1,32 +1,36 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/modules/dia_gym/flows/today_gym_entry.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
 import 'package:life_fit/shared/models/routine_exercise_slot.dart';
-import 'package:life_fit/core/services/local_storage_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({'library_migration_v1_done': true});
-    await LocalStorageService.init();
+    await AppRepositories.init();
   });
 
   test('sin asignación ni rutinas devuelve createRoutine', () {
-    final storage = LocalStorageService.instance;
+    final repos = AppRepositories.instance;
 
     expect(
-      resolveTodayGymEntry(storage, '2026-06-27'),
+      resolveTodayGymEntry(
+        repos.assignments,
+        repos.routines,
+        '2026-06-27',
+      ),
       TodayGymEntry.createRoutine,
     );
   });
 
   test('sin asignación con rutinas devuelve pickRoutine', () async {
-    final storage = LocalStorageService.instance;
+    final repos = AppRepositories.instance;
 
-    await storage.upsertRoutineCard(
+    await repos.routines.upsertRoutineCard(
       const RoutineCard(
         id: 'routine-1',
         title: 'MIÉRCOLES',
@@ -41,13 +45,17 @@ void main() {
     );
 
     expect(
-      resolveTodayGymEntry(storage, '2026-06-27'),
+      resolveTodayGymEntry(
+        repos.assignments,
+        repos.routines,
+        '2026-06-27',
+      ),
       TodayGymEntry.pickRoutine,
     );
   });
 
   test('con asignación devuelve ready', () async {
-    final storage = LocalStorageService.instance;
+    final repos = AppRepositories.instance;
 
     const card = RoutineCard(
       id: 'routine-1',
@@ -61,11 +69,15 @@ void main() {
       ],
     );
 
-    await storage.upsertRoutineCard(card);
-    await storage.saveAssignment('2026-06-27', card.id);
+    await repos.routines.upsertRoutineCard(card);
+    await repos.assignments.saveAssignment('2026-06-27', card.id);
 
     expect(
-      resolveTodayGymEntry(storage, '2026-06-27'),
+      resolveTodayGymEntry(
+        repos.assignments,
+        repos.routines,
+        '2026-06-27',
+      ),
       TodayGymEntry.ready,
     );
   });

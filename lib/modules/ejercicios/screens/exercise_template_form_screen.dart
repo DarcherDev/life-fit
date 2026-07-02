@@ -7,7 +7,7 @@ import 'package:life_fit/core/services/weight_unit_service.dart';
 import 'package:life_fit/core/utils/weight_format.dart';
 import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
-import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/modules/ejercicios/models/exercise_template.dart';
 
 class ExerciseTemplateFormScreen extends StatefulWidget {
@@ -23,7 +23,7 @@ class ExerciseTemplateFormScreen extends StatefulWidget {
 class _ExerciseTemplateFormScreenState
     extends State<ExerciseTemplateFormScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _storage = LocalStorageService.instance;
+  final _exerciseTemplates = AppRepositories.instance.exerciseTemplates;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _seriesController = TextEditingController();
@@ -107,7 +107,7 @@ class _ExerciseTemplateFormScreenState
       weightKg: weightKg,
     );
 
-    await _storage.upsertExerciseTemplate(template);
+    await _exerciseTemplates.upsertExerciseTemplate(template);
     if (mounted) {
       Navigator.of(context).pop(template.id);
     }

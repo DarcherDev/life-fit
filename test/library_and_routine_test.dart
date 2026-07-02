@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/core/services/storage_migration.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up_placement.dart';
 import 'package:life_fit/modules/ejercicios/models/exercise_template.dart';
@@ -123,11 +123,11 @@ void main() {
     await StorageMigration.runIfNeeded(
       await SharedPreferences.getInstance(),
     );
-    await LocalStorageService.init();
+    await AppRepositories.init();
 
-    final storage = LocalStorageService.instance;
-    final routines = storage.getRoutineCards();
-    final exercises = storage.getExerciseTemplates();
+    final repos = AppRepositories.instance;
+    final routines = repos.routines.getRoutineCards();
+    final exercises = repos.exerciseTemplates.getExerciseTemplates();
 
     expect(routines.length, 1);
     expect(routines.first.exerciseSlots.length, 1);
@@ -138,8 +138,8 @@ void main() {
 
   test('no elimina plantilla de ejercicio si está en uso', () async {
     SharedPreferences.setMockInitialValues({});
-    await LocalStorageService.init();
-    final storage = LocalStorageService.instance;
+    await AppRepositories.init();
+    final repos = AppRepositories.instance;
 
     const exercise = ExerciseTemplate(
       id: 'ex-1',
@@ -147,8 +147,8 @@ void main() {
       series: 4,
       repetitions: 10,
     );
-    await storage.upsertExerciseTemplate(exercise);
-    await storage.upsertRoutineCard(
+    await repos.exerciseTemplates.upsertExerciseTemplate(exercise);
+    await repos.routines.upsertRoutineCard(
       const RoutineCard(
         id: 'routine-1',
         title: 'MIÉRCOLES',
@@ -159,8 +159,8 @@ void main() {
       ),
     );
 
-    final deleted = await storage.deleteExerciseTemplate('ex-1');
+    final deleted = await repos.exerciseTemplates.deleteExerciseTemplate('ex-1');
     expect(deleted, isFalse);
-    expect(storage.getExerciseTemplates().length, 1);
+    expect(repos.exerciseTemplates.getExerciseTemplates().length, 1);
   });
 }

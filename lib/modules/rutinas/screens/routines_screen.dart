@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
-import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/modules/rutinas/screens/routine_form_screen.dart';
 import 'package:life_fit/modules/rutinas/widgets/routine_card_preview.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
@@ -17,7 +17,7 @@ class RoutinesScreen extends StatefulWidget {
 }
 
 class _RoutinesScreenState extends State<RoutinesScreen> {
-  final _storage = LocalStorageService.instance;
+  final _repos = AppRepositories.instance;
   List<RoutineCard> _routines = [];
 
   @override
@@ -27,7 +27,7 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
   }
 
   void _load() {
-    setState(() => _routines = _storage.getRoutineCards());
+    setState(() => _routines = _repos.routines.getRoutineCards());
   }
 
   Future<void> _openForm({RoutineCard? routine}) async {
@@ -52,14 +52,14 @@ class _RoutinesScreenState extends State<RoutinesScreen> {
     if (!confirmed) {
       return;
     }
-    await _storage.deleteRoutineCard(routine.id);
+    await _repos.routines.deleteRoutineCard(routine.id);
     _load();
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final libraries = _storage.getLibraries();
+    final libraries = _repos.getLibraries();
 
     return AppScaffold(
       title: l10n.routinesModuleTitle,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
-import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/modules/estiramiento/models/stretching_template.dart';
 import 'package:life_fit/modules/estiramiento/screens/stretching_template_form_screen.dart';
 import 'package:life_fit/shared/widgets/confirm_dialog.dart';
@@ -23,7 +23,7 @@ class StretchingLibraryScreen extends StatefulWidget {
 }
 
 class _StretchingLibraryScreenState extends State<StretchingLibraryScreen> {
-  final _storage = LocalStorageService.instance;
+  final _stretchingTemplates = AppRepositories.instance.stretchingTemplates;
   List<StretchingTemplate> _templates = [];
 
   @override
@@ -40,7 +40,7 @@ class _StretchingLibraryScreenState extends State<StretchingLibraryScreen> {
   }
 
   void _load() {
-    setState(() => _templates = _storage.getStretchingTemplates());
+    setState(() => _templates = _stretchingTemplates.getStretchingTemplates());
   }
 
   Future<void> _openForm({StretchingTemplate? template}) async {
@@ -75,7 +75,7 @@ class _StretchingLibraryScreenState extends State<StretchingLibraryScreen> {
       return;
     }
 
-    final deleted = await _storage.deleteStretchingTemplate(template.id);
+    final deleted = await _stretchingTemplates.deleteStretchingTemplate(template.id);
     if (!mounted) {
       return;
     }

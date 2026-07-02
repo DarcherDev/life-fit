@@ -3,7 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/core/services/theme_service.dart';
 import 'package:life_fit/core/services/weight_unit_service.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
@@ -15,7 +15,7 @@ void main() {
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({'library_migration_v1_done': true});
-    await LocalStorageService.init();
+    await AppRepositories.init();
     await ThemeService.instance.init();
     await WeightUnitService.instance.init();
   });

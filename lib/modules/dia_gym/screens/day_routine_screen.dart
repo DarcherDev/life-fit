@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:life_fit/core/navigation/app_navigation.dart';
 import 'package:life_fit/core/widgets/app_scaffold.dart';
-import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up.dart';
 import 'package:life_fit/modules/rutinas/widgets/routine_card_preview.dart';
@@ -33,7 +33,7 @@ class DayRoutineScreen extends StatefulWidget {
 }
 
 class _DayRoutineScreenState extends State<DayRoutineScreen> {
-  final _storage = LocalStorageService.instance;
+  final _repos = AppRepositories.instance;
   late final ConfettiController _confettiController;
   RoutineCard? _routine;
   Set<String> _completedItemIds = {};
@@ -81,11 +81,11 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
   }
 
   void _loadData() {
-    final assignment = _storage.getAssignmentForDate(widget.dateKey);
+    final assignment = _repos.assignments.getAssignmentForDate(widget.dateKey);
     final routine = assignment == null
         ? null
-        : _storage.getRoutineById(assignment.routineId);
-    final progress = _storage.getDayProgress(widget.dateKey);
+        : _repos.routines.getRoutineById(assignment.routineId);
+    final progress = _repos.progress.getDayProgress(widget.dateKey);
 
     setState(() {
       _routine = routine;
@@ -100,7 +100,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
       return;
     }
 
-    await _storage.toggleItem(widget.dateKey, itemId, completed);
+    await _repos.progress.toggleItem(widget.dateKey, itemId, completed);
     _loadData();
 
     if (completed && _allItemsCompleted) {
@@ -110,7 +110,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
 
   Future<void> _editExerciseWeight(ResolvedExercise exercise) async {
     final template =
-        _storage.getLibraries().exercises[exercise.exerciseId];
+        _repos.getLibraries().exercises[exercise.exerciseId];
     if (template == null) {
       return;
     }
@@ -124,7 +124,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
       return;
     }
 
-    await _storage.upsertExerciseTemplate(
+    await _repos.exerciseTemplates.upsertExerciseTemplate(
       template.copyWith(
         weightKg: result.weightKg,
         clearWeightKg: result.weightKg == null,
@@ -155,10 +155,11 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
 
   Future<void> _changeRoutine() async {
     final l10n = AppLocalizations.of(context);
-    final assignment = _storage.getAssignmentForDate(widget.dateKey);
+    final assignment = _repos.assignments.getAssignmentForDate(widget.dateKey);
     final selectedId = await RoutineAssignSheet.show(
       context,
       date: _date,
+      routines: _repos.routines.getRoutineCards(),
       currentRoutineId: assignment?.routineId,
       title: l10n.changeRoutine,
     );
@@ -167,7 +168,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
       return;
     }
 
-    await _storage.saveAssignment(widget.dateKey, selectedId);
+    await _repos.assignments.saveAssignment(widget.dateKey, selectedId);
     _loadData();
   }
 
@@ -184,7 +185,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
       return;
     }
 
-    await _storage.saveAssignment(widget.dateKey, null);
+    await _repos.assignments.saveAssignment(widget.dateKey, null);
     if (mounted) {
       Navigator.of(context).pop(true);
     }
@@ -250,7 +251,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
     final routine = _routine;
     final resolved = routine == null
         ? null
-        : resolveRoutine(routine, _storage.getLibraries(), l10n: l10n);
+        : resolveRoutine(routine, _repos.getLibraries(), l10n: l10n);
 
     return Stack(
       children: [

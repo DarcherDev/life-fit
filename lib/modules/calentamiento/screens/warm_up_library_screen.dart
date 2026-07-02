@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
-import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up_template.dart';
 import 'package:life_fit/modules/calentamiento/screens/warm_up_template_form_screen.dart';
 import 'package:life_fit/shared/widgets/confirm_dialog.dart';
@@ -22,7 +22,7 @@ class WarmUpLibraryScreen extends StatefulWidget {
 }
 
 class _WarmUpLibraryScreenState extends State<WarmUpLibraryScreen> {
-  final _storage = LocalStorageService.instance;
+  final _warmUpTemplates = AppRepositories.instance.warmUpTemplates;
   List<WarmUpTemplate> _templates = [];
 
   @override
@@ -39,7 +39,7 @@ class _WarmUpLibraryScreenState extends State<WarmUpLibraryScreen> {
   }
 
   void _load() {
-    setState(() => _templates = _storage.getWarmUpTemplates());
+    setState(() => _templates = _warmUpTemplates.getWarmUpTemplates());
   }
 
   Future<void> _openForm({WarmUpTemplate? template}) async {
@@ -74,7 +74,7 @@ class _WarmUpLibraryScreenState extends State<WarmUpLibraryScreen> {
       return;
     }
 
-    final deleted = await _storage.deleteWarmUpTemplate(template.id);
+    final deleted = await _warmUpTemplates.deleteWarmUpTemplate(template.id);
     if (!mounted) {
       return;
     }

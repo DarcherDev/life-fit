@@ -4,7 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:life_fit/core/home/home_screen.dart';
 import 'package:life_fit/core/home/locale_prompt_host.dart';
 import 'package:life_fit/core/services/locale_service.dart';
-import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/core/services/theme_service.dart';
 import 'package:life_fit/core/services/weight_unit_service.dart';
 import 'package:life_fit/core/theme/app_theme.dart';
@@ -12,7 +12,7 @@ import 'package:life_fit/l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await LocalStorageService.init();
+  await AppRepositories.init();
   await LocaleService.instance.init();
   await ThemeService.instance.init();
   await WeightUnitService.instance.init();

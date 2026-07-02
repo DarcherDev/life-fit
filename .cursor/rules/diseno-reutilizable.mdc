@@ -1,26 +1,74 @@
 ---
-description: Diseño reutilizable con alta cohesión y bajo acoplamiento
+description: Diseño reutilizable aplicando principios SOLID, alta cohesión y bajo acoplamiento
 alwaysApply: true
 ---
 
-# Diseño reutilizable (alta cohesión, bajo acoplamiento)
+# Diseño reutilizable (principios SOLID)
 
-Al diseñar un **nuevo componente, método, clase, pantalla u otro artefacto**, prioriza que pueda invocarse desde varios puntos sin duplicar código:
+Al diseñar un **nuevo componente, método, clase, pantalla u otro artefacto**, aplica los principios SOLID para que pueda invocarse desde varios puntos sin duplicar código, sea fácil de probar y los cambios tengan impacto acotado.
 
-- **Alta cohesión**: cada unidad hace una sola cosa bien definida.
-- **Bajo acoplamiento**: depende lo mínimo posible del contexto que lo llama.
-- Expón una interfaz clara (parámetros, tipos, contrato) y evita acoplar lógica de negocio a un solo flujo o pantalla.
+## 1. SRP — Single Responsibility Principle (Responsabilidad Única)
+
+Una clase o módulo debe tener **una sola razón para cambiar**: una sola tarea o responsabilidad bien definida.
+
+- Separa presentación, lógica de negocio y acceso a datos.
+- Si un artefacto hace varias cosas no relacionadas, divídelo.
+- Alta cohesión: cada unidad hace una sola cosa bien definida.
+
+## 2. OCP — Open/Closed Principle (Abierto/Cerrado)
+
+Las entidades deben estar **abiertas para extensión, cerradas para modificación**.
+
+- Amplía comportamiento añadiendo código nuevo (estrategias, plugins, subclases) sin alterar el código que ya funciona.
+- Prefiere composición y polimorfismo frente a `if/switch` que crecen con cada caso nuevo.
+
+## 3. LSP — Liskov Substitution Principle (Sustitución de Liskov)
+
+Los subtipos deben poder **sustituir a sus tipos base** sin alterar el comportamiento del programa.
+
+- Una clase hija debe respetar el contrato de la clase padre; no debilitar precondiciones ni fortalecer postcondiciones.
+- Evita herencia solo por reutilizar código; si el hijo no es un verdadero subtipo, usa composición.
+
+## 4. ISP — Interface Segregation Principle (Segregación de Interfaces)
+
+Ningún cliente debe depender de **métodos que no utiliza**.
+
+- Prefiere varias interfaces pequeñas y específicas a una interfaz grande y genérica.
+- Expón contratos mínimos (parámetros, tipos) acordes a cada consumidor.
+
+## 5. DIP — Dependency Inversion Principle (Inversión de Dependencias)
+
+Los módulos de alto nivel no deben depender de módulos de bajo nivel; **ambos deben depender de abstracciones**.
+
+- Inyecta dependencias (interfaces, contratos) en lugar de instanciar implementaciones concretas dentro del módulo.
+- Bajo acoplamiento: depende lo mínimo posible del contexto que lo llama.
+- Los detalles concretos dependen de las abstracciones, no al revés.
+
+## Prácticas transversales
+
 - Extrae lógica compartida en lugar de copiarla.
+- Evita acoplar lógica de negocio a un solo flujo o pantalla.
 
-```typescript
-// ❌ MAL — lógica acoplada a una pantalla, difícil de reutilizar
-function ProfileScreen() {
-  const total = items.reduce((s, i) => s + i.price, 0);
-  // ...
+```dart
+// ❌ MAL — viola SRP y DIP: pantalla calcula, persiste y renderiza
+class ProfileScreen extends StatelessWidget {
+  Future<void> _save() async {
+    final total = items.fold(0.0, (s, i) => s + i.price);
+    await SharedPreferences.getInstance().then((p) => p.setDouble('total', total));
+  }
 }
 
-// ✅ BIEN — función cohesiva, reutilizable desde cualquier punto
-function calculateTotal(items: Item[]): number {
-  return items.reduce((sum, item) => sum + item.price, 0);
+// ✅ BIEN — responsabilidades separadas, dependencias invertidas
+double calculateTotal(List<Item> items) =>
+    items.fold(0.0, (sum, item) => sum + item.price);
+
+abstract class TotalRepository {
+  Future<void> saveTotal(double total);
+}
+
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({required this.repository, super.key});
+  final TotalRepository repository;
+  // ...
 }
 ```

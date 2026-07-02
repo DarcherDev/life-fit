@@ -1,4 +1,5 @@
-import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/core/repositories/day_assignment_repository.dart';
+import 'package:life_fit/core/repositories/routine_repository.dart';
 
 enum TodayGymEntry {
   ready,
@@ -7,13 +8,14 @@ enum TodayGymEntry {
 }
 
 TodayGymEntry resolveTodayGymEntry(
-  LocalStorageService storage,
+  DayAssignmentRepository assignments,
+  RoutineRepository routines,
   String dateKey,
 ) {
-  if (storage.getAssignmentForDate(dateKey) != null) {
+  if (assignments.getAssignmentForDate(dateKey) != null) {
     return TodayGymEntry.ready;
   }
-  if (storage.getRoutineCards().isEmpty) {
+  if (routines.getRoutineCards().isEmpty) {
     return TodayGymEntry.createRoutine;
   }
   return TodayGymEntry.pickRoutine;

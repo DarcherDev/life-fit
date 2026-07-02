@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
-import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/modules/ejercicios/models/exercise_template.dart';
 import 'package:life_fit/modules/ejercicios/screens/exercise_template_form_screen.dart';
 import 'package:life_fit/shared/utils/template_l10n.dart';
@@ -23,7 +23,7 @@ class ExerciseLibraryScreen extends StatefulWidget {
 }
 
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
-  final _storage = LocalStorageService.instance;
+  final _exerciseTemplates = AppRepositories.instance.exerciseTemplates;
   List<ExerciseTemplate> _templates = [];
 
   @override
@@ -40,7 +40,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   void _load() {
-    setState(() => _templates = _storage.getExerciseTemplates());
+    setState(() => _templates = _exerciseTemplates.getExerciseTemplates());
   }
 
   Future<void> _openForm({ExerciseTemplate? template}) async {
@@ -75,7 +75,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       return;
     }
 
-    final deleted = await _storage.deleteExerciseTemplate(template.id);
+    final deleted = await _exerciseTemplates.deleteExerciseTemplate(template.id);
     if (!mounted) {
       return;
     }

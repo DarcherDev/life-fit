@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:life_fit/l10n/app_localizations.dart';
-import 'package:life_fit/core/services/local_storage_service.dart';
+import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/modules/estiramiento/models/stretching_template.dart';
 
 class StretchingTemplateFormScreen extends StatefulWidget {
@@ -19,7 +19,7 @@ class StretchingTemplateFormScreen extends StatefulWidget {
 class _StretchingTemplateFormScreenState
     extends State<StretchingTemplateFormScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _storage = LocalStorageService.instance;
+  final _stretchingTemplates = AppRepositories.instance.stretchingTemplates;
   final _descriptionController = TextEditingController();
   final _repetitionsController = TextEditingController();
   final _uuid = const Uuid();
@@ -65,7 +65,7 @@ class _StretchingTemplateFormScreenState
       repetitions: repetitions,
     );
 
-    await _storage.upsertStretchingTemplate(template);
+    await _stretchingTemplates.upsertStretchingTemplate(template);
     if (mounted) {
       Navigator.of(context).pop(template.id);
     }

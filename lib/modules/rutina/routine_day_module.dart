@@ -6,10 +6,3 @@ enum RoutineDayModule {
   ejercicios,
   estiramiento,
 }
-
-/// Orden de ejecución al inicio: calentamiento (si al inicio) → estiramiento → ejercicios.
-const routineDayModuleOrder = <RoutineDayModule>[
-  RoutineDayModule.calentamiento,
-  RoutineDayModule.estiramiento,
-  RoutineDayModule.ejercicios,
-];
