@@ -1,11 +1,69 @@
 import 'package:flutter/material.dart';
 
+import 'package:life_fit/core/home/widgets/today_progress_ring.dart';
 import 'package:life_fit/core/navigation/app_navigation.dart';
+import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
+import 'package:life_fit/shared/utils/routine_progress.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+  final _repos = AppRepositories.instance;
+  RoutineProgressSummary _progressSummary = const RoutineProgressSummary(
+    hasRoutine: false,
+    totalItems: 0,
+    completedItems: 0,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _loadTodayProgress();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadTodayProgress();
+    }
+  }
+
+  void _loadTodayProgress() {
+    final dateKey = AppNavigation.todayDateKey;
+    final assignment = _repos.assignments.getAssignmentForDate(dateKey);
+    final routine = assignment == null
+        ? null
+        : _repos.routines.getRoutineById(assignment.routineId);
+    final progress = _repos.progress.getDayProgress(dateKey);
+
+    setState(() {
+      _progressSummary = calculateRoutineProgress(
+        routine: routine,
+        completedItemIds: progress.completedItemIds,
+      );
+    });
+  }
+
+  Future<void> _openTodayGym() async {
+    await AppNavigation.openTodayGym(context);
+    if (mounted) {
+      _loadTodayProgress();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,19 +76,26 @@ class HomeScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
+          Center(
+            child: TodayProgressRing(
+              summary: _progressSummary,
+              onTap: _openTodayGym,
+            ),
+          ),
+          const SizedBox(height: 24),
           Text(
             l10n.homeTagline,
-            style: theme.textTheme.headlineSmall?.copyWith(
+            style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 20),
           _HomeOptionCard(
             title: l10n.homeGymDayTitle,
             subtitle: l10n.homeGymDaySubtitle,
             icon: Icons.fitness_center,
             color: Colors.deepOrange,
-            onTap: () => AppNavigation.openTodayGym(context),
+            onTap: _openTodayGym,
           ),
           const SizedBox(height: 16),
           _HomeOptionCard(

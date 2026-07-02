@@ -105,6 +105,36 @@ abstract class AppLocalizations {
   /// **'gestiona tu vida'**
   String get homeTagline;
 
+  /// No description provided for @homeTodayProgressSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Progreso de la rutina de hoy'**
+  String get homeTodayProgressSubtitle;
+
+  /// No description provided for @homeTodayNoRoutine.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin rutina asignada hoy'**
+  String get homeTodayNoRoutine;
+
+  /// No description provided for @homeTodayRoutineEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'La rutina de hoy no tiene ítems'**
+  String get homeTodayRoutineEmpty;
+
+  /// No description provided for @homeTodayRoutineComplete.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Rutina de hoy completada!'**
+  String get homeTodayRoutineComplete;
+
+  /// No description provided for @homeTodayProgressCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{completed} de {total}'**
+  String homeTodayProgressCount(int completed, int total);
+
   /// No description provided for @homeGymDayTitle.
   ///
   /// In es, this message translates to:
@@ -1094,6 +1124,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Algunos ítems de la biblioteca ya no existen.'**
   String get missingTemplateWarning;
+
+  /// No description provided for @aboutTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Acerca de'**
+  String get aboutTitle;
+
+  /// No description provided for @aboutVersion.
+  ///
+  /// In es, this message translates to:
+  /// **'Versión {version}'**
+  String aboutVersion(String version);
+
+  /// No description provided for @licenseLink.
+  ///
+  /// In es, this message translates to:
+  /// **'LICENSE'**
+  String get licenseLink;
+
+  /// No description provided for @licenseScreenTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Licencia'**
+  String get licenseScreenTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

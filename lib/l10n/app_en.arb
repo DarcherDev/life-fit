@@ -2,6 +2,17 @@
   "@@locale": "en",
   "appTitle": "Life Fit",
   "homeTagline": "manage your life",
+  "homeTodayProgressSubtitle": "Today's routine progress",
+  "homeTodayNoRoutine": "No routine assigned for today",
+  "homeTodayRoutineEmpty": "Today's routine has no items",
+  "homeTodayRoutineComplete": "Today's routine completed!",
+  "homeTodayProgressCount": "{completed} of {total}",
+  "@homeTodayProgressCount": {
+    "placeholders": {
+      "completed": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
   "homeGymDayTitle": "Gym day",
   "homeGymDaySubtitle": "Today's assigned routine",
   "homeExercisesTitle": "Exercises",
@@ -172,5 +183,14 @@
   "noMatchingLibraryItems": "No matches",
   "addSelected": "Add selected",
   "missingTemplateLabel": "Unavailable",
-  "missingTemplateWarning": "Some library items no longer exist."
+  "missingTemplateWarning": "Some library items no longer exist.",
+  "aboutTitle": "About",
+  "aboutVersion": "Version {version}",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "licenseLink": "LICENSE",
+  "licenseScreenTitle": "License"
 }

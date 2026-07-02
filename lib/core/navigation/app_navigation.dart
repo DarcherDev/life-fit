@@ -7,8 +7,9 @@ import 'package:life_fit/modules/ejercicios/screens/exercise_library_screen.dart
 import 'package:life_fit/modules/estiramiento/screens/stretching_library_screen.dart';
 import 'package:life_fit/modules/planificador/screens/planner_screen.dart';
 import 'package:life_fit/modules/rutinas/screens/routines_screen.dart';
-import 'package:life_fit/core/settings/screens/settings_screen.dart';
-import 'package:life_fit/core/profile/screens/my_process_screen.dart';
+import 'package:life_fit/core/profile/widgets/my_process_dialog.dart';
+import 'package:life_fit/core/settings/widgets/settings_dialog.dart';
+import 'package:life_fit/core/about/screens/license_screen.dart';
 import 'package:life_fit/shared/utils/date_utils.dart';
 
 class AppNavigation {
@@ -110,15 +111,17 @@ class AppNavigation {
     );
   }
 
-  static void openSettings(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => const SettingsScreen()),
-    );
+  static Future<void> openSettings(BuildContext context) {
+    return SettingsDialog.show(context);
   }
 
-  static void openMyProcess(BuildContext context) {
+  static Future<void> openMyProcess(BuildContext context) {
+    return MyProcessDialog.show(context);
+  }
+
+  static void openLicense(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => const MyProcessScreen()),
+      MaterialPageRoute<void>(builder: (_) => const LicenseScreen()),
     );
   }
 }

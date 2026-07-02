@@ -2,7 +2,7 @@
 
 App personal para gestionar rutinas de gimnasio: mantén bibliotecas reutilizables de ejercicios, estiramientos y calentamientos; compón rutinas por referencia; asígnalas en un calendario y marca tu progreso día a día.
 
-**Versión actual:** `2.5.0+11`  
+**Versión actual:** `2.6.0+12`  
 **Repositorio:** [github.com/DarcherDev/life-fit](https://github.com/DarcherDev/life-fit)
 
 ## Para qué sirve
@@ -113,7 +113,7 @@ lib/
 El número de versión vive en `pubspec.yaml`:
 
 ```yaml
-version: 2.5.0+11
+version: 2.6.0+12
 #        │     └── build number (versionCode Android, debe subir en cada APK)
 #        └── versión visible (versionName)
 ```
@@ -186,4 +186,14 @@ flutter build apk --release
 
 ## Licencia
 
-Proyecto personal. Uso libre dentro del repositorio del autor.
+Copyright © 2026 Daniel Aristizabal (DarcherDev). Ver [LICENSE](LICENSE).
+
+El código es **público y modificable** (puedes estudiarlo, usarlo, compartirlo y crear derivados), con estas condiciones:
+
+- **Gratuito siempre:** no se permite cobrar, suscripciones, compras in-app ni publicidad.
+- **Sin tiendas de apps por terceros:** nadie excepto el autor puede publicar el proyecto (o un fork) en App Store, Google Play u otras tiendas similares.
+- **Atribución y aviso de cambios** en cualquier redistribución.
+- **Sin uso del nombre o marca "Life Fit"** para sugerir que un fork es oficial.
+- **Sin garantía:** el software se ofrece «tal cual»; el autor no responde por daños derivados del uso, incluido código alterado por terceros con fines ilícitos.
+
+> **Nota:** Esta licencia es *source-available* con restricciones de uso no comercial. No es una licencia «open source» según la [Open Source Initiative](https://opensource.org/) (MIT, Apache, GPL, etc.), porque prohíbe monetización y publicación en tiendas por terceros. El autor conserva plenos derechos para publicar la app oficial de forma gratuita y sin anuncios.

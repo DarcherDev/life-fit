@@ -45,7 +45,19 @@ void main() {
     expect(find.text('Dia de gym'), findsOneWidget);
     expect(find.text('Rutina'), findsOneWidget);
     expect(find.text('Planificador'), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.text('Ejercicios'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Ejercicios'), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.text('Estiramientos'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Estiramientos'), findsOneWidget);
 
     await tester.scrollUntilVisible(
@@ -87,6 +99,7 @@ void main() {
     await tester.tap(find.text('Ajustes'));
     await tester.pumpAndSettle();
 
+    expect(find.byType(Dialog), findsOneWidget);
     expect(find.text('Tema'), findsOneWidget);
     expect(find.text('Idioma'), findsOneWidget);
     expect(find.text('Sistema de peso'), findsOneWidget);

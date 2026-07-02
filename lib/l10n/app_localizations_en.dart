@@ -11,6 +11,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeTagline => 'manage your life';
 
   @override
+  String get homeTodayProgressSubtitle => 'Today\'s routine progress';
+
+  @override
+  String get homeTodayNoRoutine => 'No routine assigned for today';
+
+  @override
+  String get homeTodayRoutineEmpty => 'Today\'s routine has no items';
+
+  @override
+  String get homeTodayRoutineComplete => 'Today\'s routine completed!';
+
+  @override
+  String homeTodayProgressCount(int completed, int total) {
+    return '$completed of $total';
+  }
+
+  @override
   String get homeGymDayTitle => 'Gym day';
 
   @override
@@ -534,4 +551,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get missingTemplateWarning => 'Some library items no longer exist.';
+
+  @override
+  String get aboutTitle => 'About';
+
+  @override
+  String aboutVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get licenseLink => 'LICENSE';
+
+  @override
+  String get licenseScreenTitle => 'License';
 }
