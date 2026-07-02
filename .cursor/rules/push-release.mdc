@@ -39,8 +39,33 @@ Leer la versión actual en `pubspec.yaml` (`version: X.Y.Z+N`) — ya definida e
 
 1. **`CHANGELOG.md`** — nueva sección `[X.Y.Z] - fecha` con Añadido / Cambiado / Corregido (Keep a Changelog), alineada con los commits a publicar.
 2. **`README.md`** — actualizar novedades o estructura si aplica (la línea `Versión actual` debe coincidir con `pubspec.yaml`; si no, corregirla sin hacer bump).
+3. **`release-notes-vX.Y.Z.md`** — archivo versionado en la raíz del repo (sustituir `X.Y.Z` por la versión leída de `pubspec.yaml`). Es la fuente de verdad para las notas de la GitHub Release y debe quedar en el historial de git.
 
-Hacer commit de docs solo si hubo cambios en CHANGELOG o README como parte de este flujo.
+### Archivo `release-notes-vX.Y.Z.md`
+
+- **Crear o actualizar** antes del push si no existe o está desactualizado respecto al CHANGELOG de esta versión.
+- **Revisar `git status`:** si hay otros `release-notes-*.md` sin trackear de releases anteriores (p. ej. `release-notes-v2.0.0.md` olvidado en un `/push` previo), **incluirlos en el mismo commit de docs** — no dejarlos como untracked.
+- **Contenido mínimo** (mismo cuerpo que se publicará en GitHub):
+
+```markdown
+## Resumen
+- (bullets extraídos del CHANGELOG de esta versión)
+
+## Instalación
+1. Descargar `app-release.apk` (o `life-fit-vX.Y.Z.apk`) de los assets de esta release.
+2. Instalar en Android (permitir orígenes desconocidos si aplica).
+
+## Test plan
+- [ ] ...
+```
+
+Hacer commit de docs si hubo cambios en **CHANGELOG**, **README** o **`release-notes-*.md`** como parte de este flujo:
+
+```bash
+git add CHANGELOG.md README.md release-notes-vX.Y.Z.md
+# + cualquier otro release-notes-*.md pendiente de versiones anteriores
+git commit -m "docs(docs): preparar CHANGELOG y release X.Y.Z"
+```
 
 ## 4. Validar
 
@@ -94,30 +119,20 @@ git push origin vX.Y.Z
 
 ### 6.3 GitHub Release con APK
 
-Crear la release con notas basadas en el CHANGELOG y **adjuntar el APK**:
+Crear la release con **`--notes-file release-notes-vX.Y.Z.md`** (el archivo ya commiteado en el paso 3) y **adjuntar el APK**:
 
 ```bash
 gh release create vX.Y.Z \
   --title "vX.Y.Z" \
-  --notes-file CHANGELOG_SNIPPET.md \
+  --notes-file release-notes-vX.Y.Z.md \
   build/app/outputs/flutter-apk/app-release.apk
 ```
 
-En PowerShell, si `gh release create` no acepta bien el heredoc, preparar un archivo temporal con las notas (resumen de la sección `[X.Y.Z]` del CHANGELOG + test plan) y pasarlo con `--notes-file`.
+En PowerShell, usar la ruta del archivo versionado (`release-notes-vX.Y.Z.md`). No usar archivos temporales ni genéricos (`CHANGELOG_SNIPPET.md`) si ya existe el `release-notes-` correspondiente en el repo.
 
-**Contenido mínimo de las notas de release:**
+En Windows, si `gh` no está en el PATH, probar `"C:\Program Files\GitHub CLI\gh.exe"`.
 
-```markdown
-## Resumen
-- (bullets extraídos del CHANGELOG de esta versión)
-
-## Instalación
-1. Descargar `app-release.apk` (o `life-fit-vX.Y.Z.apk`) de los assets de esta release.
-2. Instalar en Android (permitir orígenes desconocidos si aplica).
-
-## Test plan
-- [ ] ...
-```
+**Contenido mínimo de las notas** — ver plantilla en el paso 3 (`release-notes-vX.Y.Z.md`).
 
 - **Si hay correcciones de bug** (sección *Corregido* en CHANGELOG): tag + release con APK son **obligatorios**.
 - Si solo hay features o refactors: crear tag + release con APK igualmente (el APK es el entregable principal de cada release).
@@ -128,7 +143,7 @@ Entregar:
 
 1. Resumen de commits incluidos en el push.
 2. Versión publicada (`X.Y.Z+N` leída de `pubspec.yaml`) y tag `vX.Y.Z`.
-3. Cambios hechos en README / CHANGELOG.
+3. Cambios hechos en README / CHANGELOG / `release-notes-vX.Y.Z.md` (y si se recuperaron `release-notes-*.md` olvidados).
 4. Confirmación de que el APK se compiló y se adjuntó a la release.
 5. URL de la release en GitHub (descarga directa del APK).
 
