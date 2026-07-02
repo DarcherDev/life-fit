@@ -276,7 +276,7 @@ class RoutineCardPreview extends StatelessWidget {
             IconButton(
               onPressed: () => onExerciseWeightEdit!(item),
               icon: const Icon(Icons.edit_outlined, size: 20),
-              tooltip: l10n.editExerciseWeight,
+              tooltip: l10n.editExercise,
               visualDensity: VisualDensity.compact,
             ),
         ],

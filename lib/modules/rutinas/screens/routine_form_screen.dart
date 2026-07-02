@@ -231,6 +231,8 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     final result = await ExerciseWeightDialog.show(
       context,
       exerciseTitle: template.title,
+      series: template.series,
+      repetitions: template.repetitions,
       currentWeightKg: template.weightKg,
     );
     if (result.cancelled || !mounted) {
@@ -239,8 +241,10 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
 
     await _repos.exerciseTemplates.upsertExerciseTemplate(
       template.copyWith(
+        series: result.series,
+        repetitions: result.repetitions,
         weightKg: result.weightKg,
-        clearWeightKg: result.weightKg == null,
+        clearWeightKg: result.clearWeightKg,
       ),
     );
     if (mounted) {
@@ -287,7 +291,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
                   if (template != null)
                     IconButton(
                       icon: const Icon(Icons.scale_outlined),
-                      tooltip: l10n.editExerciseWeight,
+                      tooltip: l10n.editExercise,
                       onPressed: () => _editExerciseWeight(slot),
                     ),
                   IconButton(

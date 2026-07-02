@@ -30,6 +30,7 @@
   "exerciseWeightLabel": "Weight",
   "exerciseWeightHint": "Optional",
   "editExerciseWeight": "Edit weight",
+  "editExercise": "Edit exercise",
   "weightFormat": "{weight} {unit}",
   "@weightFormat": {
     "placeholders": {

@@ -118,6 +118,8 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
     final result = await ExerciseWeightDialog.show(
       context,
       exerciseTitle: exercise.title,
+      series: exercise.series,
+      repetitions: exercise.repetitions,
       currentWeightKg: exercise.weightKg,
     );
     if (result.cancelled || !mounted) {
@@ -126,8 +128,10 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
 
     await _repos.exerciseTemplates.upsertExerciseTemplate(
       template.copyWith(
+        series: result.series,
+        repetitions: result.repetitions,
         weightKg: result.weightKg,
-        clearWeightKg: result.weightKg == null,
+        clearWeightKg: result.clearWeightKg,
       ),
     );
     if (mounted) {

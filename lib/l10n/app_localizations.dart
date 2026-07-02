@@ -273,6 +273,12 @@ abstract class AppLocalizations {
   /// **'Editar peso'**
   String get editExerciseWeight;
 
+  /// No description provided for @editExercise.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar ejercicio'**
+  String get editExercise;
+
   /// No description provided for @weightFormat.
   ///
   /// In es, this message translates to:

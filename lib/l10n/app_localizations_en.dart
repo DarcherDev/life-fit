@@ -95,6 +95,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editExerciseWeight => 'Edit weight';
 
   @override
+  String get editExercise => 'Edit exercise';
+
+  @override
   String weightFormat(String weight, String unit) {
     return '$weight $unit';
   }
