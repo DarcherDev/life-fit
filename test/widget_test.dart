@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:life_fit/core/home/home_screen.dart';
 import 'package:life_fit/core/repositories/app_repositories.dart';
+import 'package:life_fit/core/services/home_menu_order_service.dart';
 import 'package:life_fit/core/services/theme_service.dart';
 import 'package:life_fit/core/services/weight_unit_service.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
@@ -20,6 +21,7 @@ void main() {
     await AppRepositories.init();
     await ThemeService.instance.init();
     await WeightUnitService.instance.init();
+    await HomeMenuOrderService.instance.init();
   });
 
   testWidgets('Home muestra las seis opciones', (WidgetTester tester) async {

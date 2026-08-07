@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'package:life_fit/core/home/home_menu_option.dart';
 import 'package:life_fit/core/home/widgets/today_progress_ring.dart';
 import 'package:life_fit/core/navigation/app_navigation.dart';
 import 'package:life_fit/core/repositories/app_repositories.dart';
+import 'package:life_fit/core/services/home_menu_order_service.dart';
 import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/shared/utils/routine_progress.dart';
@@ -16,23 +18,36 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final _repos = AppRepositories.instance;
+  final _menuOrderService = HomeMenuOrderService.instance;
   RoutineProgressSummary _progressSummary = const RoutineProgressSummary(
     hasRoutine: false,
     totalItems: 0,
     completedItems: 0,
+  );
+  List<HomeMenuOption> _menuOrder = List<HomeMenuOption>.from(
+    HomeMenuOption.defaultOrder,
   );
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _menuOrder = List<HomeMenuOption>.from(_menuOrderService.order);
+    _menuOrderService.addListener(_onMenuOrderChanged);
     _loadTodayProgress();
   }
 
   @override
   void dispose() {
+    _menuOrderService.removeListener(_onMenuOrderChanged);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _onMenuOrderChanged() {
+    setState(() {
+      _menuOrder = List<HomeMenuOption>.from(_menuOrderService.order);
+    });
   }
 
   @override
@@ -65,6 +80,63 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
   }
 
+  Future<void> _onReorderMenu(int oldIndex, int newIndex) async {
+    await _menuOrderService.reorder(oldIndex, newIndex);
+  }
+
+  _HomeOptionData _optionData(HomeMenuOption option, AppLocalizations l10n) {
+    switch (option) {
+      case HomeMenuOption.gymDay:
+        return _HomeOptionData(
+          title: l10n.homeGymDayTitle,
+          subtitle: l10n.homeGymDaySubtitle,
+          icon: Icons.fitness_center,
+          color: Colors.deepOrange,
+          onTap: _openTodayGym,
+        );
+      case HomeMenuOption.routines:
+        return _HomeOptionData(
+          title: l10n.homeRoutineTitle,
+          subtitle: l10n.homeRoutineSubtitle,
+          icon: Icons.dashboard_customize,
+          color: Colors.teal,
+          onTap: () => AppNavigation.openRoutines(context),
+        );
+      case HomeMenuOption.planner:
+        return _HomeOptionData(
+          title: l10n.homePlannerTitle,
+          subtitle: l10n.homePlannerSubtitle,
+          icon: Icons.calendar_month,
+          color: Colors.indigo,
+          onTap: () => AppNavigation.openPlanner(context),
+        );
+      case HomeMenuOption.exercises:
+        return _HomeOptionData(
+          title: l10n.homeExercisesTitle,
+          subtitle: l10n.homeExercisesSubtitle,
+          icon: Icons.fitness_center_outlined,
+          color: Colors.green,
+          onTap: () => AppNavigation.openExerciseLibrary(context),
+        );
+      case HomeMenuOption.stretching:
+        return _HomeOptionData(
+          title: l10n.homeStretchingTitle,
+          subtitle: l10n.homeStretchingSubtitle,
+          icon: Icons.self_improvement,
+          color: Colors.deepPurple,
+          onTap: () => AppNavigation.openStretchingLibrary(context),
+        );
+      case HomeMenuOption.warmUp:
+        return _HomeOptionData(
+          title: l10n.homeWarmUpTitle,
+          subtitle: l10n.homeWarmUpSubtitle,
+          icon: Icons.local_fire_department,
+          color: Colors.orange,
+          onTap: () => AppNavigation.openWarmUpLibrary(context),
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -73,74 +145,92 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     return AppScaffold(
       title: l10n.appTitle,
       centerTitle: true,
-      body: ListView(
-        padding: const EdgeInsets.all(24),
-        children: [
-          Center(
-            child: TodayProgressRing(
-              summary: _progressSummary,
-              onTap: _openTodayGym,
+      body: CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+            sliver: SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(
+                    child: TodayProgressRing(
+                      summary: _progressSummary,
+                      onTap: _openTodayGym,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    l10n.homeTagline,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 24),
-          Text(
-            l10n.homeTagline,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+            sliver: SliverReorderableList(
+              itemCount: _menuOrder.length,
+              onReorder: _onReorderMenu,
+              proxyDecorator: (child, index, animation) {
+                return AnimatedBuilder(
+                  animation: animation,
+                  builder: (context, _) {
+                    final elevation =
+                        Tween<double>(begin: 0, end: 6).evaluate(animation);
+                    return Material(
+                      elevation: elevation,
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(16),
+                      child: child,
+                    );
+                  },
+                );
+              },
+              itemBuilder: (context, index) {
+                final option = _menuOrder[index];
+                final data = _optionData(option, l10n);
+                return ReorderableDelayedDragStartListener(
+                  key: ValueKey<String>('home-menu-${option.storageId}'),
+                  index: index,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: _HomeOptionCard(
+                      title: data.title,
+                      subtitle: data.subtitle,
+                      icon: data.icon,
+                      color: data.color,
+                      onTap: data.onTap,
+                    ),
+                  ),
+                );
+              },
             ),
-          ),
-          const SizedBox(height: 20),
-          _HomeOptionCard(
-            title: l10n.homeGymDayTitle,
-            subtitle: l10n.homeGymDaySubtitle,
-            icon: Icons.fitness_center,
-            color: Colors.deepOrange,
-            onTap: _openTodayGym,
-          ),
-          const SizedBox(height: 16),
-          _HomeOptionCard(
-            title: l10n.homeRoutineTitle,
-            subtitle: l10n.homeRoutineSubtitle,
-            icon: Icons.dashboard_customize,
-            color: Colors.teal,
-            onTap: () => AppNavigation.openRoutines(context),
-          ),
-          const SizedBox(height: 16),
-          _HomeOptionCard(
-            title: l10n.homePlannerTitle,
-            subtitle: l10n.homePlannerSubtitle,
-            icon: Icons.calendar_month,
-            color: Colors.indigo,
-            onTap: () => AppNavigation.openPlanner(context),
-          ),
-          const SizedBox(height: 16),
-          _HomeOptionCard(
-            title: l10n.homeExercisesTitle,
-            subtitle: l10n.homeExercisesSubtitle,
-            icon: Icons.fitness_center_outlined,
-            color: Colors.green,
-            onTap: () => AppNavigation.openExerciseLibrary(context),
-          ),
-          const SizedBox(height: 16),
-          _HomeOptionCard(
-            title: l10n.homeStretchingTitle,
-            subtitle: l10n.homeStretchingSubtitle,
-            icon: Icons.self_improvement,
-            color: Colors.deepPurple,
-            onTap: () => AppNavigation.openStretchingLibrary(context),
-          ),
-          const SizedBox(height: 16),
-          _HomeOptionCard(
-            title: l10n.homeWarmUpTitle,
-            subtitle: l10n.homeWarmUpSubtitle,
-            icon: Icons.local_fire_department,
-            color: Colors.orange,
-            onTap: () => AppNavigation.openWarmUpLibrary(context),
           ),
         ],
       ),
     );
   }
+}
+
+class _HomeOptionData {
+  const _HomeOptionData({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
 }
 
 class _HomeOptionCard extends StatelessWidget {
@@ -190,7 +280,9 @@ class _HomeOptionCard extends StatelessWidget {
                     Text(
                       subtitle,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant,
                           ),
                     ),
                   ],

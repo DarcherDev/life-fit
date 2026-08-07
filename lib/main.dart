@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:life_fit/core/home/home_screen.dart';
 import 'package:life_fit/core/home/locale_prompt_host.dart';
+import 'package:life_fit/core/services/home_menu_order_service.dart';
 import 'package:life_fit/core/services/locale_service.dart';
 import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/core/services/personal_profile_service.dart';
@@ -18,6 +19,7 @@ Future<void> main() async {
   await ThemeService.instance.init();
   await WeightUnitService.instance.init();
   await PersonalProfileService.instance.init();
+  await HomeMenuOrderService.instance.init();
   runApp(const LifeFitApp());
 }
 
