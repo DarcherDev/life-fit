@@ -14,6 +14,7 @@ class RoutineCardPreview extends StatelessWidget {
     super.key,
     required this.routine,
     this.completedItemIds = const {},
+    this.settledCompletedItemIds,
     this.interactive = false,
     this.onItemToggle,
     this.onExerciseWeightEdit,
@@ -26,6 +27,9 @@ class RoutineCardPreview extends StatelessWidget {
 
   final ResolvedRoutine routine;
   final Set<String> completedItemIds;
+  /// Si [pendingItemsFirst] es true, solo estos IDs bajan al final.
+  /// Si es null, se usa [completedItemIds] (comportamiento inmediato).
+  final Set<String>? settledCompletedItemIds;
   final bool interactive;
   final void Function(String itemId, bool completed)? onItemToggle;
   final void Function(ResolvedExercise exercise)? onExerciseWeightEdit;
@@ -36,6 +40,7 @@ class RoutineCardPreview extends StatelessWidget {
   final bool pendingItemsFirst;
 
   static const _accentColor = Color(0xFF16A34A);
+  static const _completeStyleDuration = Duration(milliseconds: 400);
 
   List<Widget> _orderedChecklistItems(
     BuildContext context,
@@ -44,11 +49,13 @@ class RoutineCardPreview extends StatelessWidget {
     bool showWarmUpAtStart,
     bool showWarmUpAtEnd,
   ) {
+    final settledIds = settledCompletedItemIds ?? completedItemIds;
     final entries = <_ChecklistEntry>[];
 
     void addWarmUp(ResolvedWarmUp value) {
       entries.add(
         _ChecklistEntry(
+          itemId: warmUpProgressItemId,
           isCompleted: completedItemIds.contains(warmUpProgressItemId),
           widget: _buildWarmUpTile(value),
         ),
@@ -62,6 +69,7 @@ class RoutineCardPreview extends StatelessWidget {
     for (final item in routine.stretchingItems) {
       entries.add(
         _ChecklistEntry(
+          itemId: item.slotId,
           isCompleted: completedItemIds.contains(item.slotId),
           widget: _buildStretchingTile(item),
         ),
@@ -71,6 +79,7 @@ class RoutineCardPreview extends StatelessWidget {
     for (final item in routine.exercises) {
       entries.add(
         _ChecklistEntry(
+          itemId: item.slotId,
           isCompleted: completedItemIds.contains(item.slotId),
           widget: _buildExercise(context, item, l10n),
         ),
@@ -83,14 +92,15 @@ class RoutineCardPreview extends StatelessWidget {
 
     final ordered = pendingItemsFirst
         ? [
-            ...entries.where((entry) => !entry.isCompleted),
-            ...entries.where((entry) => entry.isCompleted),
+            ...entries.where((entry) => !settledIds.contains(entry.itemId)),
+            ...entries.where((entry) => settledIds.contains(entry.itemId)),
           ]
         : entries;
 
     return ordered
         .map(
           (entry) => Padding(
+            key: ValueKey<String>('checklist-${entry.itemId}'),
             padding: const EdgeInsets.only(bottom: 10),
             child: entry.widget,
           ),
@@ -226,11 +236,15 @@ class RoutineCardPreview extends StatelessWidget {
     final canReplace =
         interactive && !item.isMissing && onExerciseReplace != null;
 
-    return Container(
+    return AnimatedContainer(
+      duration: _completeStyleDuration,
+      curve: Curves.easeOutCubic,
       margin: EdgeInsets.zero,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceVariant,
+        color: isCompleted
+            ? colorScheme.surfaceVariant.withOpacity(0.55)
+            : colorScheme.surfaceVariant,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -269,30 +283,34 @@ class RoutineCardPreview extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            item.title,
+                          AnimatedDefaultTextStyle(
+                            duration: _completeStyleDuration,
+                            curve: Curves.easeOutCubic,
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               decoration: isCompleted
                                   ? TextDecoration.lineThrough
-                                  : null,
+                                  : TextDecoration.none,
                               color: item.isMissing
                                   ? colorScheme.error
                                   : (isCompleted
                                       ? colorScheme.outline
                                       : colorScheme.onSurface),
                             ),
+                            child: Text(item.title),
                           ),
                           if (subtitle.isNotEmpty) ...[
                             const SizedBox(height: 4),
-                            Text(
-                              subtitle,
+                            AnimatedDefaultTextStyle(
+                              duration: _completeStyleDuration,
+                              curve: Curves.easeOutCubic,
                               style: TextStyle(
                                 color: colorScheme.onSurfaceVariant,
                                 decoration: isCompleted
                                     ? TextDecoration.lineThrough
-                                    : null,
+                                    : TextDecoration.none,
                               ),
+                              child: Text(subtitle),
                             ),
                           ],
                         ],
@@ -331,10 +349,12 @@ class RoutineCardPreview extends StatelessWidget {
 
 class _ChecklistEntry {
   const _ChecklistEntry({
+    required this.itemId,
     required this.isCompleted,
     required this.widget,
   });
 
+  final String itemId;
   final bool isCompleted;
   final Widget widget;
 }

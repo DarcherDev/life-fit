@@ -41,9 +41,18 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
   late final ConfettiController _confettiController;
   RoutineCard? _routine;
   Set<String> _completedItemIds = {};
+  /// Completados visualmente pero aún sin bajar al final de la lista.
+  final Set<String> _pendingSettleIds = {};
   var _isCelebrating = false;
 
+  static const _completeSettleDelay = Duration(milliseconds: 500);
+
   bool get _isToday => widget.dateKey == AppNavigation.todayDateKey;
+
+  Set<String> get _visualCompletedItemIds => {
+        ..._completedItemIds,
+        ..._pendingSettleIds,
+      };
 
   bool get _allItemsCompleted {
     final routine = _routine;
@@ -94,6 +103,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
     setState(() {
       _routine = routine;
       _completedItemIds = Set<String>.from(progress.completedItemIds);
+      _pendingSettleIds.clear();
     });
   }
 
@@ -104,12 +114,30 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
       return;
     }
 
-    await _repos.progress.toggleItem(widget.dateKey, itemId, completed);
-    _loadData();
-
-    if (completed && _allItemsCompleted) {
-      await _finishRoutine();
+    if (completed) {
+      setState(() {
+        _pendingSettleIds.add(itemId);
+      });
+      await _repos.progress.toggleItem(widget.dateKey, itemId, true);
+      await Future<void>.delayed(_completeSettleDelay);
+      if (!mounted || !_pendingSettleIds.contains(itemId)) {
+        return;
+      }
+      setState(() {
+        _pendingSettleIds.remove(itemId);
+        _completedItemIds.add(itemId);
+      });
+      if (_allItemsCompleted) {
+        await _finishRoutine();
+      }
+      return;
     }
+
+    setState(() {
+      _pendingSettleIds.remove(itemId);
+      _completedItemIds.remove(itemId);
+    });
+    await _repos.progress.toggleItem(widget.dateKey, itemId, false);
   }
 
   Future<void> _editExerciseWeight(ResolvedExercise exercise) async {
@@ -493,7 +521,8 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
                       routine: resolved,
                       interactive: !_isCelebrating,
                       pendingItemsFirst: true,
-                      completedItemIds: _completedItemIds,
+                      completedItemIds: _visualCompletedItemIds,
+                      settledCompletedItemIds: _completedItemIds,
                       onItemToggle: _toggleItem,
                       onExerciseWeightEdit: _editExerciseWeight,
                       onExerciseReplace: _replaceExercise,
