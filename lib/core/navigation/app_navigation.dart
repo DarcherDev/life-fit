@@ -21,12 +21,15 @@ class AppNavigation {
     );
   }
 
-  static void openDayRoutine(BuildContext context, String dateKey) {
-    Navigator.of(context).push(dayRoutineRoute(dateKey));
+  static Future<void> openDayRoutine(BuildContext context, String dateKey) async {
+    await Navigator.of(context).push<void>(dayRoutineRoute(dateKey));
   }
 
-  static void replaceWithDayRoutine(BuildContext context, String dateKey) {
-    Navigator.of(context).pushReplacement(dayRoutineRoute(dateKey));
+  static Future<void> replaceWithDayRoutine(
+    BuildContext context,
+    String dateKey,
+  ) async {
+    await Navigator.of(context).pushReplacement(dayRoutineRoute(dateKey));
   }
 
   static Future<void> openTodayGym(BuildContext context) {

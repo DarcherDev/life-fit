@@ -21,7 +21,7 @@ class TodayGymCoordinator {
 
     switch (entry) {
       case TodayGymEntry.ready:
-        AppNavigation.openDayRoutine(context, dateKey);
+        await AppNavigation.openDayRoutine(context, dateKey);
         break;
       case TodayGymEntry.pickRoutine:
         await _pickAssignAndOpen(context, dateKey, repos);
@@ -51,17 +51,26 @@ class TodayGymCoordinator {
 
     await repos.assignments.saveAssignment(dateKey, selectedId);
 
-    navigator.push(AppNavigation.dayRoutineRoute(dateKey));
+    if (!context.mounted) {
+      return;
+    }
+    await navigator.push<void>(AppNavigation.dayRoutineRoute(dateKey));
   }
 
   static Future<void> _createAssignAndOpen(
     BuildContext context,
     String dateKey,
   ) async {
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(
+    final created = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
         builder: (_) => RoutineFormScreen(autoAssignDateKey: dateKey),
       ),
     );
+
+    if (created != true || !context.mounted) {
+      return;
+    }
+
+    await AppNavigation.openDayRoutine(context, dateKey);
   }
 }

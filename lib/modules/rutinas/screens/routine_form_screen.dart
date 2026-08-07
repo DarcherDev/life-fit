@@ -347,7 +347,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
       if (!mounted) {
         return;
       }
-      AppNavigation.replaceWithDayRoutine(context, autoAssignDateKey);
+      Navigator.of(context).pop(true);
       return;
     }
 
