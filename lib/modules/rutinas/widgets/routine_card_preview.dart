@@ -21,6 +21,8 @@ class RoutineCardPreview extends StatelessWidget {
     this.onExerciseReplace,
     this.onStretchingReplace,
     this.onWarmUpReplace,
+    this.onReorderExercises,
+    this.onReorderStretchings,
     this.compact = false,
     this.pendingItemsFirst = false,
   });
@@ -36,76 +38,162 @@ class RoutineCardPreview extends StatelessWidget {
   final void Function(ResolvedExercise exercise)? onExerciseReplace;
   final void Function(ResolvedStretching stretching)? onStretchingReplace;
   final VoidCallback? onWarmUpReplace;
+  final void Function(int oldIndex, int newIndex)? onReorderExercises;
+  final void Function(int oldIndex, int newIndex)? onReorderStretchings;
   final bool compact;
   final bool pendingItemsFirst;
 
   static const _accentColor = Color(0xFF16A34A);
   static const _completeStyleDuration = Duration(milliseconds: 400);
 
-  List<Widget> _orderedChecklistItems(
-    BuildContext context,
-    AppLocalizations l10n,
-    ResolvedWarmUp? warmUp,
-    bool showWarmUpAtStart,
-    bool showWarmUpAtEnd,
-  ) {
-    final settledIds = settledCompletedItemIds ?? completedItemIds;
-    final entries = <_ChecklistEntry>[];
+  Set<String> get _settledIds => settledCompletedItemIds ?? completedItemIds;
 
-    void addWarmUp(ResolvedWarmUp value) {
-      entries.add(
-        _ChecklistEntry(
-          itemId: warmUpProgressItemId,
-          isCompleted: completedItemIds.contains(warmUpProgressItemId),
-          widget: _buildWarmUpTile(value),
-        ),
-      );
+  List<_ChecklistEntry> _orderedEntries(List<_ChecklistEntry> entries) {
+    if (!pendingItemsFirst) {
+      return entries;
+    }
+    final settled = _settledIds;
+    return [
+      ...entries.where((entry) => !settled.contains(entry.itemId)),
+      ...entries.where((entry) => settled.contains(entry.itemId)),
+    ];
+  }
+
+  Widget _buildStaticSection(List<_ChecklistEntry> entries) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: entries
+          .map(
+            (entry) => Padding(
+              key: ValueKey<String>('checklist-${entry.itemId}'),
+              padding: const EdgeInsets.only(bottom: 10),
+              child: entry.widget,
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  Widget _buildReorderableSection({
+    required List<_ChecklistEntry> entries,
+    required void Function(int oldIndex, int newIndex) onReorder,
+  }) {
+    if (entries.isEmpty) {
+      return const SizedBox.shrink();
     }
 
-    if (showWarmUpAtStart && warmUp != null) {
-      addWarmUp(warmUp);
-    }
-
-    for (final item in routine.stretchingItems) {
-      entries.add(
-        _ChecklistEntry(
-          itemId: item.slotId,
-          isCompleted: completedItemIds.contains(item.slotId),
-          widget: _buildStretchingTile(item),
-        ),
-      );
-    }
-
-    for (final item in routine.exercises) {
-      entries.add(
-        _ChecklistEntry(
-          itemId: item.slotId,
-          isCompleted: completedItemIds.contains(item.slotId),
-          widget: _buildExercise(context, item, l10n),
-        ),
-      );
-    }
-
-    if (showWarmUpAtEnd && warmUp != null) {
-      addWarmUp(warmUp);
-    }
-
-    final ordered = pendingItemsFirst
-        ? [
-            ...entries.where((entry) => !settledIds.contains(entry.itemId)),
-            ...entries.where((entry) => settledIds.contains(entry.itemId)),
-          ]
-        : entries;
-
-    return ordered
-        .map(
-          (entry) => Padding(
-            key: ValueKey<String>('checklist-${entry.itemId}'),
+    return ReorderableListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      buildDefaultDragHandles: false,
+      itemCount: entries.length,
+      onReorder: onReorder,
+      proxyDecorator: (child, index, animation) {
+        return AnimatedBuilder(
+          animation: animation,
+          builder: (context, _) {
+            final elevation =
+                Tween<double>(begin: 0, end: 6).evaluate(animation);
+            return Material(
+              elevation: elevation,
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(12),
+              child: child,
+            );
+          },
+        );
+      },
+      itemBuilder: (context, index) {
+        final entry = entries[index];
+        return ReorderableDelayedDragStartListener(
+          key: ValueKey<String>('checklist-${entry.itemId}'),
+          index: index,
+          child: Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: entry.widget,
           ),
-        )
-        .toList();
+        );
+      },
+    );
+  }
+
+  Widget _buildChecklistBody(BuildContext context, AppLocalizations l10n) {
+    final warmUp = routine.warmUp;
+    final showWarmUpAtStart =
+        warmUp != null && routine.warmUpPlacement == WarmUpPlacement.start;
+    final showWarmUpAtEnd =
+        warmUp != null && routine.warmUpPlacement == WarmUpPlacement.end;
+
+    final stretchingEntries = _orderedEntries(
+      routine.stretchingItems
+          .map(
+            (item) => _ChecklistEntry(
+              itemId: item.slotId,
+              isCompleted: completedItemIds.contains(item.slotId),
+              widget: _buildStretchingTile(item),
+            ),
+          )
+          .toList(),
+    );
+
+    final exerciseEntries = _orderedEntries(
+      routine.exercises
+          .map(
+            (item) => _ChecklistEntry(
+              itemId: item.slotId,
+              isCompleted: completedItemIds.contains(item.slotId),
+              widget: _buildExercise(context, item, l10n),
+            ),
+          )
+          .toList(),
+    );
+
+    final children = <Widget>[];
+
+    if (showWarmUpAtStart) {
+      children.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: _buildWarmUpTile(warmUp),
+        ),
+      );
+    }
+
+    if (stretchingEntries.isNotEmpty) {
+      children.add(
+        onReorderStretchings != null && interactive
+            ? _buildReorderableSection(
+                entries: stretchingEntries,
+                onReorder: onReorderStretchings!,
+              )
+            : _buildStaticSection(stretchingEntries),
+      );
+    }
+
+    if (exerciseEntries.isNotEmpty) {
+      children.add(
+        onReorderExercises != null && interactive
+            ? _buildReorderableSection(
+                entries: exerciseEntries,
+                onReorder: onReorderExercises!,
+              )
+            : _buildStaticSection(exerciseEntries),
+      );
+    }
+
+    if (showWarmUpAtEnd) {
+      children.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: _buildWarmUpTile(warmUp),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: children,
+    );
   }
 
   @override
@@ -113,11 +201,6 @@ class RoutineCardPreview extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final warmUp = routine.warmUp;
-    final showWarmUpAtStart =
-        warmUp != null && routine.warmUpPlacement == WarmUpPlacement.start;
-    final showWarmUpAtEnd =
-        warmUp != null && routine.warmUpPlacement == WarmUpPlacement.end;
 
     return Container(
       decoration: BoxDecoration(
@@ -173,13 +256,7 @@ class RoutineCardPreview extends StatelessWidget {
                     routine.stretchingItems.isNotEmpty ||
                     routine.exercises.isNotEmpty) ...[
                   SizedBox(height: compact ? 12 : 16),
-                  ..._orderedChecklistItems(
-                    context,
-                    l10n,
-                    warmUp,
-                    showWarmUpAtStart,
-                    showWarmUpAtEnd,
-                  ),
+                  _buildChecklistBody(context, l10n),
                 ],
               ],
             ),
@@ -275,7 +352,8 @@ class RoutineCardPreview extends StatelessWidget {
                         height: 18,
                         margin: const EdgeInsets.only(top: 3, right: 12),
                         decoration: BoxDecoration(
-                          border: Border.all(color: colorScheme.outline, width: 2),
+                          border:
+                              Border.all(color: colorScheme.outline, width: 2),
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),

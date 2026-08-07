@@ -140,6 +140,95 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
     await _repos.progress.toggleItem(widget.dateKey, itemId, false);
   }
 
+  Future<void> _reorderExercises(int oldIndex, int newIndex) async {
+    final routine = _routine;
+    if (routine == null || _isCelebrating) {
+      return;
+    }
+
+    final reordered = _reorderSlotsByDisplayOrder(
+      slots: routine.exerciseSlots,
+      slotIdOf: (slot) => slot.slotId,
+      oldIndex: oldIndex,
+      newIndex: newIndex,
+    );
+    if (reordered == null) {
+      return;
+    }
+
+    final updated = routine.copyWith(exerciseSlots: reordered);
+    await _repos.routines.upsertRoutineCard(updated);
+    if (!mounted) {
+      return;
+    }
+    setState(() => _routine = updated);
+  }
+
+  Future<void> _reorderStretchings(int oldIndex, int newIndex) async {
+    final routine = _routine;
+    if (routine == null || _isCelebrating) {
+      return;
+    }
+
+    final reordered = _reorderSlotsByDisplayOrder(
+      slots: routine.stretchingSlots,
+      slotIdOf: (slot) => slot.slotId,
+      oldIndex: oldIndex,
+      newIndex: newIndex,
+    );
+    if (reordered == null) {
+      return;
+    }
+
+    final updated = routine.copyWith(stretchingSlots: reordered);
+    await _repos.routines.upsertRoutineCard(updated);
+    if (!mounted) {
+      return;
+    }
+    setState(() => _routine = updated);
+  }
+
+  /// Reordena según la lista visual (pendientes primero, luego completados).
+  List<T>? _reorderSlotsByDisplayOrder<T>({
+    required List<T> slots,
+    required String Function(T slot) slotIdOf,
+    required int oldIndex,
+    required int newIndex,
+  }) {
+    if (oldIndex < 0 || oldIndex >= slots.length) {
+      return null;
+    }
+
+    final pending = <T>[];
+    final done = <T>[];
+    for (final slot in slots) {
+      if (_completedItemIds.contains(slotIdOf(slot))) {
+        done.add(slot);
+      } else {
+        pending.add(slot);
+      }
+    }
+    final display = [...pending, ...done];
+    if (oldIndex >= display.length) {
+      return null;
+    }
+
+    var targetIndex = newIndex;
+    if (targetIndex > oldIndex) {
+      targetIndex -= 1;
+    }
+    if (targetIndex < 0) {
+      targetIndex = 0;
+    }
+    if (targetIndex > display.length) {
+      targetIndex = display.length;
+    }
+
+    final item = display.removeAt(oldIndex);
+    display.insert(targetIndex, item);
+    return display;
+  }
+
   Future<void> _editExerciseWeight(ResolvedExercise exercise) async {
     final template =
         _repos.getLibraries().exercises[exercise.exerciseId];
@@ -528,6 +617,8 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
                       onExerciseReplace: _replaceExercise,
                       onStretchingReplace: _replaceStretching,
                       onWarmUpReplace: _replaceWarmUp,
+                      onReorderExercises: _reorderExercises,
+                      onReorderStretchings: _reorderStretchings,
                     ),
                     const SizedBox(height: 24),
                     FilledButton.icon(

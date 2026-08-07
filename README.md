@@ -2,7 +2,7 @@
 
 App personal para gestionar rutinas de gimnasio: mantén bibliotecas reutilizables de ejercicios, estiramientos y calentamientos; compón rutinas por referencia; asígnalas en un calendario y marca tu progreso día a día.
 
-**Versión actual:** `3.0.2+17`  
+**Versión actual:** `3.1.0+18`  
 **Repositorio:** [github.com/DarcherDev/life-fit](https://github.com/DarcherDev/life-fit)
 
 ## Para qué sirve
@@ -127,7 +127,7 @@ lib/
 El número de versión vive en `pubspec.yaml`:
 
 ```yaml
-version: 3.0.2+17
+version: 3.1.0+18
 #        │     └── build number (versionCode Android, debe subir en cada APK)
 #        └── versión visible (versionName)
 ```
