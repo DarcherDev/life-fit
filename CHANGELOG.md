@@ -4,6 +4,30 @@ Todos los cambios notables de Life Fit se documentan en este archivo.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el proyecto usa [Semantic Versioning](https://semver.org/lang/es/).
 
+## [3.4.0] - 2026-08-07
+
+**Build:** `3.4.0+21`
+
+### Añadido
+- **Importar / exportar rutinas** en JSON desde el drawer (perfil + rutinas denormalizadas; plantillas de biblioteca con upsert).
+- **Reordenar por arrastre** ejercicios y estiramientos en Día de gym (orden persistido en la rutina).
+- **Reordenar opciones del menú Home** por arrastre largo (orden en `home_menu_order`).
+- **Icono de marca** Life Fit (calendario + mancuerna) en launcher (Android adaptativo, iOS, web, Windows, macOS) y en el header del drawer.
+
+### Cambiado
+- Seed de tema a verde menta alineado con el icono (`#7CB894`).
+- Header del drawer: logo centrado (90 % del alto) sobre el color del menú, con divisor gris.
+- Iconos launcher regenerados con margen seguro para evitar recorte en máscaras circulares.
+- Tachado suave al completar un ítem antes de moverlo al final de la lista.
+
+### Corregido
+- El anillo de progreso de Home se actualiza al volver del Día de gym (navegación con `await`).
+
+### Tests
+- Cobertura de export/import JSON y del orden del menú Home.
+
+---
+
 ## [2.6.2] - 2026-07-02
 
 **Build:** `2.6.2+14`

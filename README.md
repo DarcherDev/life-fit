@@ -14,6 +14,7 @@ Life Fit te ayuda a organizar tus entrenamientos sin depender de hojas de cálcu
 ### Home
 - Anillo de progreso de la rutina de hoy (ítems completados / total) con acceso al día de gym.
 - Acceso inteligente al día de gym según el estado del día (rutina asignada, selector o creación).
+- **Reordenar** las tarjetas del menú por arrastre largo (el anillo de progreso permanece fijo).
 
 ### Día de gym
 - Acceso inteligente desde Home según el estado del día:
@@ -22,6 +23,7 @@ Life Fit te ayuda a organizar tus entrenamientos sin depender de hojas de cálcu
   - Si no hay rutinas creadas → formulario para crear una y asignarla al instante.
 - Checklist por ejercicio, estiramiento y calentamiento (datos resueltos desde bibliotecas).
 - Marcar ítem tocando toda la fila del checklist.
+- **Reordenar** ejercicios y estiramientos por arrastre largo; el orden se guarda en la rutina.
 - Editar series, repeticiones y peso del ejercicio en la sesión.
 - Reemplazar ejercicio, estiramiento o calentamiento por otro de la biblioteca.
 - Confetti al completar la rutina o pulsar **Terminar rutina**.
@@ -49,8 +51,11 @@ Life Fit te ayuda a organizar tus entrenamientos sin depender de hojas de cálcu
 - Opción de quitar la asignación de un día.
 
 ### Ajustes (drawer)
+- Header con el **logo** de Life Fit.
 - **Ajustes** en diálogo modal: tema claro, oscuro o seguir el sistema; idioma español / inglés; unidad de peso kg/lb.
 - **Mi proceso:** edad, altura y peso corporal persistentes en el dispositivo.
+- **Exportar rutinas:** JSON (perfil + rutinas) para compartir o analizar.
+- **Importar rutinas:** pegar JSON y reemplazar las rutinas locales (upsert de plantillas).
 - **Acerca de:** versión de la app y enlace a la licencia.
 
 ### Almacenamiento
@@ -72,6 +77,7 @@ Las rutinas guardan **referencias por ID**, no copias de los ítems.
 | `day_assignments` | Rutina asignada por fecha |
 | `day_progress` | Ítems completados por `slotId` |
 | `personal_profile` | Edad, altura y peso corporal del usuario |
+| `home_menu_order` | Orden de las tarjetas del menú Home |
 
 El helper `resolveRoutine` une rutina + bibliotecas en runtime para preview y día de gym.
 
@@ -140,15 +146,14 @@ Convención:
 
 Historial detallado en [CHANGELOG.md](CHANGELOG.md).
 
-## Novedades de la release 2.6.0
+## Novedades de la release 3.4.0
 
-Respecto a la `2.0.0+6`:
+Respecto a la `2.6.2+14`:
 
-- **Biblioteca base** al instalar con ejercicios, estiramientos y calentamientos de ejemplo.
-- **Día de gym ampliado:** editar series/reps/peso, reemplazar ítems y marcar completado tocando toda la fila.
-- **Búsqueda en bibliotecas** con creación desde búsqueda sin coincidencias.
-- **Ajustes y Mi proceso** en diálogos modales; anillo de progreso en Home.
-- **Licencia** source-available y diálogo Acerca de con versión de la app.
+- **Importar y exportar rutinas** en JSON desde el menú lateral.
+- **Reordenar** ejercicios/estiramientos en Día de gym y las opciones del menú Home por arrastre.
+- **Nuevo icono** de marca en launcher y drawer; tema verde menta.
+- **Progreso de Home** que se actualiza al salir del Día de gym.
 
 ## Cómo compilar
 
