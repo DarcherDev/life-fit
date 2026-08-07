@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 abstract class AppTheme {
   AppTheme._();
 
-  static const _seedColor = Colors.teal;
+  /// Verde menta del icono (calendario + mancuerna).
+  static const _seedColor = Color(0xFF7CB894);
 
   static ThemeData light() {
     return ThemeData(

@@ -13,7 +13,6 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
 
     return Drawer(
       child: SafeArea(
@@ -23,22 +22,32 @@ class AppDrawer extends StatelessWidget {
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: [
-                  DrawerHeader(
-                    margin: EdgeInsets.zero,
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primaryContainer,
-                    ),
-                    child: Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Text(
-                        l10n.appTitle,
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.onPrimaryContainer,
-                        ),
+                  SizedBox(
+                    height: 160,
+                    width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final logoSize = constraints.maxHeight * 0.9;
+                          return Center(
+                            child: Image.asset(
+                              'assets/branding/app_icon.png',
+                              height: logoSize,
+                              width: logoSize,
+                              fit: BoxFit.contain,
+                              filterQuality: FilterQuality.high,
+                              semanticLabel: l10n.appTitle,
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
+                  const Divider(height: 1),
                   ListTile(
                     leading: const Icon(Icons.settings_outlined),
                     title: Text(l10n.settingsTitle),
