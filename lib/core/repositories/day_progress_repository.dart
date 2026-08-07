@@ -4,4 +4,6 @@ abstract class DayProgressRepository {
   DayProgress getDayProgress(String dateKey);
 
   Future<void> toggleItem(String dateKey, String itemId, bool completed);
+
+  Future<void> clearDayProgress(String dateKey);
 }

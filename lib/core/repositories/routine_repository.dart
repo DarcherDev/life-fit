@@ -8,4 +8,7 @@ abstract class RoutineRepository {
   Future<void> upsertRoutineCard(RoutineCard card);
 
   Future<void> deleteRoutineCard(String routineId);
+
+  /// Sustituye por completo la lista de rutinas (sin tocar asignaciones).
+  Future<void> replaceAllRoutineCards(List<RoutineCard> cards);
 }

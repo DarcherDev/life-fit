@@ -49,6 +49,13 @@ class LocalDayProgressRepository implements DayProgressRepository {
     await _store.writeList(_key, allProgress, (item) => item.toJson());
   }
 
+  @override
+  Future<void> clearDayProgress(String dateKey) async {
+    final allProgress = _getAllProgress()
+      ..removeWhere((progress) => progress.dateKey == dateKey);
+    await _store.writeList(_key, allProgress, (item) => item.toJson());
+  }
+
   List<DayProgress> _getAllProgress() {
     return _store.readList(_key, DayProgress.fromJson);
   }

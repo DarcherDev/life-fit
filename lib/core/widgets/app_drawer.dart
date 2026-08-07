@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:life_fit/core/about/widgets/about_dialog.dart' show AppAboutDialog;
+import 'package:life_fit/core/import_export/widgets/export_routines_dialog.dart';
+import 'package:life_fit/core/import_export/widgets/import_routines_dialog.dart';
 import 'package:life_fit/core/profile/widgets/my_process_dialog.dart';
 import 'package:life_fit/core/settings/widgets/settings_dialog.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
@@ -53,6 +55,24 @@ class AppDrawer extends StatelessWidget {
                     onTap: () {
                       Navigator.pop(context);
                       MyProcessDialog.show(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.file_upload_outlined),
+                    title: Text(l10n.exportRoutinesTitle),
+                    subtitle: Text(l10n.exportRoutinesSubtitle),
+                    onTap: () {
+                      Navigator.pop(context);
+                      ExportRoutinesDialog.show(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.file_download_outlined),
+                    title: Text(l10n.importRoutinesTitle),
+                    subtitle: Text(l10n.importRoutinesSubtitle),
+                    onTap: () {
+                      Navigator.pop(context);
+                      ImportRoutinesDialog.show(context);
                     },
                   ),
                 ],

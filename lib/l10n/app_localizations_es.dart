@@ -100,6 +100,60 @@ class AppLocalizationsEs extends AppLocalizations {
   String get myProcessDescription => 'Registra tus datos físicos para llevar un control personal de tu evolución.';
 
   @override
+  String get exportRoutinesTitle => 'Exportar rutinas';
+
+  @override
+  String get exportRoutinesSubtitle => 'JSON para compartir o analizar con IA';
+
+  @override
+  String get exportRoutinesDescription => 'Copia este JSON y pégalo en ChatGPT o Gemini para analizar o rediseñar tus rutinas. No incluye el planificador.';
+
+  @override
+  String get exportRoutinesCopy => 'Copiar JSON';
+
+  @override
+  String get exportRoutinesCopied => 'JSON copiado al portapapeles';
+
+  @override
+  String get importRoutinesTitle => 'Importar rutinas';
+
+  @override
+  String get importRoutinesSubtitle => 'Pegar JSON y reemplazar rutinas';
+
+  @override
+  String get importRoutinesDescription => 'Pega un JSON exportado o generado por IA. Se reemplazarán todas las rutinas. Las bibliotecas se actualizarán sin borrar ítems no usados.';
+
+  @override
+  String get importRoutinesHint => 'Pega aquí el JSON completo';
+
+  @override
+  String get importRoutinesAction => 'Importar';
+
+  @override
+  String get importRoutinesConfirmTitle => '¿Reemplazar rutinas?';
+
+  @override
+  String get importRoutinesConfirmMessage => 'Se eliminarán las rutinas actuales y se cargarán las del JSON. Los ejercicios, estiramientos y calentamientos de la biblioteca se actualizarán o crearán; los no usados se conservan. El planificador limpia solo asignaciones rotas.';
+
+  @override
+  String get importRoutinesConfirmAction => 'Importar';
+
+  @override
+  String get importRoutinesSuccess => 'Rutinas importadas correctamente';
+
+  @override
+  String get importRoutinesErrorEmpty => 'Pega un JSON para importar';
+
+  @override
+  String get importRoutinesErrorInvalidJson => 'El texto no es un JSON válido';
+
+  @override
+  String get importRoutinesErrorSchema => 'Versión de esquema no soportada';
+
+  @override
+  String get importRoutinesErrorGeneric => 'No se pudo importar el JSON';
+
+  @override
   String get personalAgeLabel => 'Edad';
 
   @override

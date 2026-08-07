@@ -279,6 +279,114 @@ abstract class AppLocalizations {
   /// **'Registra tus datos físicos para llevar un control personal de tu evolución.'**
   String get myProcessDescription;
 
+  /// No description provided for @exportRoutinesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar rutinas'**
+  String get exportRoutinesTitle;
+
+  /// No description provided for @exportRoutinesSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'JSON para compartir o analizar con IA'**
+  String get exportRoutinesSubtitle;
+
+  /// No description provided for @exportRoutinesDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Copia este JSON y pégalo en ChatGPT o Gemini para analizar o rediseñar tus rutinas. No incluye el planificador.'**
+  String get exportRoutinesDescription;
+
+  /// No description provided for @exportRoutinesCopy.
+  ///
+  /// In es, this message translates to:
+  /// **'Copiar JSON'**
+  String get exportRoutinesCopy;
+
+  /// No description provided for @exportRoutinesCopied.
+  ///
+  /// In es, this message translates to:
+  /// **'JSON copiado al portapapeles'**
+  String get exportRoutinesCopied;
+
+  /// No description provided for @importRoutinesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Importar rutinas'**
+  String get importRoutinesTitle;
+
+  /// No description provided for @importRoutinesSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Pegar JSON y reemplazar rutinas'**
+  String get importRoutinesSubtitle;
+
+  /// No description provided for @importRoutinesDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Pega un JSON exportado o generado por IA. Se reemplazarán todas las rutinas. Las bibliotecas se actualizarán sin borrar ítems no usados.'**
+  String get importRoutinesDescription;
+
+  /// No description provided for @importRoutinesHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Pega aquí el JSON completo'**
+  String get importRoutinesHint;
+
+  /// No description provided for @importRoutinesAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Importar'**
+  String get importRoutinesAction;
+
+  /// No description provided for @importRoutinesConfirmTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Reemplazar rutinas?'**
+  String get importRoutinesConfirmTitle;
+
+  /// No description provided for @importRoutinesConfirmMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Se eliminarán las rutinas actuales y se cargarán las del JSON. Los ejercicios, estiramientos y calentamientos de la biblioteca se actualizarán o crearán; los no usados se conservan. El planificador limpia solo asignaciones rotas.'**
+  String get importRoutinesConfirmMessage;
+
+  /// No description provided for @importRoutinesConfirmAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Importar'**
+  String get importRoutinesConfirmAction;
+
+  /// No description provided for @importRoutinesSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Rutinas importadas correctamente'**
+  String get importRoutinesSuccess;
+
+  /// No description provided for @importRoutinesErrorEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Pega un JSON para importar'**
+  String get importRoutinesErrorEmpty;
+
+  /// No description provided for @importRoutinesErrorInvalidJson.
+  ///
+  /// In es, this message translates to:
+  /// **'El texto no es un JSON válido'**
+  String get importRoutinesErrorInvalidJson;
+
+  /// No description provided for @importRoutinesErrorSchema.
+  ///
+  /// In es, this message translates to:
+  /// **'Versión de esquema no soportada'**
+  String get importRoutinesErrorSchema;
+
+  /// No description provided for @importRoutinesErrorGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo importar el JSON'**
+  String get importRoutinesErrorGeneric;
+
   /// No description provided for @personalAgeLabel.
   ///
   /// In es, this message translates to:

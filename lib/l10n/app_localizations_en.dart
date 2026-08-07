@@ -100,6 +100,60 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myProcessDescription => 'Record your physical data to track your personal progress over time.';
 
   @override
+  String get exportRoutinesTitle => 'Export routines';
+
+  @override
+  String get exportRoutinesSubtitle => 'JSON to share or analyze with AI';
+
+  @override
+  String get exportRoutinesDescription => 'Copy this JSON and paste it into ChatGPT or Gemini to analyze or redesign your routines. The planner is not included.';
+
+  @override
+  String get exportRoutinesCopy => 'Copy JSON';
+
+  @override
+  String get exportRoutinesCopied => 'JSON copied to clipboard';
+
+  @override
+  String get importRoutinesTitle => 'Import routines';
+
+  @override
+  String get importRoutinesSubtitle => 'Paste JSON and replace routines';
+
+  @override
+  String get importRoutinesDescription => 'Paste an exported or AI-generated JSON. All routines will be replaced. Libraries will be updated without deleting unused items.';
+
+  @override
+  String get importRoutinesHint => 'Paste the full JSON here';
+
+  @override
+  String get importRoutinesAction => 'Import';
+
+  @override
+  String get importRoutinesConfirmTitle => 'Replace routines?';
+
+  @override
+  String get importRoutinesConfirmMessage => 'Current routines will be removed and replaced with the JSON. Exercise, stretching and warm-up library items will be created or updated; unused ones are kept. The planner only clears broken assignments.';
+
+  @override
+  String get importRoutinesConfirmAction => 'Import';
+
+  @override
+  String get importRoutinesSuccess => 'Routines imported successfully';
+
+  @override
+  String get importRoutinesErrorEmpty => 'Paste a JSON to import';
+
+  @override
+  String get importRoutinesErrorInvalidJson => 'The text is not valid JSON';
+
+  @override
+  String get importRoutinesErrorSchema => 'Unsupported schema version';
+
+  @override
+  String get importRoutinesErrorGeneric => 'Could not import the JSON';
+
+  @override
   String get personalAgeLabel => 'Age';
 
   @override

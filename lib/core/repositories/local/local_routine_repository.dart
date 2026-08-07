@@ -46,4 +46,9 @@ class LocalRoutineRepository implements RoutineRepository {
     await _store.writeList(_key, cards, (item) => item.toJson());
     await _assignments.removeAssignmentsForRoutine(routineId);
   }
+
+  @override
+  Future<void> replaceAllRoutineCards(List<RoutineCard> cards) async {
+    await _store.writeList(_key, cards, (item) => item.toJson());
+  }
 }
