@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
 import 'package:life_fit/shared/utils/locale_format.dart';
-import 'package:life_fit/shared/utils/routine_search.dart';
+import 'package:life_fit/shared/widgets/routine_picker_list.dart';
 
 class RoutineAssignSheet {
   RoutineAssignSheet._();
@@ -49,7 +49,7 @@ class RoutineAssignSheet {
   }
 }
 
-class _RoutineAssignSheetBody extends StatefulWidget {
+class _RoutineAssignSheetBody extends StatelessWidget {
   const _RoutineAssignSheetBody({
     required this.title,
     required this.routines,
@@ -63,37 +63,6 @@ class _RoutineAssignSheetBody extends StatefulWidget {
   final bool allowRemove;
 
   @override
-  State<_RoutineAssignSheetBody> createState() =>
-      _RoutineAssignSheetBodyState();
-}
-
-class _RoutineAssignSheetBodyState extends State<_RoutineAssignSheetBody> {
-  final _searchController = TextEditingController();
-  String _query = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _searchController.addListener(_onSearchChanged);
-  }
-
-  @override
-  void dispose() {
-    _searchController.removeListener(_onSearchChanged);
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  void _onSearchChanged() {
-    setState(() {
-      _query = _searchController.text;
-    });
-  }
-
-  List<RoutineCard> get _filteredRoutines =>
-      filterRoutineCards(widget.routines, _query);
-
-  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
@@ -104,39 +73,20 @@ class _RoutineAssignSheetBodyState extends State<_RoutineAssignSheetBody> {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: Text(
-              widget.title,
+              title,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: TextField(
-              controller: _searchController,
-              textInputAction: TextInputAction.search,
-              decoration: InputDecoration(
-                hintText: l10n.searchRoutineHint,
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: _query.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: _searchController.clear,
-                      )
-                    : null,
-                border: const OutlineInputBorder(),
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 10,
-                ),
-              ),
+          Expanded(
+            child: RoutinePickerList(
+              routines: routines,
+              currentRoutineId: currentRoutineId,
+              onSelected: (routineId) => Navigator.of(context).pop(routineId),
             ),
           ),
-          Expanded(
-            child: _buildRoutineList(context),
-          ),
-          if (widget.allowRemove && widget.currentRoutineId != null)
+          if (allowRemove && currentRoutineId != null)
             ListTile(
               leading: const Icon(Icons.event_busy),
               title: Text(l10n.removeRoutineFromDay),
@@ -144,42 +94,6 @@ class _RoutineAssignSheetBodyState extends State<_RoutineAssignSheetBody> {
             ),
         ],
       ),
-    );
-  }
-
-  Widget _buildRoutineList(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    if (_filteredRoutines.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Text(l10n.noMatchingRoutines),
-        ),
-      );
-    }
-
-    return ListView.builder(
-      itemCount: _filteredRoutines.length,
-      itemBuilder: (context, index) {
-        final routine = _filteredRoutines[index];
-        final isSelected = routine.id == widget.currentRoutineId;
-
-        return ListTile(
-          title: Text(routine.title),
-          subtitle: routine.description.isEmpty
-              ? null
-              : Text(routine.description),
-          trailing: isSelected
-              ? Icon(
-                  Icons.check_circle,
-                  color: Theme.of(context).colorScheme.primary,
-                )
-              : null,
-          selected: isSelected,
-          onTap: () => Navigator.of(context).pop(routine.id),
-        );
-      },
     );
   }
 }

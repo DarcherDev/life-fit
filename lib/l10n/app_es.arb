@@ -93,18 +93,11 @@
   "createRoutinesFirst": "Primero crea rutinas en la sección Rutina.",
   "routineRemovedFromDay": "Rutina quitada del día",
   "routineAssignedSuccess": "Rutina asignada correctamente",
-  "noRoutineAssigned": "Sin rutina asignada",
-  "tapToAssignRoutine": "Toca para asignar una rutina",
-  "plannerItemsTapToChange": "{count} items · Toca para cambiar",
-  "@plannerItemsTapToChange": {
+  "pickRoutineForDay": "Elige una rutina para este día",
+  "plannerItemsCount": "{count} items",
+  "@plannerItemsCount": {
     "placeholders": {
       "count": { "type": "int" }
-    }
-  },
-  "plannerDescriptionTapToChange": "{description} · Toca para cambiar",
-  "@plannerDescriptionTapToChange": {
-    "placeholders": {
-      "description": { "type": "String" }
     }
   },
   "assignRoutineForDate": "Asignar rutina para {date}",

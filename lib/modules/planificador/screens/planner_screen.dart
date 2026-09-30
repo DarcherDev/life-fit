@@ -8,6 +8,7 @@ import 'package:life_fit/shared/models/routine_card.dart';
 import 'package:life_fit/shared/utils/date_utils.dart';
 import 'package:life_fit/shared/utils/locale_format.dart';
 import 'package:life_fit/shared/widgets/routine_assign_sheet.dart';
+import 'package:life_fit/shared/widgets/routine_picker_list.dart';
 
 class PlannerScreen extends StatefulWidget {
   const PlannerScreen({super.key});
@@ -51,36 +52,10 @@ class _PlannerScreenState extends State<PlannerScreen> {
     return _repos.routines.getRoutineById(routineId);
   }
 
-  Future<void> _showAssignSheet(DateTime day) async {
+  /// Guarda la asignación del día; [routineId] null quita la rutina.
+  Future<void> _assignRoutine(DateTime day, String? routineId) async {
     final l10n = AppLocalizations.of(context);
-    final routines = _repos.routines.getRoutineCards();
-    if (routines.isEmpty) {
-      if (!mounted) {
-        return;
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.createRoutinesFirst)),
-      );
-      return;
-    }
-
-    final dateKey = DateKeys.fromDate(day);
-    final currentRoutineId = _routineIdForDay(day);
-
-    final selectedId = await RoutineAssignSheet.show(
-      context,
-      date: day,
-      routines: routines,
-      currentRoutineId: currentRoutineId,
-      allowRemove: true,
-    );
-
-    if (selectedId == null) {
-      return;
-    }
-
-    final routineId = selectedId.isEmpty ? null : selectedId;
-    await _repos.assignments.saveAssignment(dateKey, routineId);
+    await _repos.assignments.saveAssignment(DateKeys.fromDate(day), routineId);
     _loadAssignments();
 
     if (!mounted) {
@@ -92,6 +67,80 @@ class _PlannerScreenState extends State<PlannerScreen> {
         : l10n.routineAssignedSuccess;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
+    );
+  }
+
+  Future<void> _showAssignSheet(DateTime day) async {
+    final selectedId = await RoutineAssignSheet.show(
+      context,
+      date: day,
+      routines: _repos.routines.getRoutineCards(),
+      currentRoutineId: _routineIdForDay(day),
+      allowRemove: true,
+    );
+
+    if (selectedId == null || !mounted) {
+      return;
+    }
+
+    await _assignRoutine(day, selectedId.isEmpty ? null : selectedId);
+  }
+
+  Widget _buildAssignedRoutineCard(
+    AppLocalizations l10n,
+    DateTime day,
+    RoutineCard routine,
+  ) {
+    return Card(
+      child: ListTile(
+        title: Text(routine.title),
+        subtitle: Text(
+          routine.description.isEmpty
+              ? l10n.plannerItemsCount(routine.exerciseSlots.length)
+              : routine.description,
+        ),
+        trailing: IconButton(
+          icon: const Icon(Icons.edit_calendar),
+          tooltip: l10n.changeRoutine,
+          onPressed: () => _showAssignSheet(day),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInlineRoutinePicker(AppLocalizations l10n, DateTime day) {
+    final routines = _repos.routines.getRoutineCards();
+    if (routines.isEmpty) {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(l10n.createRoutinesFirst),
+        ),
+      );
+    }
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 12, bottom: 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Text(
+                l10n.pickRoutineForDay,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ),
+            RoutinePickerList(
+              key: ValueKey<String>('inline-picker-${DateKeys.fromDate(day)}'),
+              routines: routines,
+              shrinkWrap: true,
+              onSelected: (routineId) => _assignRoutine(day, routineId),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -124,7 +173,6 @@ class _PlannerScreenState extends State<PlannerScreen> {
                 _selectedDay = selectedDay;
                 _focusedDay = focusedDay;
               });
-              _showAssignSheet(selectedDay);
             },
             onPageChanged: (focusedDay) {
               _focusedDay = focusedDay;
@@ -157,26 +205,10 @@ class _PlannerScreenState extends State<PlannerScreen> {
                   ),
             ),
             const SizedBox(height: 12),
-            Card(
-              child: ListTile(
-                title: Text(
-                  selectedRoutine?.title ?? l10n.noRoutineAssigned,
-                ),
-                subtitle: Text(
-                  selectedRoutine == null
-                      ? l10n.tapToAssignRoutine
-                      : selectedRoutine.description.isEmpty
-                          ? l10n.plannerItemsTapToChange(
-                              selectedRoutine.exerciseSlots.length,
-                            )
-                          : l10n.plannerDescriptionTapToChange(
-                              selectedRoutine.description,
-                            ),
-                ),
-                trailing: const Icon(Icons.edit_calendar),
-                onTap: () => _showAssignSheet(_selectedDay!),
-              ),
-            ),
+            if (selectedRoutine != null)
+              _buildAssignedRoutineCard(l10n, _selectedDay!, selectedRoutine)
+            else
+              _buildInlineRoutinePicker(l10n, _selectedDay!),
           ],
         ],
       ),

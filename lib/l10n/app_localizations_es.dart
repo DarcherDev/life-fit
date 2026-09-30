@@ -252,19 +252,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get routineAssignedSuccess => 'Rutina asignada correctamente';
 
   @override
-  String get noRoutineAssigned => 'Sin rutina asignada';
+  String get pickRoutineForDay => 'Elige una rutina para este día';
 
   @override
-  String get tapToAssignRoutine => 'Toca para asignar una rutina';
-
-  @override
-  String plannerItemsTapToChange(int count) {
-    return '$count items · Toca para cambiar';
-  }
-
-  @override
-  String plannerDescriptionTapToChange(String description) {
-    return '$description · Toca para cambiar';
+  String plannerItemsCount(int count) {
+    return '$count items';
   }
 
   @override

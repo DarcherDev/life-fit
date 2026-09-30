@@ -579,29 +579,17 @@ abstract class AppLocalizations {
   /// **'Rutina asignada correctamente'**
   String get routineAssignedSuccess;
 
-  /// No description provided for @noRoutineAssigned.
+  /// No description provided for @pickRoutineForDay.
   ///
   /// In es, this message translates to:
-  /// **'Sin rutina asignada'**
-  String get noRoutineAssigned;
+  /// **'Elige una rutina para este día'**
+  String get pickRoutineForDay;
 
-  /// No description provided for @tapToAssignRoutine.
+  /// No description provided for @plannerItemsCount.
   ///
   /// In es, this message translates to:
-  /// **'Toca para asignar una rutina'**
-  String get tapToAssignRoutine;
-
-  /// No description provided for @plannerItemsTapToChange.
-  ///
-  /// In es, this message translates to:
-  /// **'{count} items · Toca para cambiar'**
-  String plannerItemsTapToChange(int count);
-
-  /// No description provided for @plannerDescriptionTapToChange.
-  ///
-  /// In es, this message translates to:
-  /// **'{description} · Toca para cambiar'**
-  String plannerDescriptionTapToChange(String description);
+  /// **'{count} items'**
+  String plannerItemsCount(int count);
 
   /// No description provided for @assignRoutineForDate.
   ///
