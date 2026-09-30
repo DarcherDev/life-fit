@@ -25,7 +25,9 @@ Life Fit te ayuda a organizar tus entrenamientos sin depender de hojas de cálcu
 - Marcar ítem tocando toda la fila del checklist.
 - **Reordenar** ejercicios y estiramientos por arrastre largo; el orden se guarda en la rutina.
 - Editar series, repeticiones y peso del ejercicio en la sesión.
+- Editar los **minutos del calentamiento** y las **repeticiones de cada estiramiento** en la sesión (se guarda en la biblioteca).
 - Reemplazar ejercicio, estiramiento o calentamiento por otro de la biblioteca.
+- El peso de ejercicios se muestra **redondeado al disco más cercano** al cambiar kg/lb (2,5 kg o 5 lb).
 - Confetti al completar la rutina o pulsar **Terminar rutina**.
 
 ### Bibliotecas (Ejercicios, Estiramientos, Calentamiento)
@@ -43,18 +45,19 @@ Life Fit te ayuda a organizar tus entrenamientos sin depender de hojas de cálcu
 - Crear, editar y eliminar rutinas armadas desde las bibliotecas.
 - Cada rutina incluye nombre, descripción opcional, ejercicios asignados, estiramientos y calentamiento opcional.
 - La ubicación del calentamiento (inicio o final) es por rutina, no por plantilla.
+- Botón de editar en calentamiento y estiramientos para ajustar minutos o repeticiones sin salir del formulario.
 - Vista previa resuelta antes de guardar.
 
 ### Planificador
 - Calendario mensual para asignar una rutina por día.
-- Bottom sheet compartido con búsqueda y scroll para elegir rutina.
-- Opción de quitar la asignación de un día.
+- Tocar un día solo lo selecciona; si no tiene rutina, la lista con buscador aparece **debajo de la fecha** para asignar una.
+- En un día con rutina, el botón de editar abre el bottom sheet para cambiarla o quitarla.
 
 ### Ajustes (drawer)
 - Header con el **logo** de Life Fit.
 - **Ajustes** en diálogo modal: tema claro, oscuro o seguir el sistema; idioma español / inglés; unidad de peso kg/lb.
 - **Mi proceso:** edad, altura y peso corporal persistentes en el dispositivo.
-- **Exportar rutinas:** JSON (perfil + rutinas) para compartir o analizar.
+- **Exportar rutinas:** JSON (perfil + rutinas) para compartir o analizar. Sin rutinas, muestra un **JSON de ejemplo** con la biblioteca base para adaptarlo e importarlo.
 - **Importar rutinas:** pegar JSON y reemplazar las rutinas locales (upsert de plantillas).
 - **Acerca de:** versión de la app y enlace a la licencia.
 
@@ -123,9 +126,10 @@ lib/
 │   ├── planificador/      # Calendario de asignaciones
 │   └── rutinas/           # Compositor de rutinas + preview
 └── shared/
+    ├── flows/             # LibraryQuickEditActions (edición rápida de plantillas)
     ├── models/            # RoutineCard, slots, ResolvedRoutine
     ├── utils/             # routine_resolver, búsqueda
-    └── widgets/           # LibraryPickerSheet, LibrarySearchableList, RoutineAssignSheet
+    └── widgets/           # LibraryPickerSheet, RoutineAssignSheet, RoutinePickerList, NumberEditDialog
 ```
 
 ## Versionado
@@ -146,14 +150,15 @@ Convención:
 
 Historial detallado en [CHANGELOG.md](CHANGELOG.md).
 
-## Novedades de la release 3.4.0
+## Novedades de la release 3.8.0
 
-Respecto a la `2.6.2+14`:
+Respecto a la `3.4.0+21`:
 
-- **Importar y exportar rutinas** en JSON desde el menú lateral.
-- **Reordenar** ejercicios/estiramientos en Día de gym y las opciones del menú Home por arrastre.
-- **Nuevo icono** de marca en launcher y drawer; tema verde menta.
-- **Progreso de Home** que se actualiza al salir del Día de gym.
+- **Planificador** menos intrusivo: asignas la rutina desde una lista bajo la fecha y el menú solo se abre con el botón de editar.
+- **Editar calentamiento y estiramientos** (minutos y repeticiones) desde Día de gym y desde el formulario de rutina.
+- **Peso redondeado** al disco más cercano al cambiar entre kg y lb.
+- **JSON de ejemplo** en Exportar rutinas cuando aún no tienes rutinas.
+- **Nueva paleta** azul/naranja, icono nuevo, tarjetas de Home unificadas y menú lateral más limpio.
 
 ## Cómo compilar
 

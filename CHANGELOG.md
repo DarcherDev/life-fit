@@ -4,6 +4,30 @@ Todos los cambios notables de Life Fit se documentan en este archivo.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el proyecto usa [Semantic Versioning](https://semver.org/lang/es/).
 
+## [3.8.0] - 2026-09-30
+
+**Build:** `3.8.0+26`
+
+### Añadido
+- **Editar calentamiento y estiramientos:** botón de editar para cambiar minutos del calentamiento y repeticiones del estiramiento desde Día de gym y desde el formulario de rutina (actualiza la plantilla de biblioteca).
+- **JSON de ejemplo en Exportar rutinas:** si no hay rutinas, se muestra un documento con el perfil y una rutina de ejemplo armada con la biblioteca base, listo para adaptar e importar.
+- **Planificador con asignación en línea:** en un día sin rutina, la lista de rutinas con buscador aparece debajo de la fecha.
+
+### Cambiado
+- **Planificador:** tocar un día solo lo selecciona; el bottom sheet para cambiar o quitar la rutina se abre únicamente con el botón de editar.
+- `RoutinePickerList` compartido entre el planificador y `RoutineAssignSheet`.
+- Paleta azul/naranja y nuevo icono de marca (launcher y drawer).
+- Tarjetas del menú Home unificadas (tarjeta azul, icono naranja).
+- Menú lateral sin subtítulos: solo Ajustes, Mi proceso, Exportar e Importar rutinas.
+
+### Corregido
+- El peso de los ejercicios se muestra redondeado al paso de disco (2,5 kg / 5 lb) al cambiar la unidad, sin alterar el valor guardado si no se edita.
+
+### Tests
+- Documento de ejemplo de exportación, edición rápida de plantillas, redondeo de peso y flujo del planificador.
+
+---
+
 ## [3.4.0] - 2026-08-07
 
 **Build:** `3.4.0+21`
