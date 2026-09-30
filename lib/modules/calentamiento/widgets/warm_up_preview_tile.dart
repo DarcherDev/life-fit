@@ -19,14 +19,13 @@ class WarmUpPreviewTile extends StatelessWidget {
   final ValueChanged<bool>? onToggle;
   final VoidCallback? onReplace;
 
-  static const _accentColor = Color(0xFFEA580C);
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
+    final accentColor = colorScheme.tertiary;
     final background = Color.alphaBlend(
-      _accentColor.withOpacity(
+      accentColor.withOpacity(
         colorScheme.brightness == Brightness.dark ? 0.22 : 0.1,
       ),
       colorScheme.surfaceVariant,
@@ -38,7 +37,7 @@ class WarmUpPreviewTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _accentColor.withOpacity(0.25)),
+        border: Border.all(color: accentColor.withOpacity(0.25)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,16 +57,16 @@ class WarmUpPreviewTile extends StatelessWidget {
                       AbsorbPointer(
                         child: Checkbox(
                           value: isCompleted,
-                          activeColor: _accentColor,
+                          activeColor: accentColor,
                           onChanged: (_) {},
                         ),
                       )
                     else
-                      const Padding(
-                        padding: EdgeInsets.only(top: 2, right: 12),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2, right: 12),
                         child: Icon(
                           Icons.local_fire_department,
-                          color: _accentColor,
+                          color: accentColor,
                           size: 20,
                         ),
                       ),
@@ -79,7 +78,7 @@ class WarmUpPreviewTile extends StatelessWidget {
                             l10n.warmUpTitle,
                             style: TextStyle(
                               fontWeight: FontWeight.w800,
-                              color: _accentColor,
+                              color: accentColor,
                               decoration:
                                   isCompleted ? TextDecoration.lineThrough : null,
                             ),

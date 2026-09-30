@@ -43,7 +43,6 @@ class RoutineCardPreview extends StatelessWidget {
   final bool compact;
   final bool pendingItemsFirst;
 
-  static const _accentColor = Color(0xFF16A34A);
   static const _completeStyleDuration = Duration(milliseconds: 400);
 
   Set<String> get _settledIds => settledCompletedItemIds ?? completedItemIds;
@@ -218,7 +217,7 @@ class RoutineCardPreview extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(height: 4, color: _accentColor),
+          Container(height: 4, color: colorScheme.primary),
           Padding(
             padding: EdgeInsets.all(compact ? 16 : 20),
             child: Column(
@@ -236,7 +235,7 @@ class RoutineCardPreview extends StatelessWidget {
                   Text(
                     routine.description,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: _accentColor,
+                          color: colorScheme.primary,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.4,
                         ),
@@ -342,7 +341,7 @@ class RoutineCardPreview extends StatelessWidget {
                       AbsorbPointer(
                         child: Checkbox(
                           value: isCompleted,
-                          activeColor: _accentColor,
+                          activeColor: colorScheme.primary,
                           onChanged: (_) {},
                         ),
                       )

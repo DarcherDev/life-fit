@@ -19,14 +19,13 @@ class StretchingPreviewTile extends StatelessWidget {
   final ValueChanged<bool>? onToggle;
   final VoidCallback? onReplace;
 
-  static const _accentColor = Color(0xFF7C3AED);
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
+    final accentColor = colorScheme.secondary;
     final background = Color.alphaBlend(
-      _accentColor.withOpacity(
+      accentColor.withOpacity(
         colorScheme.brightness == Brightness.dark ? 0.22 : 0.1,
       ),
       colorScheme.surfaceVariant,
@@ -38,7 +37,7 @@ class StretchingPreviewTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _accentColor.withOpacity(0.25)),
+        border: Border.all(color: accentColor.withOpacity(0.25)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,16 +57,16 @@ class StretchingPreviewTile extends StatelessWidget {
                       AbsorbPointer(
                         child: Checkbox(
                           value: isCompleted,
-                          activeColor: _accentColor,
+                          activeColor: accentColor,
                           onChanged: (_) {},
                         ),
                       )
                     else
-                      const Padding(
-                        padding: EdgeInsets.only(top: 2, right: 12),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2, right: 12),
                         child: Icon(
                           Icons.self_improvement,
-                          color: _accentColor,
+                          color: accentColor,
                           size: 20,
                         ),
                       ),

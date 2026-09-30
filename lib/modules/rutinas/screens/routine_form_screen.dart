@@ -422,8 +422,8 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
           child: FilledButton(
             onPressed: _save,
             style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFF16A34A),
-              foregroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
               minimumSize: const Size(48, 40),
               padding: const EdgeInsets.symmetric(horizontal: 14),
               elevation: 2,

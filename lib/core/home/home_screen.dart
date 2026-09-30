@@ -84,14 +84,18 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     await _menuOrderService.reorder(oldIndex, newIndex);
   }
 
-  _HomeOptionData _optionData(HomeMenuOption option, AppLocalizations l10n) {
+  _HomeOptionData _optionData(
+    HomeMenuOption option,
+    AppLocalizations l10n,
+    ColorScheme colors,
+  ) {
     switch (option) {
       case HomeMenuOption.gymDay:
         return _HomeOptionData(
           title: l10n.homeGymDayTitle,
           subtitle: l10n.homeGymDaySubtitle,
           icon: Icons.fitness_center,
-          color: Colors.deepOrange,
+          color: colors.tertiary,
           onTap: _openTodayGym,
         );
       case HomeMenuOption.routines:
@@ -99,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           title: l10n.homeRoutineTitle,
           subtitle: l10n.homeRoutineSubtitle,
           icon: Icons.dashboard_customize,
-          color: Colors.teal,
+          color: colors.primary,
           onTap: () => AppNavigation.openRoutines(context),
         );
       case HomeMenuOption.planner:
@@ -107,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           title: l10n.homePlannerTitle,
           subtitle: l10n.homePlannerSubtitle,
           icon: Icons.calendar_month,
-          color: Colors.indigo,
+          color: colors.secondary,
           onTap: () => AppNavigation.openPlanner(context),
         );
       case HomeMenuOption.exercises:
@@ -115,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           title: l10n.homeExercisesTitle,
           subtitle: l10n.homeExercisesSubtitle,
           icon: Icons.fitness_center_outlined,
-          color: Colors.green,
+          color: colors.primary,
           onTap: () => AppNavigation.openExerciseLibrary(context),
         );
       case HomeMenuOption.stretching:
@@ -123,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           title: l10n.homeStretchingTitle,
           subtitle: l10n.homeStretchingSubtitle,
           icon: Icons.self_improvement,
-          color: Colors.deepPurple,
+          color: colors.secondary,
           onTap: () => AppNavigation.openStretchingLibrary(context),
         );
       case HomeMenuOption.warmUp:
@@ -131,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           title: l10n.homeWarmUpTitle,
           subtitle: l10n.homeWarmUpSubtitle,
           icon: Icons.local_fire_department,
-          color: Colors.orange,
+          color: colors.tertiary,
           onTap: () => AppNavigation.openWarmUpLibrary(context),
         );
     }
@@ -193,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               },
               itemBuilder: (context, index) {
                 final option = _menuOrder[index];
-                final data = _optionData(option, l10n);
+                final data = _optionData(option, l10n, theme.colorScheme);
                 return ReorderableDelayedDragStartListener(
                   key: ValueKey<String>('home-menu-${option.storageId}'),
                   index: index,

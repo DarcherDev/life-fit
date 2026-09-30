@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:life_fit/core/theme/app_colors.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/shared/utils/routine_progress.dart';
 
@@ -15,7 +16,6 @@ class TodayProgressRing extends StatelessWidget {
 
   static const _ringSize = 168.0;
   static const _strokeWidth = 14.0;
-  static const _accentColor = Color(0xFF16A34A);
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +23,8 @@ class TodayProgressRing extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final subtitle = _subtitleFor(l10n);
+    final progressColor =
+        summary.isComplete ? AppColors.success : colorScheme.tertiary;
 
     final content = Column(
       children: [
@@ -39,9 +41,7 @@ class TodayProgressRing extends StatelessWidget {
                   value: summary.fraction.clamp(0, 1),
                   strokeWidth: _strokeWidth,
                   backgroundColor: colorScheme.surfaceVariant,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    summary.isComplete ? _accentColor : Colors.deepOrange,
-                  ),
+                  valueColor: AlwaysStoppedAnimation<Color>(progressColor),
                 ),
               ),
               Column(
@@ -51,9 +51,7 @@ class TodayProgressRing extends StatelessWidget {
                     '${summary.percent}%',
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.w800,
-                      color: summary.isComplete
-                          ? _accentColor
-                          : Colors.deepOrange,
+                      color: progressColor,
                     ),
                   ),
                   if (summary.hasRoutine && summary.totalItems > 0)

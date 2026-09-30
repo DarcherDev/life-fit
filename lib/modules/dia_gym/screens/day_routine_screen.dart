@@ -2,6 +2,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 
 import 'package:life_fit/core/navigation/app_navigation.dart';
+import 'package:life_fit/core/theme/app_colors.dart';
 import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
@@ -554,13 +555,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
         maxBlastForce: 28,
         minBlastForce: 12,
         gravity: 0.2,
-        colors: const [
-          Colors.green,
-          Colors.teal,
-          Colors.orange,
-          Colors.amber,
-          Colors.blue,
-        ],
+        colors: AppColors.confetti,
       ),
     );
   }
