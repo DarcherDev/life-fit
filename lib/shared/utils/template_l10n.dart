@@ -9,7 +9,7 @@ extension ExerciseTemplateL10n on ExerciseTemplate {
     final parts = <String>[l10n.seriesRepsFormat(series, repetitions)];
     if (weightKg != null) {
       parts.add(
-        formatWeight(
+        formatExerciseWeight(
           weightKg,
           unit ?? WeightUnitService.instance.unit,
           l10n,
@@ -25,7 +25,7 @@ extension ResolvedExerciseL10n on ResolvedExercise {
     final parts = <String>[l10n.seriesRepsFormat(series, repetitions)];
     if (weightKg != null) {
       parts.add(
-        formatWeight(
+        formatExerciseWeight(
           weightKg,
           unit ?? WeightUnitService.instance.unit,
           l10n,

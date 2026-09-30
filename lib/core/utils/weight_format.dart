@@ -1,4 +1,5 @@
 import 'package:life_fit/core/services/weight_unit_service.dart';
+import 'package:life_fit/core/utils/gym_weight_rounding.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 
 const double _kgPerLb = 0.45359237;
@@ -39,7 +40,7 @@ String weightUnitLabel(WeightUnit unit, AppLocalizations l10n) {
   }
 }
 
-String formatWeight(
+String formatExerciseWeight(
   double? weightKg,
   WeightUnit unit,
   AppLocalizations l10n,
@@ -47,7 +48,7 @@ String formatWeight(
   if (weightKg == null) {
     return '';
   }
-  final display = displayWeightFromKg(weightKg, unit);
+  final display = displayExerciseWeightFromKg(weightKg, unit);
   return l10n.weightFormat(
     formatWeightValue(display),
     weightUnitLabel(unit, l10n),
@@ -76,4 +77,11 @@ String? weightInputFromKg(double? weightKg, WeightUnit unit) {
     return null;
   }
   return formatWeightValue(displayWeightFromKg(weightKg, unit));
+}
+
+String? exerciseWeightInputFromKg(double? weightKg, WeightUnit unit) {
+  if (weightKg == null) {
+    return null;
+  }
+  return formatWeightValue(displayExerciseWeightFromKg(weightKg, unit));
 }

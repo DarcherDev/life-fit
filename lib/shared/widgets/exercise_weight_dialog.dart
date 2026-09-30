@@ -68,6 +68,7 @@ class _ExerciseWeightDialogState extends State<_ExerciseWeightDialog> {
   late final TextEditingController _repetitionsController;
   late final TextEditingController _weightController;
   late final WeightUnit _unit;
+  late final String _initialWeightText;
 
   @override
   void initState() {
@@ -79,9 +80,9 @@ class _ExerciseWeightDialogState extends State<_ExerciseWeightDialog> {
     _repetitionsController = TextEditingController(
       text: widget.initialRepetitions.toString(),
     );
-    _weightController = TextEditingController(
-      text: weightInputFromKg(widget.currentWeightKg, _unit) ?? '',
-    );
+    _initialWeightText =
+        exerciseWeightInputFromKg(widget.currentWeightKg, _unit) ?? '';
+    _weightController = TextEditingController(text: _initialWeightText);
   }
 
   @override
@@ -126,9 +127,14 @@ class _ExerciseWeightDialogState extends State<_ExerciseWeightDialog> {
     }
 
     final weightText = _weightController.text.trim();
-    final weightKg = weightText.isEmpty
-        ? null
-        : parseWeightInput(weightText, _unit);
+    final double? weightKg;
+    if (weightText.isEmpty) {
+      weightKg = null;
+    } else if (weightText == _initialWeightText) {
+      weightKg = widget.currentWeightKg;
+    } else {
+      weightKg = parseWeightInput(weightText, _unit);
+    }
 
     Navigator.of(context).pop(
       ExerciseWeightDialogResult._(

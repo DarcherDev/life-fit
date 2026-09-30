@@ -35,6 +35,7 @@ class _ExerciseTemplateFormScreenState
   final _repetitionsController = TextEditingController();
   final _weightController = TextEditingController();
   final _uuid = const Uuid();
+  String _initialWeightText = '';
 
   @override
   void initState() {
@@ -45,13 +46,12 @@ class _ExerciseTemplateFormScreenState
       _descriptionController.text = template.description;
       _seriesController.text = template.series.toString();
       _repetitionsController.text = template.repetitions.toString();
-      final weightText = weightInputFromKg(
-        template.weightKg,
-        WeightUnitService.instance.unit,
-      );
-      if (weightText != null) {
-        _weightController.text = weightText;
-      }
+      _initialWeightText = exerciseWeightInputFromKg(
+            template.weightKg,
+            WeightUnitService.instance.unit,
+          ) ??
+          '';
+      _weightController.text = _initialWeightText;
     } else if (widget.initialTitle != null) {
       _titleController.text = widget.initialTitle!;
     }
@@ -100,10 +100,10 @@ class _ExerciseTemplateFormScreenState
       return;
     }
 
-    final weightKg = parseWeightInput(
-      _weightController.text,
-      WeightUnitService.instance.unit,
-    );
+    final weightText = _weightController.text.trim();
+    final weightKg = weightText.isNotEmpty && weightText == _initialWeightText
+        ? widget.template?.weightKg
+        : parseWeightInput(weightText, WeightUnitService.instance.unit);
 
     final template = ExerciseTemplate(
       id: widget.template?.id ?? _uuid.v4(),
