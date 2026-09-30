@@ -8,6 +8,7 @@ import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up.dart';
 import 'package:life_fit/modules/rutinas/widgets/routine_card_preview.dart';
+import 'package:life_fit/shared/flows/library_quick_edit_actions.dart';
 import 'package:life_fit/shared/models/routine_exercise_slot.dart';
 import 'package:life_fit/shared/models/routine_stretching_slot.dart';
 import 'package:life_fit/shared/utils/routine_resolver.dart';
@@ -39,6 +40,10 @@ class DayRoutineScreen extends StatefulWidget {
 
 class _DayRoutineScreenState extends State<DayRoutineScreen> {
   final _repos = AppRepositories.instance;
+  late final _quickEdit = LibraryQuickEditActions(
+    warmUpTemplates: _repos.warmUpTemplates,
+    stretchingTemplates: _repos.stretchingTemplates,
+  );
   late final ConfettiController _confettiController;
   RoutineCard? _routine;
   Set<String> _completedItemIds = {};
@@ -257,6 +262,36 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
       ),
     );
     if (mounted) {
+      _loadData();
+    }
+  }
+
+  Future<void> _editWarmUp() async {
+    final warmUpId = _routine?.warmUpId;
+    if (_isCelebrating || warmUpId == null) {
+      return;
+    }
+
+    final changed = await _quickEdit.editWarmUpMinutes(context, warmUpId);
+    if (changed && mounted) {
+      _loadData();
+    }
+  }
+
+  Future<void> _editStretching(ResolvedStretching stretching) async {
+    final routine = _routine;
+    if (_isCelebrating || routine == null || stretching.isMissing) {
+      return;
+    }
+
+    final slot = routine.stretchingSlots.firstWhere(
+      (slot) => slot.slotId == stretching.slotId,
+    );
+    final changed = await _quickEdit.editStretchingRepetitions(
+      context,
+      slot.stretchingId,
+    );
+    if (changed && mounted) {
       _loadData();
     }
   }
@@ -612,6 +647,8 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
                       onExerciseReplace: _replaceExercise,
                       onStretchingReplace: _replaceStretching,
                       onWarmUpReplace: _replaceWarmUp,
+                      onStretchingEdit: _editStretching,
+                      onWarmUpEdit: _editWarmUp,
                       onReorderExercises: _reorderExercises,
                       onReorderStretchings: _reorderStretchings,
                     ),

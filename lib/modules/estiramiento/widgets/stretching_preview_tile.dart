@@ -11,6 +11,7 @@ class StretchingPreviewTile extends StatelessWidget {
     this.isCompleted = false,
     this.onToggle,
     this.onReplace,
+    this.onEdit,
   });
 
   final StretchingItem item;
@@ -18,6 +19,7 @@ class StretchingPreviewTile extends StatelessWidget {
   final bool isCompleted;
   final ValueChanged<bool>? onToggle;
   final VoidCallback? onReplace;
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -99,12 +101,25 @@ class StretchingPreviewTile extends StatelessWidget {
               ),
             ),
           ),
-          if (onReplace != null)
-            IconButton(
-              onPressed: onReplace,
-              icon: const Icon(Icons.swap_horiz, size: 20),
-              tooltip: l10n.changeStretching,
-              visualDensity: VisualDensity.compact,
+          if (onReplace != null || onEdit != null)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (onReplace != null)
+                  IconButton(
+                    onPressed: onReplace,
+                    icon: const Icon(Icons.swap_horiz, size: 20),
+                    tooltip: l10n.changeStretching,
+                    visualDensity: VisualDensity.compact,
+                  ),
+                if (onEdit != null)
+                  IconButton(
+                    onPressed: onEdit,
+                    icon: const Icon(Icons.edit_outlined, size: 20),
+                    tooltip: l10n.editStretchingTemplate,
+                    visualDensity: VisualDensity.compact,
+                  ),
+              ],
             ),
         ],
       ),

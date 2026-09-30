@@ -21,6 +21,8 @@ class RoutineCardPreview extends StatelessWidget {
     this.onExerciseReplace,
     this.onStretchingReplace,
     this.onWarmUpReplace,
+    this.onStretchingEdit,
+    this.onWarmUpEdit,
     this.onReorderExercises,
     this.onReorderStretchings,
     this.compact = false,
@@ -38,6 +40,8 @@ class RoutineCardPreview extends StatelessWidget {
   final void Function(ResolvedExercise exercise)? onExerciseReplace;
   final void Function(ResolvedStretching stretching)? onStretchingReplace;
   final VoidCallback? onWarmUpReplace;
+  final void Function(ResolvedStretching stretching)? onStretchingEdit;
+  final VoidCallback? onWarmUpEdit;
   final void Function(int oldIndex, int newIndex)? onReorderExercises;
   final void Function(int oldIndex, int newIndex)? onReorderStretchings;
   final bool compact;
@@ -268,6 +272,7 @@ class RoutineCardPreview extends StatelessWidget {
   Widget _buildWarmUpTile(ResolvedWarmUp warmUp) {
     final canReplace =
         interactive && !warmUp.isMissing && onWarmUpReplace != null;
+    final canEdit = interactive && !warmUp.isMissing && onWarmUpEdit != null;
 
     return WarmUpPreviewTile(
       warmUp: WarmUp(description: warmUp.description, minutes: warmUp.minutes),
@@ -277,12 +282,15 @@ class RoutineCardPreview extends StatelessWidget {
           ? null
           : (completed) => onItemToggle!(warmUpProgressItemId, completed),
       onReplace: canReplace ? onWarmUpReplace : null,
+      onEdit: canEdit ? onWarmUpEdit : null,
     );
   }
 
   Widget _buildStretchingTile(ResolvedStretching item) {
     final canReplace =
         interactive && !item.isMissing && onStretchingReplace != null;
+    final canEdit =
+        interactive && !item.isMissing && onStretchingEdit != null;
 
     return StretchingPreviewTile(
       item: StretchingItem(
@@ -296,6 +304,7 @@ class RoutineCardPreview extends StatelessWidget {
           ? null
           : (completed) => onItemToggle!(item.slotId, completed),
       onReplace: canReplace ? () => onStretchingReplace!(item) : null,
+      onEdit: canEdit ? () => onStretchingEdit!(item) : null,
     );
   }
 

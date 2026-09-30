@@ -7,6 +7,7 @@ import 'package:life_fit/shared/widgets/exercise_weight_dialog.dart';
 import 'package:life_fit/core/navigation/app_navigation.dart';
 import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up_placement.dart';
+import 'package:life_fit/shared/flows/library_quick_edit_actions.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
 import 'package:life_fit/shared/models/routine_exercise_slot.dart';
 import 'package:life_fit/shared/models/routine_stretching_slot.dart';
@@ -31,6 +32,10 @@ class RoutineFormScreen extends StatefulWidget {
 class _RoutineFormScreenState extends State<RoutineFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _repos = AppRepositories.instance;
+  late final _quickEdit = LibraryQuickEditActions(
+    warmUpTemplates: _repos.warmUpTemplates,
+    stretchingTemplates: _repos.stretchingTemplates,
+  );
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _uuid = const Uuid();
@@ -252,6 +257,23 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     }
   }
 
+  Future<void> _editWarmUp(String warmUpId) async {
+    final changed = await _quickEdit.editWarmUpMinutes(context, warmUpId);
+    if (changed && mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> _editStretching(String stretchingId) async {
+    final changed = await _quickEdit.editStretchingRepetitions(
+      context,
+      stretchingId,
+    );
+    if (changed && mounted) {
+      setState(() {});
+    }
+  }
+
   Widget _buildExerciseSlotList(RoutineLibraries libraries) {
     final l10n = AppLocalizations.of(context);
 
@@ -361,6 +383,8 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     required String? Function(T slot) subtitle,
     required VoidCallback onAdd,
     required ValueChanged<int> onRemove,
+    VoidCallback? Function(T slot)? onEdit,
+    String? editTooltip,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -384,14 +408,26 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
           ),
         ...List.generate(slots.length, (index) {
           final slot = slots[index];
+          final editAction = onEdit?.call(slot);
           return Card(
             margin: const EdgeInsets.only(bottom: 8),
             child: ListTile(
               title: Text(label(slot)),
               subtitle: subtitle(slot) == null ? null : Text(subtitle(slot)!),
-              trailing: IconButton(
-                icon: const Icon(Icons.remove_circle_outline),
-                onPressed: () => onRemove(index),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (editAction != null)
+                    IconButton(
+                      icon: const Icon(Icons.edit_outlined),
+                      tooltip: editTooltip,
+                      onPressed: editAction,
+                    ),
+                  IconButton(
+                    icon: const Icon(Icons.remove_circle_outline),
+                    onPressed: () => onRemove(index),
+                  ),
+                ],
               ),
             ),
           );
@@ -474,9 +510,19 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
                 child: ListTile(
                   title: Text(warmUpTemplate.description),
                   subtitle: Text(l10n.warmUpMinutesFormat(warmUpTemplate.minutes)),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () => setState(() => _warmUpId = null),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit_outlined),
+                        tooltip: l10n.editWarmUpTemplate,
+                        onPressed: () => _editWarmUp(warmUpTemplate.id),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () => setState(() => _warmUpId = null),
+                      ),
+                    ],
                   ),
                 ),
               )
@@ -525,6 +571,11 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
               },
               onAdd: _pickStretchings,
               onRemove: _removeStretchingSlot,
+              onEdit: (slot) =>
+                  libraries.stretchings.containsKey(slot.stretchingId)
+                      ? () => _editStretching(slot.stretchingId)
+                      : null,
+              editTooltip: l10n.editStretchingTemplate,
             ),
             _buildExerciseSlotList(libraries),
           ],
