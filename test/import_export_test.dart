@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:life_fit/core/data/default_library_catalog.dart';
 import 'package:life_fit/core/import_export/life_fit_export_document.dart';
 import 'package:life_fit/core/import_export/routine_export_service.dart';
 import 'package:life_fit/core/import_export/routine_import_service.dart';
+import 'package:life_fit/core/import_export/sample_routine_document_builder.dart';
 import 'package:life_fit/core/profile/models/personal_profile.dart';
 import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/core/services/weight_unit_service.dart';
@@ -320,5 +322,88 @@ void main() {
     final secondEx =
         libraries.exercises[routines[1].exerciseSlots.first.exerciseId]!;
     expect(secondEx.title, 'Ejercicio 1');
+  });
+
+  SampleRoutineDocumentBuilder sampleBuilder() {
+    return SampleRoutineDocumentBuilder(
+      profileReader: () => const PersonalProfile(
+        ageYears: 26,
+        heightCm: 163,
+        bodyWeightKg: 71,
+      ),
+      weightUnitReader: () => WeightUnit.kg,
+      routineTitle: 'Rutina de ejemplo',
+      routineDescription: 'Adapta esta rutina con IA',
+      clock: () => DateTime.utc(2026, 9, 30, 12),
+    );
+  }
+
+  test('documento de ejemplo usa perfil y biblioteca base', () {
+    final document = sampleBuilder().buildDocument();
+
+    expect(document.schemaVersion, 1);
+    expect(document.profile.ageYears, 26);
+    expect(document.profile.heightCm, 163);
+    expect(document.profile.weightUnit, WeightUnit.kg);
+    expect(document.routines, hasLength(1));
+
+    final routine = document.routines.single;
+    expect(routine.title, 'Rutina de ejemplo');
+    expect(routine.warmUp!.id, DefaultLibraryCatalog.warmUpTemplates.first.id);
+    expect(routine.stretchings, hasLength(2));
+    expect(routine.exercises, hasLength(4));
+    expect(
+      routine.exercises.map((item) => item.id),
+      DefaultLibraryCatalog.exerciseTemplates.take(4).map((item) => item.id),
+    );
+  });
+
+  test('importar el ejemplo no duplica la biblioteca base', () async {
+    SharedPreferences.setMockInitialValues({
+      'library_migration_v1_done': true,
+    });
+    final repos = await AppRepositories.init();
+    final exercisesBefore =
+        repos.exerciseTemplates.getExerciseTemplates().length;
+    final stretchingsBefore =
+        repos.stretchingTemplates.getStretchingTemplates().length;
+    final warmUpsBefore = repos.warmUpTemplates.getWarmUpTemplates().length;
+
+    await RoutineImportService(
+      repositories: repos,
+      profileReader: () => PersonalProfile.empty,
+      saveProfile: (_) async {},
+      saveWeightUnit: (_) async {},
+    ).importJsonString(sampleBuilder().buildJsonString());
+
+    final routines = repos.routines.getRoutineCards();
+    expect(routines, hasLength(1));
+    expect(routines.single.title, 'Rutina de ejemplo');
+    expect(
+      repos.exerciseTemplates.getExerciseTemplates(),
+      hasLength(exercisesBefore),
+    );
+    expect(
+      repos.stretchingTemplates.getStretchingTemplates(),
+      hasLength(stretchingsBefore),
+    );
+    expect(repos.warmUpTemplates.getWarmUpTemplates(), hasLength(warmUpsBefore));
+  });
+
+  test('hasRoutines refleja si hay rutinas guardadas', () async {
+    final repos = await initRepos();
+    final service = RoutineExportService(
+      repositories: repos,
+      profileReader: () => PersonalProfile.empty,
+      weightUnitReader: () => WeightUnit.kg,
+    );
+
+    expect(service.hasRoutines, isFalse);
+
+    await repos.routines.upsertRoutineCard(
+      const RoutineCard(id: 'routine-1', title: 'Pecho', description: ''),
+    );
+
+    expect(service.hasRoutines, isTrue);
   });
 }

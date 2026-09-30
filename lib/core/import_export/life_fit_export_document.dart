@@ -1,5 +1,18 @@
+import 'dart:convert';
+
 import 'package:life_fit/core/services/weight_unit_service.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up_placement.dart';
+
+String encodeExportDocument(
+  LifeFitExportDocument document, {
+  bool pretty = true,
+}) {
+  if (pretty) {
+    const encoder = JsonEncoder.withIndent('  ');
+    return encoder.convert(document.toJson());
+  }
+  return jsonEncode(document.toJson());
+}
 
 /// Documento JSON de export/import (schemaVersion 1).
 class LifeFitExportDocument {

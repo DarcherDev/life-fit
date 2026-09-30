@@ -51,7 +51,6 @@ class AppDrawer extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.settings_outlined),
                     title: Text(l10n.settingsTitle),
-                    subtitle: Text(l10n.settingsMenuSubtitle),
                     onTap: () {
                       Navigator.pop(context);
                       SettingsDialog.show(context);
@@ -60,7 +59,6 @@ class AppDrawer extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.monitor_heart_outlined),
                     title: Text(l10n.myProcessTitle),
-                    subtitle: Text(l10n.myProcessSubtitle),
                     onTap: () {
                       Navigator.pop(context);
                       MyProcessDialog.show(context);
@@ -69,7 +67,6 @@ class AppDrawer extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.file_upload_outlined),
                     title: Text(l10n.exportRoutinesTitle),
-                    subtitle: Text(l10n.exportRoutinesSubtitle),
                     onTap: () {
                       Navigator.pop(context);
                       ExportRoutinesDialog.show(context);
@@ -78,7 +75,6 @@ class AppDrawer extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.file_download_outlined),
                     title: Text(l10n.importRoutinesTitle),
-                    subtitle: Text(l10n.importRoutinesSubtitle),
                     onTap: () {
                       Navigator.pop(context);
                       ImportRoutinesDialog.show(context);

@@ -93,9 +93,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Ajustes'), findsOneWidget);
-    expect(find.text('Tema, idioma y sistema de peso'), findsOneWidget);
     expect(find.text('Mi proceso'), findsOneWidget);
-    expect(find.text('Edad, altura y peso corporal'), findsOneWidget);
+    expect(find.text('Exportar rutinas'), findsOneWidget);
+    expect(find.text('Importar rutinas'), findsOneWidget);
+    expect(find.text('Tema, idioma y sistema de peso'), findsNothing);
     expect(find.text('Tema'), findsNothing);
 
     await tester.tap(find.text('Ajustes'));

@@ -255,23 +255,11 @@ abstract class AppLocalizations {
   /// **'Ajustes'**
   String get settingsTitle;
 
-  /// No description provided for @settingsMenuSubtitle.
-  ///
-  /// In es, this message translates to:
-  /// **'Tema, idioma y sistema de peso'**
-  String get settingsMenuSubtitle;
-
   /// No description provided for @myProcessTitle.
   ///
   /// In es, this message translates to:
   /// **'Mi proceso'**
   String get myProcessTitle;
-
-  /// No description provided for @myProcessSubtitle.
-  ///
-  /// In es, this message translates to:
-  /// **'Edad, altura y peso corporal'**
-  String get myProcessSubtitle;
 
   /// No description provided for @myProcessDescription.
   ///
@@ -285,17 +273,29 @@ abstract class AppLocalizations {
   /// **'Exportar rutinas'**
   String get exportRoutinesTitle;
 
-  /// No description provided for @exportRoutinesSubtitle.
-  ///
-  /// In es, this message translates to:
-  /// **'JSON para compartir o analizar con IA'**
-  String get exportRoutinesSubtitle;
-
   /// No description provided for @exportRoutinesDescription.
   ///
   /// In es, this message translates to:
   /// **'Copia este JSON y pégalo en ChatGPT o Gemini para analizar o rediseñar tus rutinas. No incluye el planificador.'**
   String get exportRoutinesDescription;
+
+  /// No description provided for @exportRoutinesEmptyDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no tienes rutinas. Copia este ejemplo, pídele a ChatGPT o Gemini que lo adapte a tu entrenamiento y pega el resultado en Importar rutinas.'**
+  String get exportRoutinesEmptyDescription;
+
+  /// No description provided for @exportSampleRoutineTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Rutina de ejemplo'**
+  String get exportSampleRoutineTitle;
+
+  /// No description provided for @exportSampleRoutineDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Adapta esta rutina con IA y vuelve a importarla'**
+  String get exportSampleRoutineDescription;
 
   /// No description provided for @exportRoutinesCopy.
   ///
@@ -314,12 +314,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Importar rutinas'**
   String get importRoutinesTitle;
-
-  /// No description provided for @importRoutinesSubtitle.
-  ///
-  /// In es, this message translates to:
-  /// **'Pegar JSON y reemplazar rutinas'**
-  String get importRoutinesSubtitle;
 
   /// No description provided for @importRoutinesDescription.
   ///

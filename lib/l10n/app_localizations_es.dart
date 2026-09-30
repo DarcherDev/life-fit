@@ -88,13 +88,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsTitle => 'Ajustes';
 
   @override
-  String get settingsMenuSubtitle => 'Tema, idioma y sistema de peso';
-
-  @override
   String get myProcessTitle => 'Mi proceso';
-
-  @override
-  String get myProcessSubtitle => 'Edad, altura y peso corporal';
 
   @override
   String get myProcessDescription => 'Registra tus datos físicos para llevar un control personal de tu evolución.';
@@ -103,10 +97,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get exportRoutinesTitle => 'Exportar rutinas';
 
   @override
-  String get exportRoutinesSubtitle => 'JSON para compartir o analizar con IA';
+  String get exportRoutinesDescription => 'Copia este JSON y pégalo en ChatGPT o Gemini para analizar o rediseñar tus rutinas. No incluye el planificador.';
 
   @override
-  String get exportRoutinesDescription => 'Copia este JSON y pégalo en ChatGPT o Gemini para analizar o rediseñar tus rutinas. No incluye el planificador.';
+  String get exportRoutinesEmptyDescription => 'Aún no tienes rutinas. Copia este ejemplo, pídele a ChatGPT o Gemini que lo adapte a tu entrenamiento y pega el resultado en Importar rutinas.';
+
+  @override
+  String get exportSampleRoutineTitle => 'Rutina de ejemplo';
+
+  @override
+  String get exportSampleRoutineDescription => 'Adapta esta rutina con IA y vuelve a importarla';
 
   @override
   String get exportRoutinesCopy => 'Copiar JSON';
@@ -116,9 +116,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get importRoutinesTitle => 'Importar rutinas';
-
-  @override
-  String get importRoutinesSubtitle => 'Pegar JSON y reemplazar rutinas';
 
   @override
   String get importRoutinesDescription => 'Pega un JSON exportado o generado por IA. Se reemplazarán todas las rutinas. Las bibliotecas se actualizarán sin borrar ítems no usados.';

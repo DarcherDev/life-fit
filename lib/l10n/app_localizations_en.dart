@@ -88,13 +88,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTitle => 'Settings';
 
   @override
-  String get settingsMenuSubtitle => 'Theme, language and weight system';
-
-  @override
   String get myProcessTitle => 'My progress';
-
-  @override
-  String get myProcessSubtitle => 'Age, height and body weight';
 
   @override
   String get myProcessDescription => 'Record your physical data to track your personal progress over time.';
@@ -103,10 +97,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportRoutinesTitle => 'Export routines';
 
   @override
-  String get exportRoutinesSubtitle => 'JSON to share or analyze with AI';
+  String get exportRoutinesDescription => 'Copy this JSON and paste it into ChatGPT or Gemini to analyze or redesign your routines. The planner is not included.';
 
   @override
-  String get exportRoutinesDescription => 'Copy this JSON and paste it into ChatGPT or Gemini to analyze or redesign your routines. The planner is not included.';
+  String get exportRoutinesEmptyDescription => 'You don\'t have routines yet. Copy this sample, ask ChatGPT or Gemini to adapt it to your training and paste the result in Import routines.';
+
+  @override
+  String get exportSampleRoutineTitle => 'Sample routine';
+
+  @override
+  String get exportSampleRoutineDescription => 'Adapt this routine with AI and import it back';
 
   @override
   String get exportRoutinesCopy => 'Copy JSON';
@@ -116,9 +116,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get importRoutinesTitle => 'Import routines';
-
-  @override
-  String get importRoutinesSubtitle => 'Paste JSON and replace routines';
 
   @override
   String get importRoutinesDescription => 'Paste an exported or AI-generated JSON. All routines will be replaced. Libraries will be updated without deleting unused items.';

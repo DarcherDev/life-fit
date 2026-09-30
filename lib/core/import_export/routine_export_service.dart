@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:life_fit/core/import_export/life_fit_export_document.dart';
 import 'package:life_fit/core/profile/models/personal_profile.dart';
 import 'package:life_fit/core/repositories/app_repositories.dart';
@@ -25,6 +23,8 @@ class RoutineExportService {
   final WeightUnit Function() _weightUnitReader;
   final DateTime Function()? _clock;
 
+  bool get hasRoutines => _repositories.routines.getRoutineCards().isNotEmpty;
+
   LifeFitExportDocument buildDocument() {
     final profile = _profileReader();
     final libraries = _repositories.getLibraries();
@@ -48,14 +48,8 @@ class RoutineExportService {
     );
   }
 
-  String buildJsonString({bool pretty = true}) {
-    final document = buildDocument();
-    if (pretty) {
-      const encoder = JsonEncoder.withIndent('  ');
-      return encoder.convert(document.toJson());
-    }
-    return jsonEncode(document.toJson());
-  }
+  String buildJsonString({bool pretty = true}) =>
+      encodeExportDocument(buildDocument(), pretty: pretty);
 
   ExportRoutine _mapRoutine(RoutineCard card, RoutineLibraries libraries) {
     ExportWarmUp? warmUp;
