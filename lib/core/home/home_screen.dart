@@ -87,7 +87,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   _HomeOptionData _optionData(
     HomeMenuOption option,
     AppLocalizations l10n,
-    ColorScheme colors,
   ) {
     switch (option) {
       case HomeMenuOption.gymDay:
@@ -95,7 +94,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           title: l10n.homeGymDayTitle,
           subtitle: l10n.homeGymDaySubtitle,
           icon: Icons.fitness_center,
-          color: colors.tertiary,
           onTap: _openTodayGym,
         );
       case HomeMenuOption.routines:
@@ -103,7 +101,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           title: l10n.homeRoutineTitle,
           subtitle: l10n.homeRoutineSubtitle,
           icon: Icons.dashboard_customize,
-          color: colors.primary,
           onTap: () => AppNavigation.openRoutines(context),
         );
       case HomeMenuOption.planner:
@@ -111,7 +108,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           title: l10n.homePlannerTitle,
           subtitle: l10n.homePlannerSubtitle,
           icon: Icons.calendar_month,
-          color: colors.secondary,
           onTap: () => AppNavigation.openPlanner(context),
         );
       case HomeMenuOption.exercises:
@@ -119,7 +115,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           title: l10n.homeExercisesTitle,
           subtitle: l10n.homeExercisesSubtitle,
           icon: Icons.fitness_center_outlined,
-          color: colors.primary,
           onTap: () => AppNavigation.openExerciseLibrary(context),
         );
       case HomeMenuOption.stretching:
@@ -127,7 +122,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           title: l10n.homeStretchingTitle,
           subtitle: l10n.homeStretchingSubtitle,
           icon: Icons.self_improvement,
-          color: colors.secondary,
           onTap: () => AppNavigation.openStretchingLibrary(context),
         );
       case HomeMenuOption.warmUp:
@@ -135,7 +129,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           title: l10n.homeWarmUpTitle,
           subtitle: l10n.homeWarmUpSubtitle,
           icon: Icons.local_fire_department,
-          color: colors.tertiary,
           onTap: () => AppNavigation.openWarmUpLibrary(context),
         );
     }
@@ -197,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               },
               itemBuilder: (context, index) {
                 final option = _menuOrder[index];
-                final data = _optionData(option, l10n, theme.colorScheme);
+                final data = _optionData(option, l10n);
                 return ReorderableDelayedDragStartListener(
                   key: ValueKey<String>('home-menu-${option.storageId}'),
                   index: index,
@@ -207,7 +200,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       title: data.title,
                       subtitle: data.subtitle,
                       icon: data.icon,
-                      color: data.color,
                       onTap: data.onTap,
                     ),
                   ),
@@ -226,14 +218,12 @@ class _HomeOptionData {
     required this.title,
     required this.subtitle,
     required this.icon,
-    required this.color,
     required this.onTap,
   });
 
   final String title;
   final String subtitle;
   final IconData icon;
-  final Color color;
   final VoidCallback onTap;
 }
 
@@ -242,20 +232,20 @@ class _HomeOptionCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.icon,
-    required this.color,
     required this.onTap,
   });
 
   final String title;
   final String subtitle;
   final IconData icon;
-  final Color color;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Material(
-      color: color.withOpacity(0.08),
+      color: colors.primary.withOpacity(0.08),
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
         onTap: onTap,
@@ -266,8 +256,8 @@ class _HomeOptionCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 28,
-                backgroundColor: color.withOpacity(0.15),
-                child: Icon(icon, color: color, size: 28),
+                backgroundColor: colors.primary.withOpacity(0.18),
+                child: Icon(icon, color: colors.tertiary, size: 28),
               ),
               const SizedBox(width: 16),
               Expanded(
