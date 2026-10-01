@@ -86,4 +86,68 @@ void main() {
     expect(find.widgetWithText(ListTile, 'Press Banca'), findsOneWidget);
     expect(find.widgetWithText(ListTile, 'Sentadilla Copa'), findsNothing);
   });
+
+  testWidgets(
+      'LibrarySearchableList no superpone sugerencias y cierra el teclado',
+      (WidgetTester tester) async {
+    final tapped = <String>[];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('es'),
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('es'),
+          Locale('en'),
+        ],
+        home: Scaffold(
+          body: LibrarySearchableList<String>(
+            items: const [
+              'Dragon Flag',
+              'Dragon Flag (progresión)',
+              'Dragon Flag tuck / negativas',
+              'Dragon Flag (solo técnica)',
+              'Dead Bug',
+            ],
+            titleFor: (item) => item,
+            createButtonLabel: 'Nuevo ejercicio',
+            onCreate: (_) {},
+            itemBuilder: (context, item) => ListTile(
+              title: Text(item),
+              onTap: () => tapped.add(item),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(TextField));
+    await tester.enterText(find.byType(TextField), 'Drago');
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ListTile), findsNWidgets(4));
+    expect(find.text('Dragon Flag (solo técnica)'), findsOneWidget);
+
+    for (final element in find.byType(ListTile).evaluate().toList()) {
+      final tile = element.widget as ListTile;
+      await tester.tap(find.byWidget(tile));
+      await tester.pump();
+    }
+    expect(tapped.length, 4);
+
+    await tester.tap(find.byType(TextField));
+    await tester.pump();
+    final editable = tester.widget<EditableText>(find.byType(EditableText));
+    expect(editable.focusNode.hasFocus, isTrue);
+
+    await tester.testTextInput.receiveAction(TextInputAction.search);
+    await tester.pump();
+    expect(editable.focusNode.hasFocus, isFalse);
+  });
 }

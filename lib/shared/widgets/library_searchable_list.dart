@@ -34,7 +34,16 @@ class LibrarySearchableList<T extends Object> extends StatefulWidget {
 
 class _LibrarySearchableListState<T extends Object>
     extends State<LibrarySearchableList<T>> {
+  final _controller = TextEditingController();
   String _query = '';
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _dismissKeyboard() => FocusScope.of(context).unfocus();
 
   List<T> get _filteredItems {
     return filterLibraryItems<T>(
@@ -61,6 +70,19 @@ class _LibrarySearchableListState<T extends Object>
     final showCreateFromSearch =
         trimmedQuery.isNotEmpty && filtered.isEmpty && widget.items.isNotEmpty;
 
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: _dismissKeyboard,
+      child: _buildBody(l10n, filtered, trimmedQuery, showCreateFromSearch),
+    );
+  }
+
+  Widget _buildBody(
+    AppLocalizations l10n,
+    List<T> filtered,
+    String trimmedQuery,
+    bool showCreateFromSearch,
+  ) {
     if (widget.items.isEmpty && widget.emptyLibraryWidget != null) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -94,6 +116,8 @@ class _LibrarySearchableListState<T extends Object>
           child: showCreateFromSearch
               ? _buildNoMatchesState(l10n, trimmedQuery)
               : ListView.separated(
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   itemCount: filtered.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 8),
@@ -107,52 +131,26 @@ class _LibrarySearchableListState<T extends Object>
   }
 
   Widget _buildSearchField(AppLocalizations l10n) {
-    return Autocomplete<T>(
-      optionsBuilder: (value) {
-        final text = value.text.trim();
-        if (text.isEmpty) {
-          return <T>[];
-        }
-        return filterLibraryItems<T>(
-          items: widget.items,
-          query: text,
-          titleFor: widget.titleFor,
-          subtitleFor: widget.subtitleFor,
-          extraFieldsFor: widget.extraFieldsFor,
-        ).take(6);
-      },
-      displayStringForOption: widget.titleFor,
-      onSelected: (item) {
-        _updateQuery(widget.titleFor(item));
-      },
-      fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
-        if (controller.text != _query) {
-          controller.text = _query;
-        }
-
-        return TextField(
-          controller: controller,
-          focusNode: focusNode,
-          textInputAction: TextInputAction.search,
-          decoration: InputDecoration(
-            hintText: widget.searchHint ?? l10n.searchLibraryHint,
-            prefixIcon: const Icon(Icons.search),
-            suffixIcon: _query.isNotEmpty
-                ? IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      controller.clear();
-                      _updateQuery('');
-                    },
-                  )
-                : null,
-            border: const OutlineInputBorder(),
-            isDense: true,
-          ),
-          onChanged: _updateQuery,
-          onSubmitted: (_) => onFieldSubmitted(),
-        );
-      },
+    return TextField(
+      controller: _controller,
+      textInputAction: TextInputAction.search,
+      decoration: InputDecoration(
+        hintText: widget.searchHint ?? l10n.searchLibraryHint,
+        prefixIcon: const Icon(Icons.search),
+        suffixIcon: _query.isNotEmpty
+            ? IconButton(
+                icon: const Icon(Icons.clear),
+                onPressed: () {
+                  _controller.clear();
+                  _updateQuery('');
+                },
+              )
+            : null,
+        border: const OutlineInputBorder(),
+        isDense: true,
+      ),
+      onChanged: _updateQuery,
+      onSubmitted: (_) => _dismissKeyboard(),
     );
   }
 
