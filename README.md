@@ -151,15 +151,15 @@ Convención:
 
 Historial detallado en [CHANGELOG.md](CHANGELOG.md).
 
-## Novedades de la release 3.8.0
+## Novedades de la release 3.10.0
 
-Respecto a la `3.4.0+21`:
+Respecto a la `3.8.0+26`:
 
-- **Planificador** menos intrusivo: asignas la rutina desde una lista bajo la fecha y el menú solo se abre con el botón de editar.
-- **Editar calentamiento y estiramientos** (minutos y repeticiones) desde Día de gym y desde el formulario de rutina.
-- **Peso redondeado** al disco más cercano al cambiar entre kg y lb.
-- **JSON de ejemplo** en Exportar rutinas cuando aún no tienes rutinas.
-- **Nueva paleta** azul/naranja, icono nuevo, tarjetas de Home unificadas y menú lateral más limpio.
+- **Calentamiento al inicio y al final** en la misma rutina (ej. 10 min de bici antes y 10 de caminadora después).
+- Al elegir un calentamiento, un cuadro pregunta si va **al inicio o al final**.
+- **Rutinas solo de cardio:** ya no es obligatorio tener ejercicios.
+- **Editar ejercicio** muestra su nombre y descripción.
+- **Buscador** de bibliotecas sin el desplegable de sugerencias que tapaba la lista.
 
 ## Cómo compilar
 

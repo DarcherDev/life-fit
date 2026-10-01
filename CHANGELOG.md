@@ -4,6 +4,30 @@ Todos los cambios notables de Life Fit se documentan en este archivo.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el proyecto usa [Semantic Versioning](https://semver.org/lang/es/).
 
+## [3.10.0] - 2026-10-01
+
+**Build:** `3.10.0+29`
+
+### Añadido
+- **Dos calentamientos por rutina:** uno al inicio (antes de los estiramientos) y otro al final (después de los ejercicios); en Día de gym cada uno se marca, cambia y edita por separado y ambos cuentan en el progreso.
+- **Cuadro "¿Cuándo hacerlo?"** al elegir un calentamiento en el formulario de rutina (Al inicio / Al final), con aviso de cuál reemplaza si la posición ya está ocupada.
+- **Rutinas sin ejercicios:** basta con al menos un calentamiento, estiramiento o ejercicio (rutinas solo de cardio).
+- **Editar ejercicio** muestra el nombre y la descripción del ejercicio (3 líneas con "Ver más").
+
+### Cambiado
+- Formulario de rutina con una sola sección de calentamiento (sin el selector Al inicio / Al final).
+- Modelo `RoutineCard` con `startWarmUpId` / `endWarmUpId`; las rutinas guardadas se migran solas manteniendo la posición.
+- JSON de exportación con `warmUpStart` / `warmUpEnd` (se sigue leyendo el formato anterior `warmUp` + `warmUpPlacement`); el JSON de ejemplo incluye bici al inicio y caminadora al final.
+- El planificador cuenta todos los ítems de la rutina, no solo los ejercicios.
+
+### Corregido
+- Buscador de las bibliotecas: se quitó el desplegable de sugerencias que tapaba la lista y no se cerraba.
+
+### Tests
+- Lectura del formato antiguo, progreso con dos calentamientos, import/export por posición, cuadro de posición y rutinas solo de calentamientos.
+
+---
+
 ## [3.8.0] - 2026-09-30
 
 **Build:** `3.8.0+26`
