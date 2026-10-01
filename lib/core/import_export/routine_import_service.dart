@@ -164,10 +164,12 @@ class RoutineImportService {
       );
     }
 
-    String? warmUpId;
-    if (exportRoutine.warmUp != null) {
-      warmUpId = await _upsertWarmUp(exportRoutine.warmUp!);
-    }
+    final startWarmUp = exportRoutine.warmUpStart;
+    final startWarmUpId =
+        startWarmUp == null ? null : await _upsertWarmUp(startWarmUp);
+    final endWarmUp = exportRoutine.warmUpEnd;
+    final endWarmUpId =
+        endWarmUp == null ? null : await _upsertWarmUp(endWarmUp);
 
     final routineId = (exportRoutine.id != null && exportRoutine.id!.isNotEmpty)
         ? exportRoutine.id!
@@ -183,8 +185,8 @@ class RoutineImportService {
       description: exportRoutine.description,
       exerciseSlots: exerciseSlots,
       stretchingSlots: stretchingSlots,
-      warmUpId: warmUpId,
-      warmUpPlacement: exportRoutine.warmUpPlacement,
+      startWarmUpId: startWarmUpId,
+      endWarmUpId: endWarmUpId,
     );
   }
 

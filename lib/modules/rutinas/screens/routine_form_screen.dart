@@ -7,6 +7,7 @@ import 'package:life_fit/shared/widgets/exercise_weight_dialog.dart';
 import 'package:life_fit/core/navigation/app_navigation.dart';
 import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up_placement.dart';
+import 'package:life_fit/modules/calentamiento/widgets/warm_up_placement_dialog.dart';
 import 'package:life_fit/shared/flows/library_quick_edit_actions.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
 import 'package:life_fit/shared/models/routine_exercise_slot.dart';
@@ -40,8 +41,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
   final _descriptionController = TextEditingController();
   final _uuid = const Uuid();
 
-  String? _warmUpId;
-  var _warmUpPlacement = WarmUpPlacement.start;
+  final _warmUpIds = <WarmUpPlacement, String?>{};
   final _exerciseSlots = <RoutineExerciseSlot>[];
   final _stretchingSlots = <RoutineStretchingSlot>[];
 
@@ -54,8 +54,9 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     if (routine != null) {
       _titleController.text = routine.title;
       _descriptionController.text = routine.description;
-      _warmUpId = routine.warmUpId;
-      _warmUpPlacement = routine.warmUpPlacement;
+      for (final placement in WarmUpPlacement.values) {
+        _warmUpIds[placement] = routine.warmUpIdFor(placement);
+      }
       _exerciseSlots.addAll(routine.exerciseSlots);
       _stretchingSlots.addAll(routine.stretchingSlots);
     }
@@ -68,11 +69,31 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     super.dispose();
   }
 
-  Future<void> _assignWarmUpFromCreatedId(String? createdId) async {
-    if (!mounted || createdId == null) {
+  /// Pregunta la posición y asigna [warmUpId] allí, reemplazando si existía.
+  Future<void> _assignWarmUp(String? warmUpId) async {
+    if (!mounted || warmUpId == null) {
       return;
     }
-    setState(() => _warmUpId = createdId);
+
+    final warmUps = _repos.getLibraries().warmUps;
+    String? occupiedBy(WarmUpPlacement placement) {
+      final currentId = _warmUpIds[placement];
+      if (currentId == null) {
+        return null;
+      }
+      return warmUps[currentId]?.description ??
+          AppLocalizations.of(context).missingTemplateLabel;
+    }
+
+    final placement = await WarmUpPlacementDialog.show(
+      context,
+      startOccupiedBy: occupiedBy(WarmUpPlacement.start),
+      endOccupiedBy: occupiedBy(WarmUpPlacement.end),
+    );
+    if (!mounted || placement == null) {
+      return;
+    }
+    setState(() => _warmUpIds[placement] = warmUpId);
   }
 
   Future<void> _assignExerciseFromCreatedId(String? createdId) async {
@@ -101,7 +122,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     final l10n = AppLocalizations.of(context);
     final templates = _repos.warmUpTemplates.getWarmUpTemplates();
     if (templates.isEmpty) {
-      await _assignWarmUpFromCreatedId(
+      await _assignWarmUp(
         await AppNavigation.openWarmUpLibraryForCreation(context),
       );
       return;
@@ -113,7 +134,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
       multiSelect: false,
       createButtonLabel: l10n.newWarmUpTemplate,
       onCreateItem: () async {
-        await _assignWarmUpFromCreatedId(
+        await _assignWarmUp(
           await AppNavigation.openWarmUpLibraryToCreate(context),
         );
       },
@@ -129,7 +150,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     );
 
     if (selected != null && selected.isNotEmpty) {
-      setState(() => _warmUpId = selected.first);
+      await _assignWarmUp(selected.first);
     }
   }
 
@@ -342,9 +363,10 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
       return;
     }
 
-    if (_exerciseSlots.isEmpty) {
+    final hasWarmUp = _warmUpIds.values.any((id) => id != null);
+    if (!hasWarmUp && _stretchingSlots.isEmpty && _exerciseSlots.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.addAtLeastOneExerciseToRoutine)),
+        SnackBar(content: Text(l10n.addAtLeastOneItemToRoutine)),
       );
       return;
     }
@@ -354,8 +376,8 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
       exerciseSlots: List.unmodifiable(_exerciseSlots),
-      warmUpId: _warmUpId,
-      warmUpPlacement: _warmUpPlacement,
+      startWarmUpId: _warmUpIds[WarmUpPlacement.start],
+      endWarmUpId: _warmUpIds[WarmUpPlacement.end],
       stretchingSlots: List.unmodifiable(_stretchingSlots),
     );
 
@@ -375,6 +397,88 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     }
 
     Navigator.of(context).pop(true);
+  }
+
+  String _placementLabel(AppLocalizations l10n, WarmUpPlacement placement) {
+    return placement == WarmUpPlacement.start
+        ? l10n.warmUpPlacementStart
+        : l10n.warmUpPlacementEnd;
+  }
+
+  Widget _buildWarmUpCard(
+    RoutineLibraries libraries,
+    WarmUpPlacement placement,
+    String warmUpId,
+  ) {
+    final l10n = AppLocalizations.of(context);
+    final template = libraries.warmUps[warmUpId];
+    final placementLabel = _placementLabel(l10n, placement);
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ListTile(
+        title: Text(template?.description ?? l10n.missingTemplateLabel),
+        subtitle: Text(
+          template == null
+              ? placementLabel
+              : l10n.warmUpWithPlacementFormat(
+                  template.minutes,
+                  placementLabel,
+                ),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (template != null)
+              IconButton(
+                icon: const Icon(Icons.edit_outlined),
+                tooltip: l10n.editWarmUpTemplate,
+                onPressed: () => _editWarmUp(template.id),
+              ),
+            IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () => setState(() => _warmUpIds[placement] = null),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWarmUpSection(RoutineLibraries libraries) {
+    final l10n = AppLocalizations.of(context);
+    final assigned = [
+      for (final placement in WarmUpPlacement.values)
+        if (_warmUpIds[placement] != null)
+          _buildWarmUpCard(libraries, placement, _warmUpIds[placement]!),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.warmUpTitle,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        const SizedBox(height: 8),
+        if (assigned.isEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              l10n.noWarmUpSelected,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+        ...assigned,
+        OutlinedButton.icon(
+          onPressed: _pickWarmUp,
+          icon: const Icon(Icons.local_fire_department),
+          label: Text(l10n.pickWarmUpTitle),
+        ),
+      ],
+    );
   }
 
   Widget _buildSlotList<T>({
@@ -447,9 +551,6 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final libraries = _repos.getLibraries();
-    final warmUpTemplate = _warmUpId == null
-        ? null
-        : libraries.warmUps[_warmUpId];
 
     return AppScaffold(
       title: _isEditing ? l10n.editRoutine : l10n.newRoutine,
@@ -499,64 +600,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            Text(
-              l10n.warmUpTitle,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: 8),
-            if (warmUpTemplate != null)
-              Card(
-                child: ListTile(
-                  title: Text(warmUpTemplate.description),
-                  subtitle: Text(l10n.warmUpMinutesFormat(warmUpTemplate.minutes)),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit_outlined),
-                        tooltip: l10n.editWarmUpTemplate,
-                        onPressed: () => _editWarmUp(warmUpTemplate.id),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () => setState(() => _warmUpId = null),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            else
-              Text(
-                l10n.noWarmUpSelected,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: _pickWarmUp,
-              icon: const Icon(Icons.local_fire_department),
-              label: Text(l10n.pickWarmUpTitle),
-            ),
-            if (_warmUpId != null) ...[
-              const SizedBox(height: 12),
-              SegmentedButton<WarmUpPlacement>(
-                segments: [
-                  ButtonSegment(
-                    value: WarmUpPlacement.start,
-                    label: Text(l10n.warmUpPlacementStart),
-                  ),
-                  ButtonSegment(
-                    value: WarmUpPlacement.end,
-                    label: Text(l10n.warmUpPlacementEnd),
-                  ),
-                ],
-                selected: {_warmUpPlacement},
-                onSelectionChanged: (value) {
-                  setState(() => _warmUpPlacement = value.first);
-                },
-              ),
-            ],
+            _buildWarmUpSection(libraries),
             const SizedBox(height: 24),
             _buildSlotList<RoutineStretchingSlot>(
               title: l10n.stretchingsTitle,

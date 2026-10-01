@@ -56,6 +56,13 @@ void main() {
         minutes: 5,
       ),
     );
+    await repos.warmUpTemplates.upsertWarmUpTemplate(
+      const WarmUpTemplate(
+        id: 'wu-2',
+        description: 'Caminadora',
+        minutes: 10,
+      ),
+    );
     await repos.routines.upsertRoutineCard(
       const RoutineCard(
         id: 'routine-1',
@@ -67,8 +74,8 @@ void main() {
         stretchingSlots: [
           RoutineStretchingSlot(slotId: 'slot-s', stretchingId: 'st-1'),
         ],
-        warmUpId: 'wu-1',
-        warmUpPlacement: WarmUpPlacement.start,
+        startWarmUpId: 'wu-1',
+        endWarmUpId: 'wu-2',
       ),
     );
 
@@ -91,12 +98,86 @@ void main() {
     expect(document.routines.first.exercises.first.title, 'Press');
     expect(document.routines.first.exercises.first.weightKg, 60);
     expect(document.routines.first.stretchings.first.description, 'Hombro');
-    expect(document.routines.first.warmUp!.minutes, 5);
+    expect(document.routines.first.warmUpStart!.minutes, 5);
+    expect(document.routines.first.warmUpEnd!.description, 'Caminadora');
 
     final encoded = jsonDecode(jsonEncode(document.toJson()));
-    final roundTrip =
-        LifeFitExportDocument.fromJson(encoded as Map<String, dynamic>);
+    final routineJson =
+        (encoded as Map<String, dynamic>)['routines'][0] as Map<String, dynamic>;
+    expect(routineJson.containsKey('warmUpStart'), isTrue);
+    expect(routineJson.containsKey('warmUpEnd'), isTrue);
+    expect(routineJson.containsKey('warmUp'), isFalse);
+    expect(routineJson.containsKey('warmUpPlacement'), isFalse);
+
+    final roundTrip = LifeFitExportDocument.fromJson(encoded);
     expect(roundTrip.routines.first.exercises.first.id, 'ex-1');
+    expect(roundTrip.routines.first.warmUpStart!.id, 'wu-1');
+    expect(roundTrip.routines.first.warmUpEnd!.id, 'wu-2');
+  });
+
+  test('import lee calentamiento antiguo y nuevo por posición', () async {
+    final repos = await initRepos();
+
+    await RoutineImportService(
+      repositories: repos,
+      profileReader: () => PersonalProfile.empty,
+      saveProfile: (_) async {},
+      saveWeightUnit: (_) async {},
+    ).importJsonString(jsonEncode({
+      'schemaVersion': 1,
+      'routines': [
+        {
+          'id': 'legacy-end',
+          'title': 'Antigua',
+          'warmUpPlacement': 'end',
+          'warmUp': {'id': 'wu-a', 'description': 'Elíptica', 'minutes': 8},
+          'exercises': [
+            {'title': 'Press'},
+          ],
+        },
+        {
+          'id': 'both',
+          'title': 'Nueva',
+          'warmUpStart': {
+            'id': 'wu-b',
+            'description': 'Bicicleta',
+            'minutes': 10,
+          },
+          'warmUpEnd': {
+            'id': 'wu-c',
+            'description': 'Caminadora',
+            'minutes': 10,
+          },
+          'exercises': [
+            {'title': 'Sentadilla'},
+          ],
+        },
+      ],
+    }));
+
+    final routines = {
+      for (final routine in repos.routines.getRoutineCards())
+        routine.id: routine,
+    };
+    expect(routines['legacy-end']!.startWarmUpId, isNull);
+    expect(routines['legacy-end']!.endWarmUpId, 'wu-a');
+    expect(routines['both']!.startWarmUpId, 'wu-b');
+    expect(routines['both']!.endWarmUpId, 'wu-c');
+
+    final warmUps = repos.getLibraries().warmUps;
+    expect(warmUps['wu-a']!.minutes, 8);
+    expect(warmUps['wu-b']!.description, 'Bicicleta');
+    expect(warmUps['wu-c']!.description, 'Caminadora');
+  });
+
+  test('ExportRoutine antiguo sin warmUpPlacement queda al inicio', () {
+    final routine = ExportRoutine.fromJson({
+      'title': 'Antigua',
+      'warmUp': {'description': 'Cinta', 'minutes': 5},
+    });
+
+    expect(routine.warmUpFor(WarmUpPlacement.start)!.minutes, 5);
+    expect(routine.warmUpFor(WarmUpPlacement.end), isNull);
   });
 
   test('import reemplaza rutinas, hace upsert y conserva plantillas no usadas',
@@ -312,7 +393,7 @@ void main() {
     expect(ex3.series, 4);
     expect(ex3.repetitions, 8);
 
-    final warmUp = libraries.warmUps[firstRoutine.warmUpId!]!;
+    final warmUp = libraries.warmUps[firstRoutine.startWarmUpId!]!;
     expect(warmUp.minutes, 10);
 
     final stretching =
@@ -349,7 +430,14 @@ void main() {
 
     final routine = document.routines.single;
     expect(routine.title, 'Rutina de ejemplo');
-    expect(routine.warmUp!.id, DefaultLibraryCatalog.warmUpTemplates.first.id);
+    expect(
+      routine.warmUpStart!.id,
+      DefaultLibraryCatalog.warmUpTemplates[0].id,
+    );
+    expect(
+      routine.warmUpEnd!.id,
+      DefaultLibraryCatalog.warmUpTemplates[1].id,
+    );
     expect(routine.stretchings, hasLength(2));
     expect(routine.exercises, hasLength(4));
     expect(

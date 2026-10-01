@@ -39,9 +39,9 @@ class RoutineCardPreview extends StatelessWidget {
   final void Function(ResolvedExercise exercise)? onExerciseWeightEdit;
   final void Function(ResolvedExercise exercise)? onExerciseReplace;
   final void Function(ResolvedStretching stretching)? onStretchingReplace;
-  final VoidCallback? onWarmUpReplace;
+  final void Function(WarmUpPlacement placement)? onWarmUpReplace;
   final void Function(ResolvedStretching stretching)? onStretchingEdit;
-  final VoidCallback? onWarmUpEdit;
+  final void Function(WarmUpPlacement placement)? onWarmUpEdit;
   final void Function(int oldIndex, int newIndex)? onReorderExercises;
   final void Function(int oldIndex, int newIndex)? onReorderStretchings;
   final bool compact;
@@ -121,11 +121,8 @@ class RoutineCardPreview extends StatelessWidget {
   }
 
   Widget _buildChecklistBody(BuildContext context, AppLocalizations l10n) {
-    final warmUp = routine.warmUp;
-    final showWarmUpAtStart =
-        warmUp != null && routine.warmUpPlacement == WarmUpPlacement.start;
-    final showWarmUpAtEnd =
-        warmUp != null && routine.warmUpPlacement == WarmUpPlacement.end;
+    final startWarmUp = routine.startWarmUp;
+    final endWarmUp = routine.endWarmUp;
 
     final stretchingEntries = _orderedEntries(
       routine.stretchingItems
@@ -153,11 +150,11 @@ class RoutineCardPreview extends StatelessWidget {
 
     final children = <Widget>[];
 
-    if (showWarmUpAtStart) {
+    if (startWarmUp != null) {
       children.add(
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
-          child: _buildWarmUpTile(warmUp),
+          child: _buildWarmUpTile(startWarmUp, WarmUpPlacement.start),
         ),
       );
     }
@@ -184,11 +181,11 @@ class RoutineCardPreview extends StatelessWidget {
       );
     }
 
-    if (showWarmUpAtEnd) {
+    if (endWarmUp != null) {
       children.add(
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
-          child: _buildWarmUpTile(warmUp),
+          child: _buildWarmUpTile(endWarmUp, WarmUpPlacement.end),
         ),
       );
     }
@@ -269,20 +266,21 @@ class RoutineCardPreview extends StatelessWidget {
     );
   }
 
-  Widget _buildWarmUpTile(ResolvedWarmUp warmUp) {
+  Widget _buildWarmUpTile(ResolvedWarmUp warmUp, WarmUpPlacement placement) {
     final canReplace =
         interactive && !warmUp.isMissing && onWarmUpReplace != null;
     final canEdit = interactive && !warmUp.isMissing && onWarmUpEdit != null;
+    final itemId = warmUpProgressItemIdFor(placement);
 
     return WarmUpPreviewTile(
       warmUp: WarmUp(description: warmUp.description, minutes: warmUp.minutes),
       interactive: interactive,
-      isCompleted: completedItemIds.contains(warmUpProgressItemId),
+      isCompleted: completedItemIds.contains(itemId),
       onToggle: onItemToggle == null
           ? null
-          : (completed) => onItemToggle!(warmUpProgressItemId, completed),
-      onReplace: canReplace ? onWarmUpReplace : null,
-      onEdit: canEdit ? onWarmUpEdit : null,
+          : (completed) => onItemToggle!(itemId, completed),
+      onReplace: canReplace ? () => onWarmUpReplace!(placement) : null,
+      onEdit: canEdit ? () => onWarmUpEdit!(placement) : null,
     );
   }
 

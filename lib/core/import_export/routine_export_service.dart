@@ -52,11 +52,13 @@ class RoutineExportService {
       encodeExportDocument(buildDocument(), pretty: pretty);
 
   ExportRoutine _mapRoutine(RoutineCard card, RoutineLibraries libraries) {
-    ExportWarmUp? warmUp;
-    if (card.warmUpId != null) {
-      final template = libraries.warmUps[card.warmUpId];
-      warmUp = ExportWarmUp(
-        id: card.warmUpId,
+    ExportWarmUp? mapWarmUp(String? warmUpId) {
+      if (warmUpId == null) {
+        return null;
+      }
+      final template = libraries.warmUps[warmUpId];
+      return ExportWarmUp(
+        id: warmUpId,
         description: template?.description ?? '',
         minutes: template?.minutes ?? 0,
       );
@@ -93,8 +95,8 @@ class RoutineExportService {
       id: card.id,
       title: card.title,
       description: card.description,
-      warmUpPlacement: card.warmUpPlacement,
-      warmUp: warmUp,
+      warmUpStart: mapWarmUp(card.startWarmUpId),
+      warmUpEnd: mapWarmUp(card.endWarmUpId),
       stretchings: stretchings,
       exercises: exercises,
     );

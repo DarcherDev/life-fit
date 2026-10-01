@@ -1,3 +1,5 @@
+import 'package:life_fit/modules/calentamiento/models/warm_up_placement.dart';
+
 /// Calentamiento cardiovascular (caminadora, bici, elíptica, etc.).
 class WarmUp {
   const WarmUp({
@@ -33,5 +35,16 @@ class WarmUp {
   }
 }
 
-/// ID fijo para marcar el calentamiento como completado en el progreso del día.
+/// ID fijo del calentamiento inicial en el progreso del día.
+///
+/// Se conserva el valor histórico para no perder progreso ya guardado.
 const warmUpProgressItemId = '__warmup__';
+
+/// ID fijo del calentamiento final en el progreso del día.
+const endWarmUpProgressItemId = '__warmup_end__';
+
+String warmUpProgressItemIdFor(WarmUpPlacement placement) {
+  return placement == WarmUpPlacement.start
+      ? warmUpProgressItemId
+      : endWarmUpProgressItemId;
+}

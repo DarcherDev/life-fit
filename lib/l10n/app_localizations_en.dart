@@ -432,6 +432,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get warmUpPlacementEnd => 'At the end';
 
   @override
+  String warmUpReplacesFormat(String name) {
+    return 'Replaces $name';
+  }
+
+  @override
+  String warmUpWithPlacementFormat(int minutes, String placement) {
+    return '$minutes min · $placement';
+  }
+
+  @override
   String warmUpMinutesFormat(int minutes) {
     return '$minutes min';
   }
@@ -584,7 +594,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get routineSlotsEmpty => 'None assigned yet';
 
   @override
-  String get addAtLeastOneExerciseToRoutine => 'Add at least one exercise to the routine.';
+  String get addAtLeastOneItemToRoutine => 'Add at least one warm-up, stretch or exercise.';
 
   @override
   String get searchLibraryHint => 'Search...';

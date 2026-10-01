@@ -2,7 +2,7 @@
 
 App personal para gestionar rutinas de gimnasio: mantén bibliotecas reutilizables de ejercicios, estiramientos y calentamientos; compón rutinas por referencia; asígnalas en un calendario y marca tu progreso día a día.
 
-**Versión actual:** `3.9.0+28`  
+**Versión actual:** `3.10.0+29`  
 **Repositorio:** [github.com/DarcherDev/life-fit](https://github.com/DarcherDev/life-fit)
 
 ## Para qué sirve
@@ -43,8 +43,9 @@ Life Fit te ayuda a organizar tus entrenamientos sin depender de hojas de cálcu
 
 ### Rutina (compositor)
 - Crear, editar y eliminar rutinas armadas desde las bibliotecas.
-- Cada rutina incluye nombre, descripción opcional, ejercicios asignados, estiramientos y calentamiento opcional.
-- La ubicación del calentamiento (inicio o final) es por rutina, no por plantilla.
+- Cada rutina incluye nombre, descripción opcional, calentamientos, estiramientos y ejercicios; basta con tener al menos uno de ellos (sirve para rutinas solo de cardio).
+- Hasta dos calentamientos: **al inicio** (antes de los estiramientos) y **al final** (después de los ejercicios), ej. 10 min de bici al inicio y 10 de caminadora al final.
+- En el formulario los calentamientos aparecen juntos en una sola sección; al elegir uno, un cuadro pregunta si va al inicio o al final (si esa posición ya está ocupada, avisa a cuál reemplaza).
 - Botón de editar en calentamiento y estiramientos para ajustar minutos o repeticiones sin salir del formulario.
 - Vista previa resuelta antes de guardar.
 
@@ -76,7 +77,7 @@ Las rutinas guardan **referencias por ID**, no copias de los ítems.
 | `exercise_templates` | Biblioteca de ejercicios (`ExerciseTemplate`) |
 | `stretching_templates` | Biblioteca de estiramientos (`StretchingTemplate`) |
 | `warm_up_templates` | Biblioteca de calentamientos (`WarmUpTemplate`) |
-| `routine_cards` | Rutinas con slots (`RoutineExerciseSlot`, `RoutineStretchingSlot`, `warmUpId`) |
+| `routine_cards` | Rutinas con slots (`RoutineExerciseSlot`, `RoutineStretchingSlot`, `startWarmUpId`, `endWarmUpId`) |
 | `day_assignments` | Rutina asignada por fecha |
 | `day_progress` | Ítems completados por `slotId` |
 | `personal_profile` | Edad, altura y peso corporal del usuario |
@@ -137,7 +138,7 @@ lib/
 El número de versión vive en `pubspec.yaml`:
 
 ```yaml
-version: 3.9.0+28
+version: 3.10.0+29
 #        │     └── build number (versionCode Android, debe subir en cada APK)
 #        └── versión visible (versionName)
 ```

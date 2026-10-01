@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/core/services/storage_migration.dart';
-import 'package:life_fit/modules/calentamiento/models/warm_up_placement.dart';
 import 'package:life_fit/modules/ejercicios/models/exercise_template.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
 import 'package:life_fit/shared/models/routine_exercise_slot.dart';
@@ -22,13 +21,13 @@ void main() {
       exerciseSlots: [
         RoutineExerciseSlot(slotId: 'slot-1', exerciseId: 'ex-1'),
       ],
-      warmUpId: 'warm-1',
-      warmUpPlacement: WarmUpPlacement.start,
+      startWarmUpId: 'warm-1',
     );
 
     final decoded = RoutineCard.fromJson(card.toJson());
     expect(decoded.exerciseSlots.first.exerciseId, 'ex-1');
-    expect(decoded.warmUpId, 'warm-1');
+    expect(decoded.startWarmUpId, 'warm-1');
+    expect(decoded.endWarmUpId, isNull);
   });
 
   test('resolveRoutine une bibliotecas por referencia', () {

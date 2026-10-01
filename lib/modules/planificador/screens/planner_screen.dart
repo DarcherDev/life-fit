@@ -7,6 +7,7 @@ import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
 import 'package:life_fit/shared/utils/date_utils.dart';
 import 'package:life_fit/shared/utils/locale_format.dart';
+import 'package:life_fit/shared/utils/routine_progress.dart';
 import 'package:life_fit/shared/widgets/routine_assign_sheet.dart';
 import 'package:life_fit/shared/widgets/routine_picker_list.dart';
 
@@ -96,7 +97,9 @@ class _PlannerScreenState extends State<PlannerScreen> {
         title: Text(routine.title),
         subtitle: Text(
           routine.description.isEmpty
-              ? l10n.plannerItemsCount(routine.exerciseSlots.length)
+              ? l10n.plannerItemsCount(
+                  collectRoutineProgressItemIds(routine).length,
+                )
               : routine.description,
         ),
         trailing: IconButton(

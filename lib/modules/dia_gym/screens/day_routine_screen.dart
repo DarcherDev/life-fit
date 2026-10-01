@@ -7,10 +7,12 @@ import 'package:life_fit/core/widgets/app_scaffold.dart';
 import 'package:life_fit/core/repositories/app_repositories.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
 import 'package:life_fit/modules/calentamiento/models/warm_up.dart';
+import 'package:life_fit/modules/calentamiento/models/warm_up_placement.dart';
 import 'package:life_fit/modules/rutinas/widgets/routine_card_preview.dart';
 import 'package:life_fit/shared/flows/library_quick_edit_actions.dart';
 import 'package:life_fit/shared/models/routine_exercise_slot.dart';
 import 'package:life_fit/shared/models/routine_stretching_slot.dart';
+import 'package:life_fit/shared/utils/routine_progress.dart';
 import 'package:life_fit/shared/utils/routine_resolver.dart';
 import 'package:life_fit/shared/utils/template_l10n.dart';
 import 'package:life_fit/shared/widgets/library_picker_sheet.dart';
@@ -62,26 +64,12 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
 
   bool get _allItemsCompleted {
     final routine = _routine;
-    if (routine == null || !routine.hasExercises) {
+    if (routine == null) {
       return false;
     }
 
-    final exercisesDone = routine.exerciseSlots.every(
-      (slot) => _completedItemIds.contains(slot.slotId),
-    );
-
-    if (!routine.hasWarmUp && !routine.hasStretching) {
-      return exercisesDone;
-    }
-
-    final warmUpDone =
-        !routine.hasWarmUp || _completedItemIds.contains(warmUpProgressItemId);
-    final stretchingDone = !routine.hasStretching ||
-        routine.stretchingSlots.every(
-          (slot) => _completedItemIds.contains(slot.slotId),
-        );
-
-    return exercisesDone && warmUpDone && stretchingDone;
+    final itemIds = collectRoutineProgressItemIds(routine);
+    return itemIds.isNotEmpty && itemIds.every(_completedItemIds.contains);
   }
 
   @override
@@ -267,8 +255,8 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
     }
   }
 
-  Future<void> _editWarmUp() async {
-    final warmUpId = _routine?.warmUpId;
+  Future<void> _editWarmUp(WarmUpPlacement placement) async {
+    final warmUpId = _routine?.warmUpIdFor(placement);
     if (_isCelebrating || warmUpId == null) {
       return;
     }
@@ -443,12 +431,13 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
     );
   }
 
-  Future<void> _replaceWarmUp() async {
+  Future<void> _replaceWarmUp(WarmUpPlacement placement) async {
     if (_isCelebrating) {
       return;
     }
     final routine = _routine;
-    if (routine == null || !routine.hasWarmUp) {
+    final currentId = routine?.warmUpIdFor(placement);
+    if (routine == null || currentId == null) {
       return;
     }
 
@@ -462,7 +451,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
         context,
         title: l10n.changeWarmUp,
         multiSelect: false,
-        selectedIds: routine.warmUpId == null ? [] : [routine.warmUpId!],
+        selectedIds: [currentId],
         createButtonLabel: l10n.newWarmUpTemplate,
         onCreateItem: () async =>
             AppNavigation.openWarmUpLibraryToCreate(context),
@@ -482,13 +471,13 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
       selectedId = selected.first;
     }
 
-    if (!mounted || selectedId == null || selectedId == routine.warmUpId) {
+    if (!mounted || selectedId == null || selectedId == currentId) {
       return;
     }
 
     await _persistRoutine(
-      routine.copyWith(warmUpId: selectedId),
-      clearProgressForItemId: warmUpProgressItemId,
+      routine.withWarmUp(placement, selectedId),
+      clearProgressForItemId: warmUpProgressItemIdFor(placement),
     );
   }
 

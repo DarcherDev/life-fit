@@ -9,8 +9,8 @@ class RoutineCard {
     required this.title,
     required this.description,
     this.exerciseSlots = const [],
-    this.warmUpId,
-    this.warmUpPlacement = WarmUpPlacement.start,
+    this.startWarmUpId,
+    this.endWarmUpId,
     this.stretchingSlots = const [],
   });
 
@@ -18,13 +18,31 @@ class RoutineCard {
   final String title;
   final String description;
   final List<RoutineExerciseSlot> exerciseSlots;
-  final String? warmUpId;
-  final WarmUpPlacement warmUpPlacement;
+  final String? startWarmUpId;
+  final String? endWarmUpId;
   final List<RoutineStretchingSlot> stretchingSlots;
 
-  bool get hasWarmUp => warmUpId != null;
+  bool get hasWarmUp => startWarmUpId != null || endWarmUpId != null;
   bool get hasStretching => stretchingSlots.isNotEmpty;
   bool get hasExercises => exerciseSlots.isNotEmpty;
+
+  String? warmUpIdFor(WarmUpPlacement placement) {
+    return placement == WarmUpPlacement.start ? startWarmUpId : endWarmUpId;
+  }
+
+  /// Asigna o quita ([warmUpId] null) el calentamiento de [placement].
+  RoutineCard withWarmUp(WarmUpPlacement placement, String? warmUpId) {
+    if (placement == WarmUpPlacement.start) {
+      return copyWith(
+        startWarmUpId: warmUpId,
+        clearStartWarmUp: warmUpId == null,
+      );
+    }
+    return copyWith(
+      endWarmUpId: warmUpId,
+      clearEndWarmUp: warmUpId == null,
+    );
+  }
 
   bool referencesExercise(String exerciseId) {
     return exerciseSlots.any((slot) => slot.exerciseId == exerciseId);
@@ -35,7 +53,7 @@ class RoutineCard {
   }
 
   bool referencesWarmUp(String warmUpId) {
-    return this.warmUpId == warmUpId;
+    return startWarmUpId == warmUpId || endWarmUpId == warmUpId;
   }
 
   RoutineCard copyWith({
@@ -43,9 +61,10 @@ class RoutineCard {
     String? title,
     String? description,
     List<RoutineExerciseSlot>? exerciseSlots,
-    String? warmUpId,
-    bool clearWarmUp = false,
-    WarmUpPlacement? warmUpPlacement,
+    String? startWarmUpId,
+    bool clearStartWarmUp = false,
+    String? endWarmUpId,
+    bool clearEndWarmUp = false,
     List<RoutineStretchingSlot>? stretchingSlots,
   }) {
     return RoutineCard(
@@ -53,8 +72,9 @@ class RoutineCard {
       title: title ?? this.title,
       description: description ?? this.description,
       exerciseSlots: exerciseSlots ?? this.exerciseSlots,
-      warmUpId: clearWarmUp ? null : warmUpId ?? this.warmUpId,
-      warmUpPlacement: warmUpPlacement ?? this.warmUpPlacement,
+      startWarmUpId:
+          clearStartWarmUp ? null : startWarmUpId ?? this.startWarmUpId,
+      endWarmUpId: clearEndWarmUp ? null : endWarmUpId ?? this.endWarmUpId,
       stretchingSlots: stretchingSlots ?? this.stretchingSlots,
     );
   }
@@ -65,8 +85,8 @@ class RoutineCard {
       'title': title,
       'description': description,
       'exerciseSlots': exerciseSlots.map((slot) => slot.toJson()).toList(),
-      if (warmUpId != null) 'warmUpId': warmUpId,
-      if (warmUpId != null) 'warmUpPlacement': warmUpPlacement.toJson(),
+      if (startWarmUpId != null) 'startWarmUpId': startWarmUpId,
+      if (endWarmUpId != null) 'endWarmUpId': endWarmUpId,
       if (stretchingSlots.isNotEmpty)
         'stretchingSlots':
             stretchingSlots.map((slot) => slot.toJson()).toList(),
@@ -75,6 +95,8 @@ class RoutineCard {
 
   factory RoutineCard.fromJson(Map<String, dynamic> json) {
     if (json.containsKey('exerciseSlots') ||
+        json.containsKey('startWarmUpId') ||
+        json.containsKey('endWarmUpId') ||
         json.containsKey('warmUpId') ||
         json.containsKey('stretchingSlots')) {
       return _fromSlotJson(json);
@@ -86,6 +108,19 @@ class RoutineCard {
     final exerciseJson = json['exerciseSlots'] as List<dynamic>? ?? [];
     final stretchingJson = json['stretchingSlots'] as List<dynamic>? ?? [];
 
+    var startWarmUpId = json['startWarmUpId'] as String?;
+    var endWarmUpId = json['endWarmUpId'] as String?;
+    final legacyWarmUpId = json['warmUpId'] as String?;
+    if (legacyWarmUpId != null && startWarmUpId == null && endWarmUpId == null) {
+      final placement =
+          WarmUpPlacement.fromJson(json['warmUpPlacement'] as String?);
+      if (placement == WarmUpPlacement.end) {
+        endWarmUpId = legacyWarmUpId;
+      } else {
+        startWarmUpId = legacyWarmUpId;
+      }
+    }
+
     return RoutineCard(
       id: json['id'] as String,
       title: json['title'] as String,
@@ -94,9 +129,8 @@ class RoutineCard {
           .map((item) =>
               RoutineExerciseSlot.fromJson(item as Map<String, dynamic>))
           .toList(),
-      warmUpId: json['warmUpId'] as String?,
-      warmUpPlacement:
-          WarmUpPlacement.fromJson(json['warmUpPlacement'] as String?),
+      startWarmUpId: startWarmUpId,
+      endWarmUpId: endWarmUpId,
       stretchingSlots: stretchingJson
           .map((item) =>
               RoutineStretchingSlot.fromJson(item as Map<String, dynamic>))

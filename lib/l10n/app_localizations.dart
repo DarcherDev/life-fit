@@ -915,6 +915,18 @@ abstract class AppLocalizations {
   /// **'Al final'**
   String get warmUpPlacementEnd;
 
+  /// No description provided for @warmUpReplacesFormat.
+  ///
+  /// In es, this message translates to:
+  /// **'Reemplaza a {name}'**
+  String warmUpReplacesFormat(String name);
+
+  /// No description provided for @warmUpWithPlacementFormat.
+  ///
+  /// In es, this message translates to:
+  /// **'{minutes} min · {placement}'**
+  String warmUpWithPlacementFormat(int minutes, String placement);
+
   /// No description provided for @warmUpMinutesFormat.
   ///
   /// In es, this message translates to:
@@ -1191,11 +1203,11 @@ abstract class AppLocalizations {
   /// **'Ninguno asignado aún'**
   String get routineSlotsEmpty;
 
-  /// No description provided for @addAtLeastOneExerciseToRoutine.
+  /// No description provided for @addAtLeastOneItemToRoutine.
   ///
   /// In es, this message translates to:
-  /// **'Agrega al menos un ejercicio a la rutina.'**
-  String get addAtLeastOneExerciseToRoutine;
+  /// **'Agrega al menos un calentamiento, estiramiento o ejercicio.'**
+  String get addAtLeastOneItemToRoutine;
 
   /// No description provided for @searchLibraryHint.
   ///

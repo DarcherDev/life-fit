@@ -1,4 +1,5 @@
 import 'package:life_fit/modules/calentamiento/models/warm_up.dart';
+import 'package:life_fit/modules/calentamiento/models/warm_up_placement.dart';
 import 'package:life_fit/shared/models/routine_card.dart';
 
 class RoutineProgressSummary {
@@ -26,14 +27,17 @@ class RoutineProgressSummary {
 
 List<String> collectRoutineProgressItemIds(RoutineCard routine) {
   final ids = <String>[];
-  if (routine.hasWarmUp) {
-    ids.add(warmUpProgressItemId);
+  if (routine.startWarmUpId != null) {
+    ids.add(warmUpProgressItemIdFor(WarmUpPlacement.start));
   }
   for (final slot in routine.stretchingSlots) {
     ids.add(slot.slotId);
   }
   for (final slot in routine.exerciseSlots) {
     ids.add(slot.slotId);
+  }
+  if (routine.endWarmUpId != null) {
+    ids.add(warmUpProgressItemIdFor(WarmUpPlacement.end));
   }
   return ids;
 }

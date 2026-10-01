@@ -180,6 +180,19 @@
   "warmUpPlacementTitle": "¿Cuándo hacerlo?",
   "warmUpPlacementStart": "Al inicio",
   "warmUpPlacementEnd": "Al final",
+  "warmUpReplacesFormat": "Reemplaza a {name}",
+  "@warmUpReplacesFormat": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "warmUpWithPlacementFormat": "{minutes} min · {placement}",
+  "@warmUpWithPlacementFormat": {
+    "placeholders": {
+      "minutes": { "type": "int" },
+      "placement": { "type": "String" }
+    }
+  },
   "warmUpMinutesFormat": "{minutes} min",
   "@warmUpMinutesFormat": {
     "placeholders": {
@@ -261,7 +274,7 @@
   "noWarmUpSelected": "Sin calentamiento asignado",
   "addFromLibrary": "Agregar desde biblioteca",
   "routineSlotsEmpty": "Ninguno asignado aún",
-  "addAtLeastOneExerciseToRoutine": "Agrega al menos un ejercicio a la rutina.",
+  "addAtLeastOneItemToRoutine": "Agrega al menos un calentamiento, estiramiento o ejercicio.",
   "searchLibraryHint": "Buscar...",
   "noMatchingLibraryItems": "No hay coincidencias",
   "addSelected": "Agregar seleccionados",

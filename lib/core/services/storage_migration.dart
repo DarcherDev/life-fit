@@ -124,8 +124,11 @@ class StorageMigration {
           title: legacy.title,
           description: legacy.description,
           exerciseSlots: exerciseSlots,
-          warmUpId: warmUpId,
-          warmUpPlacement: legacy.warmUpPlacement,
+          startWarmUpId: legacy.warmUpPlacement == WarmUpPlacement.start
+              ? warmUpId
+              : null,
+          endWarmUpId:
+              legacy.warmUpPlacement == WarmUpPlacement.end ? warmUpId : null,
           stretchingSlots: stretchingSlots,
         ),
       );

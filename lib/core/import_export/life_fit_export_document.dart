@@ -97,8 +97,8 @@ class ExportRoutine {
     this.id,
     required this.title,
     this.description = '',
-    this.warmUpPlacement = WarmUpPlacement.start,
-    this.warmUp,
+    this.warmUpStart,
+    this.warmUpEnd,
     this.stretchings = const [],
     this.exercises = const [],
   });
@@ -106,18 +106,22 @@ class ExportRoutine {
   final String? id;
   final String title;
   final String description;
-  final WarmUpPlacement warmUpPlacement;
-  final ExportWarmUp? warmUp;
+  final ExportWarmUp? warmUpStart;
+  final ExportWarmUp? warmUpEnd;
   final List<ExportStretching> stretchings;
   final List<ExportExercise> exercises;
+
+  ExportWarmUp? warmUpFor(WarmUpPlacement placement) {
+    return placement == WarmUpPlacement.start ? warmUpStart : warmUpEnd;
+  }
 
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
       'title': title,
       if (description.isNotEmpty) 'description': description,
-      if (warmUp != null) 'warmUpPlacement': warmUpPlacement.toJson(),
-      if (warmUp != null) 'warmUp': warmUp!.toJson(),
+      if (warmUpStart != null) 'warmUpStart': warmUpStart!.toJson(),
+      if (warmUpEnd != null) 'warmUpEnd': warmUpEnd!.toJson(),
       if (stretchings.isNotEmpty)
         'stretchings': stretchings.map((item) => item.toJson()).toList(),
       'exercises': exercises.map((item) => item.toJson()).toList(),
@@ -127,17 +131,25 @@ class ExportRoutine {
   factory ExportRoutine.fromJson(Map<String, dynamic> json) {
     final stretchingsJson = json['stretchings'] as List<dynamic>? ?? [];
     final exercisesJson = json['exercises'] as List<dynamic>? ?? [];
-    final warmUpJson = json['warmUp'];
+    var warmUpStart = _parseWarmUp(json['warmUpStart']);
+    var warmUpEnd = _parseWarmUp(json['warmUpEnd']);
+    final legacyWarmUp = _parseWarmUp(json['warmUp']);
+    if (legacyWarmUp != null && warmUpStart == null && warmUpEnd == null) {
+      final placement =
+          WarmUpPlacement.fromJson(json['warmUpPlacement'] as String?);
+      if (placement == WarmUpPlacement.end) {
+        warmUpEnd = legacyWarmUp;
+      } else {
+        warmUpStart = legacyWarmUp;
+      }
+    }
 
     return ExportRoutine(
       id: json['id'] as String?,
       title: json['title'] as String? ?? '',
       description: json['description'] as String? ?? '',
-      warmUpPlacement:
-          WarmUpPlacement.fromJson(json['warmUpPlacement'] as String?),
-      warmUp: warmUpJson is Map<String, dynamic>
-          ? ExportWarmUp.fromJson(warmUpJson)
-          : null,
+      warmUpStart: warmUpStart,
+      warmUpEnd: warmUpEnd,
       stretchings: stretchingsJson
           .map(
             (item) => ExportStretching.fromJson(item as Map<String, dynamic>),
@@ -149,6 +161,10 @@ class ExportRoutine {
           )
           .toList(),
     );
+  }
+
+  static ExportWarmUp? _parseWarmUp(Object? json) {
+    return json is Map<String, dynamic> ? ExportWarmUp.fromJson(json) : null;
   }
 }
 

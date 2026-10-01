@@ -432,6 +432,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get warmUpPlacementEnd => 'Al final';
 
   @override
+  String warmUpReplacesFormat(String name) {
+    return 'Reemplaza a $name';
+  }
+
+  @override
+  String warmUpWithPlacementFormat(int minutes, String placement) {
+    return '$minutes min · $placement';
+  }
+
+  @override
   String warmUpMinutesFormat(int minutes) {
     return '$minutes min';
   }
@@ -584,7 +594,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get routineSlotsEmpty => 'Ninguno asignado aún';
 
   @override
-  String get addAtLeastOneExerciseToRoutine => 'Agrega al menos un ejercicio a la rutina.';
+  String get addAtLeastOneItemToRoutine => 'Agrega al menos un calentamiento, estiramiento o ejercicio.';
 
   @override
   String get searchLibraryHint => 'Buscar...';

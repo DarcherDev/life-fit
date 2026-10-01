@@ -36,21 +36,22 @@ ResolvedRoutine resolveRoutine(
 }) {
   final missingLabel = l10n?.missingTemplateLabel ?? 'No disponible';
 
-  ResolvedWarmUp? warmUp;
-  if (card.warmUpId != null) {
-    final template = libraries.warmUps[card.warmUpId];
+  ResolvedWarmUp? resolveWarmUp(String? warmUpId) {
+    if (warmUpId == null) {
+      return null;
+    }
+    final template = libraries.warmUps[warmUpId];
     if (template == null) {
-      warmUp = ResolvedWarmUp(
+      return ResolvedWarmUp(
         description: missingLabel,
         minutes: 0,
         isMissing: true,
       );
-    } else {
-      warmUp = ResolvedWarmUp(
-        description: template.description,
-        minutes: template.minutes,
-      );
     }
+    return ResolvedWarmUp(
+      description: template.description,
+      minutes: template.minutes,
+    );
   }
 
   final stretchingItems = card.stretchingSlots.map((slot) {
@@ -97,8 +98,8 @@ ResolvedRoutine resolveRoutine(
     id: card.id,
     title: card.title,
     description: card.description,
-    warmUp: warmUp,
-    warmUpPlacement: card.warmUpPlacement,
+    startWarmUp: resolveWarmUp(card.startWarmUpId),
+    endWarmUp: resolveWarmUp(card.endWarmUpId),
     stretchingItems: stretchingItems,
     exercises: exercises,
   );

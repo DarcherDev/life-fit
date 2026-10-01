@@ -53,8 +53,8 @@ class ResolvedRoutine {
     required this.id,
     required this.title,
     required this.description,
-    this.warmUp,
-    this.warmUpPlacement = WarmUpPlacement.start,
+    this.startWarmUp,
+    this.endWarmUp,
     this.stretchingItems = const [],
     this.exercises = const [],
   });
@@ -62,16 +62,21 @@ class ResolvedRoutine {
   final String id;
   final String title;
   final String description;
-  final ResolvedWarmUp? warmUp;
-  final WarmUpPlacement warmUpPlacement;
+  final ResolvedWarmUp? startWarmUp;
+  final ResolvedWarmUp? endWarmUp;
   final List<ResolvedStretching> stretchingItems;
   final List<ResolvedExercise> exercises;
 
-  bool get hasWarmUp => warmUp != null;
+  ResolvedWarmUp? warmUpFor(WarmUpPlacement placement) {
+    return placement == WarmUpPlacement.start ? startWarmUp : endWarmUp;
+  }
+
+  bool get hasWarmUp => startWarmUp != null || endWarmUp != null;
   bool get hasStretching => stretchingItems.isNotEmpty;
   bool get hasExercises => exercises.isNotEmpty;
   bool get hasMissingItems =>
-      (warmUp?.isMissing ?? false) ||
+      (startWarmUp?.isMissing ?? false) ||
+      (endWarmUp?.isMissing ?? false) ||
       stretchingItems.any((item) => item.isMissing) ||
       exercises.any((item) => item.isMissing);
 }

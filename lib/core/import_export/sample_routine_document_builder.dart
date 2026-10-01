@@ -2,7 +2,7 @@ import 'package:life_fit/core/data/default_library_catalog.dart';
 import 'package:life_fit/core/import_export/life_fit_export_document.dart';
 import 'package:life_fit/core/profile/models/personal_profile.dart';
 import 'package:life_fit/core/services/weight_unit_service.dart';
-import 'package:life_fit/modules/calentamiento/models/warm_up_placement.dart';
+import 'package:life_fit/modules/calentamiento/models/warm_up_template.dart';
 
 /// Documento de ejemplo (perfil + una rutina) para usuarios sin rutinas.
 ///
@@ -50,18 +50,14 @@ class SampleRoutineDocumentBuilder {
       encodeExportDocument(buildDocument(), pretty: pretty);
 
   ExportRoutine _buildRoutine() {
-    final warmUp = DefaultLibraryCatalog.warmUpTemplates.first;
+    const warmUps = DefaultLibraryCatalog.warmUpTemplates;
 
     return ExportRoutine(
       id: sampleRoutineId,
       title: routineTitle,
       description: routineDescription,
-      warmUpPlacement: WarmUpPlacement.start,
-      warmUp: ExportWarmUp(
-        id: warmUp.id,
-        description: warmUp.description,
-        minutes: warmUp.minutes,
-      ),
+      warmUpStart: _toExportWarmUp(warmUps.first),
+      warmUpEnd: warmUps.length > 1 ? _toExportWarmUp(warmUps[1]) : null,
       stretchings: DefaultLibraryCatalog.stretchingTemplates
           .take(_stretchingCount)
           .map(
@@ -85,6 +81,14 @@ class SampleRoutineDocumentBuilder {
             ),
           )
           .toList(),
+    );
+  }
+
+  static ExportWarmUp _toExportWarmUp(WarmUpTemplate template) {
+    return ExportWarmUp(
+      id: template.id,
+      description: template.description,
+      minutes: template.minutes,
     );
   }
 }
