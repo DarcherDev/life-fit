@@ -483,6 +483,18 @@ abstract class AppLocalizations {
   /// **'Editar ejercicio'**
   String get editExercise;
 
+  /// No description provided for @seeMore.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver más'**
+  String get seeMore;
+
+  /// No description provided for @seeLess.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver menos'**
+  String get seeLess;
+
   /// No description provided for @weightFormat.
   ///
   /// In es, this message translates to:

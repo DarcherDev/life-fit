@@ -71,6 +71,8 @@
   "exerciseWeightHint": "Optional",
   "editExerciseWeight": "Edit weight",
   "editExercise": "Edit exercise",
+  "seeMore": "See more",
+  "seeLess": "See less",
   "weightFormat": "{weight} {unit}",
   "@weightFormat": {
     "placeholders": {

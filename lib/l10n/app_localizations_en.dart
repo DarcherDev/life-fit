@@ -202,6 +202,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editExercise => 'Edit exercise';
 
   @override
+  String get seeMore => 'See more';
+
+  @override
+  String get seeLess => 'See less';
+
+  @override
   String weightFormat(String weight, String unit) {
     return '$weight $unit';
   }

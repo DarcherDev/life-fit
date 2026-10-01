@@ -245,6 +245,7 @@ class _DayRoutineScreenState extends State<DayRoutineScreen> {
     final result = await ExerciseWeightDialog.show(
       context,
       exerciseTitle: exercise.title,
+      description: exercise.description,
       series: exercise.series,
       repetitions: exercise.repetitions,
       currentWeightKg: exercise.weightKg,

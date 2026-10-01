@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:life_fit/core/services/weight_unit_service.dart';
 import 'package:life_fit/core/utils/weight_format.dart';
 import 'package:life_fit/l10n/app_localizations.dart';
+import 'package:life_fit/shared/widgets/expandable_description.dart';
 
 class ExerciseWeightDialogResult {
   const ExerciseWeightDialogResult._({
@@ -30,11 +31,13 @@ class ExerciseWeightDialog {
     required int series,
     required int repetitions,
     double? currentWeightKg,
+    String description = '',
   }) {
     return showDialog<ExerciseWeightDialogResult>(
       context: context,
       builder: (dialogContext) => _ExerciseWeightDialog(
         exerciseTitle: exerciseTitle,
+        description: description,
         initialSeries: series,
         initialRepetitions: repetitions,
         currentWeightKg: currentWeightKg,
@@ -48,12 +51,14 @@ class ExerciseWeightDialog {
 class _ExerciseWeightDialog extends StatefulWidget {
   const _ExerciseWeightDialog({
     required this.exerciseTitle,
+    required this.description,
     required this.initialSeries,
     required this.initialRepetitions,
     required this.currentWeightKg,
   });
 
   final String exerciseTitle;
+  final String description;
   final int initialSeries;
   final int initialRepetitions;
   final double? currentWeightKg;
@@ -167,69 +172,79 @@ class _ExerciseWeightDialogState extends State<_ExerciseWeightDialog> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
+    final description = widget.description.trim();
+
     return AlertDialog(
-      title: Text(l10n.editExercise),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              widget.exerciseTitle,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            const SizedBox(height: 16),
-            Row(
+      title: Text(widget.exerciseTitle),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _seriesController,
-                    decoration: InputDecoration(
-                      labelText: l10n.fieldSeries,
-                      border: const OutlineInputBorder(),
-                      isDense: true,
+                if (description.isNotEmpty) ...[
+                  ExpandableDescription(description),
+                  const SizedBox(height: 16),
+                ],
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _seriesController,
+                        decoration: InputDecoration(
+                          labelText: l10n.fieldSeries,
+                          border: const OutlineInputBorder(),
+                          isDense: true,
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        validator: (value) => _validateNumber(value, l10n),
+                      ),
                     ),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    validator: (value) => _validateNumber(value, l10n),
-                  ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _repetitionsController,
+                        decoration: InputDecoration(
+                          labelText: l10n.fieldRepetitions,
+                          border: const OutlineInputBorder(),
+                          isDense: true,
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        validator: (value) => _validateNumber(value, l10n),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextFormField(
-                    controller: _repetitionsController,
-                    decoration: InputDecoration(
-                      labelText: l10n.fieldRepetitions,
-                      border: const OutlineInputBorder(),
-                      isDense: true,
-                    ),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    validator: (value) => _validateNumber(value, l10n),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _weightController,
+                  decoration: InputDecoration(
+                    labelText: l10n.exerciseWeightLabel,
+                    hintText: l10n.exerciseWeightHint,
+                    suffixText: weightUnitLabel(_unit, l10n),
+                    border: const OutlineInputBorder(),
+                    isDense: true,
                   ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
+                  ],
+                  validator: (value) => _validateOptionalWeight(value, l10n),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _weightController,
-              decoration: InputDecoration(
-                labelText: l10n.exerciseWeightLabel,
-                hintText: l10n.exerciseWeightHint,
-                suffixText: weightUnitLabel(_unit, l10n),
-                border: const OutlineInputBorder(),
-                isDense: true,
-              ),
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
-              ],
-              validator: (value) => _validateOptionalWeight(value, l10n),
-            ),
-          ],
+          ),
         ),
       ),
       actions: [

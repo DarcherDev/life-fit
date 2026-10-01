@@ -236,6 +236,7 @@ class _RoutineFormScreenState extends State<RoutineFormScreen> {
     final result = await ExerciseWeightDialog.show(
       context,
       exerciseTitle: template.title,
+      description: template.description,
       series: template.series,
       repetitions: template.repetitions,
       currentWeightKg: template.weightKg,
